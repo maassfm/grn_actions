@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -7,10 +8,10 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       <header className="bg-tanne text-white sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🌻</span>
+            <Image src="/logo.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
             <div>
               <span className="font-headline font-bold text-lg uppercase tracking-wide">
-                GRÜNE Berlin-Mitte
+                B90/GRÜNE Berlin-Mitte
               </span>
               <span className="hidden sm:inline text-sm text-white/70 ml-2">
                 Wahlkampfaktionen

@@ -30,11 +30,31 @@ export default function AdminPage() {
     );
   }
 
+  function handleExport(fmt: "xlsx" | "txt") {
+    window.location.href = `/api/export?format=${fmt}`;
+  }
+
   return (
     <div>
-      <h1 className="font-headline text-2xl font-bold text-tanne uppercase mb-6">
-        Gesamtübersicht
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-headline text-2xl font-bold text-tanne uppercase">
+          Gesamtübersicht
+        </h1>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleExport("xlsx")}
+            className="px-4 py-2 bg-tanne text-white text-sm font-medium rounded-lg hover:bg-tanne/90 transition-colors"
+          >
+            Excel exportieren
+          </button>
+          <button
+            onClick={() => handleExport("txt")}
+            className="px-4 py-2 border border-tanne text-tanne text-sm font-medium rounded-lg hover:bg-tanne/10 transition-colors"
+          >
+            TXT exportieren
+          </button>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <StatCard label="Aktionen gesamt" value={stats.totalAktionen} icon="📋" />

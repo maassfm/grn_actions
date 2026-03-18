@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const buffer = createAnmeldungenExcel(exportData);
+  const buffer = await createAnmeldungenExcel(exportData);
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

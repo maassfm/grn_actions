@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -27,9 +28,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               ☰
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-2xl">🌻</span>
+              <Image src="/logo.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
               <span className="font-headline font-bold text-lg uppercase tracking-wide">
-                Dashboard
+                B90/GRÜNE Berlin-Mitte
               </span>
             </Link>
           </div>

@@ -39,9 +39,25 @@ export default function AdminAktionenPage() {
 
   return (
     <div>
-      <h1 className="font-headline text-2xl font-bold text-tanne uppercase mb-6">
-        Alle Aktionen
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-headline text-2xl font-bold text-tanne uppercase">
+          Alle Aktionen
+        </h1>
+        <div className="flex gap-2">
+          <a
+            href="/api/export-aktionen?format=xlsx"
+            className="px-4 py-2 bg-tanne text-white text-sm font-medium rounded-lg hover:bg-tanne/90 transition-colors"
+          >
+            Alle exportieren (Excel)
+          </a>
+          <a
+            href="/api/export-aktionen?format=txt"
+            className="px-4 py-2 border border-tanne text-tanne text-sm font-medium rounded-lg hover:bg-tanne/10 transition-colors"
+          >
+            Alle exportieren (TXT)
+          </a>
+        </div>
+      </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         <table className="w-full min-w-[800px]">
@@ -54,6 +70,7 @@ export default function AdminAktionenPage() {
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Status</th>
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Anmeldungen</th>
               <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Details</th>
+              <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Export</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -83,6 +100,21 @@ export default function AdminAktionenPage() {
                   >
                     Bearbeiten
                   </Link>
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <a
+                    href={`/api/export?format=xlsx&aktionId=${aktion.id}`}
+                    className="text-sm text-tanne hover:underline"
+                  >
+                    xlsx
+                  </a>
+                  {" · "}
+                  <a
+                    href={`/api/export?format=txt&aktionId=${aktion.id}`}
+                    className="text-sm text-tanne hover:underline"
+                  >
+                    txt
+                  </a>
                 </td>
               </tr>
             ))}

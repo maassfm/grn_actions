@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = await file.arrayBuffer();
-    const rows = parseExcelFile(buffer);
+    const rows = await parseExcelFile(buffer);
 
     // Validate each row
     const results = rows.map((row, index) => {
