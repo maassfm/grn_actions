@@ -15,13 +15,13 @@ interface FilterBarProps {
 }
 
 const WAHLKREISE = [
-  { nummer: 1, name: "Mitte" },
-  { nummer: 2, name: "Moabit" },
-  { nummer: 3, name: "Hansaviertel/Tiergarten" },
-  { nummer: 4, name: "Wedding West" },
-  { nummer: 5, name: "Wedding Ost" },
-  { nummer: 6, name: "Gesundbrunnen" },
-  { nummer: 7, name: "Brunnenstraße" },
+  { nummer: 1, name: "Charité, Oranienburger Tor, Zionskirchplatz" },
+  { nummer: 2, name: "Alexanderplatz, Engelbecken, Leipziger Platz" },
+  { nummer: 3, name: "Südliches Moabit, Hansaviertel, Großer Tiergarten" },
+  { nummer: 4, name: "Nördliches Moabit, Westhafen" },
+  { nummer: 5, name: "Schillerpark, Rehberge" },
+  { nummer: 6, name: "Soldiner Straße, an der Panke entlang" },
+  { nummer: 7, name: "Humboldthain, Nettelbeckplatz" },
 ];
 
 const TAGESZEITEN = [
