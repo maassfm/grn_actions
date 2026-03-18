@@ -42,5 +42,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma
-prisma/migrations/
+# prisma - migrations müssen im Repo sein für `prisma migrate deploy`!

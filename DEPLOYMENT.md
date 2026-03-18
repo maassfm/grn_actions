@@ -217,6 +217,8 @@ chmod 600 ~/app/.env
 
 ## 7. Datenbank migrieren und Seeds einspielen
 
+> **Voraussetzung:** Das Verzeichnis `prisma/migrations/` muss im Repository enthalten sein. Darin liegt die initiale Migration, die alle Tabellen erstellt. Ohne dieses Verzeichnis tut `prisma migrate deploy` nichts.
+
 ```bash
 # Als Benutzer gruene, im Verzeichnis ~/app
 cd ~/app
