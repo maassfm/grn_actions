@@ -56,7 +56,8 @@ export function convertDatumToISO(datum: string): string {
 
 export async function parseExcelFile(buffer: ArrayBuffer): Promise<ExcelRow[]> {
   const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.load(Buffer.from(buffer));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await workbook.xlsx.load(Buffer.from(buffer) as any);
   const sheet = workbook.worksheets[0];
 
   const headers: string[] = [];
