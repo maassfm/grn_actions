@@ -1,0 +1,227 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import Card, { CardHeader, CardTitle } from "@/components/ui/Card";
+import ExcelUpload from "@/components/ExcelUpload";
+
+interface Wahlkreis {
+  id: string;
+  nummer: number;
+  name: string;
+}
+
+export default function NewAktionPage() {
+  const router = useRouter();
+  const [wahlkreise, setWahlkreise] = useState<Wahlkreis[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [tab, setTab] = useState<"manual" | "excel">("manual");
+
+  const [form, setForm] = useState({
+    titel: "",
+    beschreibung: "",
+    datum: "",
+    startzeit: "",
+    endzeit: "",
+    adresse: "",
+    wahlkreisId: "",
+    ansprechpersonName: "",
+    ansprechpersonEmail: "",
+    ansprechpersonTelefon: "",
+    maxTeilnehmer: "",
+  });
+
+  useEffect(() => {
+    fetch("/api/wahlkreise")
+      .then((r) => r.json())
+      .then(setWahlkreise);
+  }, []);
+
+  function updateForm(field: string, value: string) {
+    setForm({ ...form, [field]: value });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const body = {
+      ...form,
+      maxTeilnehmer: form.maxTeilnehmer ? parseInt(form.maxTeilnehmer) : null,
+    };
+
+    const res = await fetch("/api/aktionen", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      router.push("/dashboard");
+    } else {
+      const data = await res.json();
+      setError(data.error || "Fehler beim Erstellen");
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="font-headline text-2xl font-bold text-tanne uppercase mb-6">
+        Neue Aktion
+      </h1>
+
+      {/* Tab Toggle */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setTab("manual")}
+          className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
+            tab === "manual" ? "bg-tanne text-white" : "bg-white text-tanne border border-tanne"
+          }`}
+        >
+          Manuell anlegen
+        </button>
+        <button
+          onClick={() => setTab("excel")}
+          className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
+            tab === "excel" ? "bg-tanne text-white" : "bg-white text-tanne border border-tanne"
+          }`}
+        >
+          Excel-Import
+        </button>
+      </div>
+
+      {tab === "manual" ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Aktion anlegen</CardTitle>
+          </CardHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Titel"
+              value={form.titel}
+              onChange={(e) => updateForm("titel", e.target.value)}
+              required
+              placeholder="z.B. Infostand Alexanderplatz"
+            />
+
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Beschreibung (optional)
+              </label>
+              <textarea
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tanne"
+                value={form.beschreibung}
+                onChange={(e) => updateForm("beschreibung", e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Input
+                label="Datum"
+                type="date"
+                value={form.datum}
+                onChange={(e) => updateForm("datum", e.target.value)}
+                required
+              />
+              <Input
+                label="Startzeit"
+                type="time"
+                value={form.startzeit}
+                onChange={(e) => updateForm("startzeit", e.target.value)}
+                required
+              />
+              <Input
+                label="Endzeit"
+                type="time"
+                value={form.endzeit}
+                onChange={(e) => updateForm("endzeit", e.target.value)}
+                required
+              />
+            </div>
+
+            <Input
+              label="Adresse"
+              value={form.adresse}
+              onChange={(e) => updateForm("adresse", e.target.value)}
+              required
+              placeholder="Straße Nr., PLZ Berlin"
+            />
+
+            <Select
+              label="Wahlkreis"
+              value={form.wahlkreisId}
+              onChange={(e) => updateForm("wahlkreisId", e.target.value)}
+              options={wahlkreise.map((wk) => ({
+                value: wk.id,
+                label: `${wk.nummer}: ${wk.name}`,
+              }))}
+              placeholder="Bitte wählen"
+            />
+
+            <div className="border-t border-gray-200 pt-4 mt-4">
+              <h3 className="font-bold text-gray-700 mb-3">Ansprechperson</h3>
+              <div className="space-y-4">
+                <Input
+                  label="Name"
+                  value={form.ansprechpersonName}
+                  onChange={(e) => updateForm("ansprechpersonName", e.target.value)}
+                  required
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    label="E-Mail"
+                    type="email"
+                    value={form.ansprechpersonEmail}
+                    onChange={(e) => updateForm("ansprechpersonEmail", e.target.value)}
+                    required
+                  />
+                  <Input
+                    label="Telefon"
+                    type="tel"
+                    value={form.ansprechpersonTelefon}
+                    onChange={(e) => updateForm("ansprechpersonTelefon", e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Input
+              label="Max. Teilnehmer (optional)"
+              type="number"
+              value={form.maxTeilnehmer}
+              onChange={(e) => updateForm("maxTeilnehmer", e.target.value)}
+              min="1"
+              placeholder="Unbegrenzt"
+            />
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Button type="submit" loading={loading}>
+                Aktion erstellen
+              </Button>
+              <Button variant="ghost" type="button" onClick={() => router.back()}>
+                Abbrechen
+              </Button>
+            </div>
+          </form>
+        </Card>
+      ) : (
+        <ExcelUpload />
+      )}
+    </div>
+  );
+}

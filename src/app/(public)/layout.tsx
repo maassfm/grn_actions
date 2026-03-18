@@ -1,0 +1,51 @@
+import Link from "next/link";
+import type { ReactNode } from "react";
+
+export default function PublicLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-tanne text-white sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="text-2xl">🌻</span>
+            <div>
+              <span className="font-headline font-bold text-lg uppercase tracking-wide">
+                GRÜNE Berlin-Mitte
+              </span>
+              <span className="hidden sm:inline text-sm text-white/70 ml-2">
+                Wahlkampfaktionen
+              </span>
+            </div>
+          </Link>
+          <nav className="flex items-center gap-4 text-sm">
+            <Link href="/" className="hover:text-sonne transition-colors">
+              Aktionen
+            </Link>
+            <Link
+              href="/login"
+              className="text-white/70 hover:text-white transition-colors"
+            >
+              Login
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <main className="flex-1">{children}</main>
+
+      <footer className="bg-tanne text-white/70 text-sm">
+        <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <p>&copy; BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+          <div className="flex gap-4">
+            <Link href="/datenschutz" className="hover:text-white transition-colors">
+              Datenschutz
+            </Link>
+            <Link href="/impressum" className="hover:text-white transition-colors">
+              Impressum
+            </Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
