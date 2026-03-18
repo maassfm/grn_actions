@@ -1,9 +1,19 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { prisma } from "./db";
 import type { EmailTyp } from "@prisma/client";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: process.env.SMTP_SECURE === "true",
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
+
 const FROM_EMAIL = process.env.EMAIL_FROM || "aktionen@gruene-mitte.de";
+const FROM_NAME = process.env.EMAIL_FROM_NAME || "Kreisvorstand B90/GRÜNE Berlin-Mitte";
 
 interface SendEmailParams {
   to: string;
@@ -15,8 +25,8 @@ interface SendEmailParams {
 
 export async function sendEmail({ to, subject, html, typ, aktionId }: SendEmailParams) {
   try {
-    const { error } = await resend.emails.send({
-      from: `GRÜNE Berlin-Mitte <${FROM_EMAIL}>`,
+    await transporter.sendMail({
+      from: `${FROM_NAME} <${FROM_EMAIL}>`,
       to,
       subject,
       html,
@@ -27,11 +37,11 @@ export async function sendEmail({ to, subject, html, typ, aktionId }: SendEmailP
         typ,
         empfaengerEmail: to,
         aktionId: aktionId || null,
-        status: error ? `FEHLER: ${error.message}` : "GESENDET",
+        status: "GESENDET",
       },
     });
 
-    return !error;
+    return true;
   } catch (err) {
     await prisma.emailLog.create({
       data: {
