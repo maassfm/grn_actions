@@ -33,6 +33,24 @@ export default function AdminAktionenPage() {
       });
   }, []);
 
+  async function handleDelete(aktion: Aktion) {
+    const anmeldungenText =
+      aktion._count.anmeldungen > 0
+        ? ` Alle ${aktion._count.anmeldungen} Anmeldung(en) werden gelöscht.`
+        : "";
+    const confirmed = window.confirm(
+      `Aktion "${aktion.titel}" endgültig löschen?${anmeldungenText} Es werden KEINE E-Mails verschickt. Diese Aktion kann nicht rückgängig gemacht werden.`
+    );
+    if (!confirmed) return;
+
+    const res = await fetch(`/api/admin/aktionen/${aktion.id}`, { method: "DELETE" });
+    if (res.ok) {
+      setAktionen((prev) => prev.filter((a) => a.id !== aktion.id));
+    } else {
+      alert("Fehler beim Löschen der Aktion.");
+    }
+  }
+
   if (loading) {
     return <div className="text-gray-500">Lade Aktionen...</div>;
   }
@@ -71,6 +89,7 @@ export default function AdminAktionenPage() {
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Anmeldungen</th>
               <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Details</th>
               <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Export</th>
+              <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Löschen</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -115,6 +134,14 @@ export default function AdminAktionenPage() {
                   >
                     txt
                   </a>
+                </td>
+                <td className="px-4 py-3 text-right">
+                  <button
+                    onClick={() => handleDelete(aktion)}
+                    className="text-sm text-red-600 hover:underline"
+                  >
+                    Löschen
+                  </button>
                 </td>
               </tr>
             ))}
