@@ -41,13 +41,14 @@ model User {
 }
 
 model Team {
-  id          String     @id @default(cuid())
+  id          String            @id @default(cuid())
   name        String
   wahlkreisId String?
-  wahlkreis   Wahlkreis? @relation(fields: [wahlkreisId], references: [id])
+  wahlkreis   Wahlkreis?        @relation(fields: [wahlkreisId], references: [id])
   members     UserTeam[]
   aktionen    Aktion[]
-  createdAt   DateTime   @default(now())
+  statistiken AktionStatistik[]
+  createdAt   DateTime          @default(now())
 
   @@map("teams")
 }
@@ -63,12 +64,13 @@ model UserTeam {
 }
 
 model Wahlkreis {
-  id        String   @id @default(cuid())
-  nummer    Int      @unique
-  name      String
-  teams     Team[]
-  aktionen  Aktion[]
-  createdAt DateTime @default(now())
+  id          String            @id @default(cuid())
+  nummer      Int               @unique
+  name        String
+  teams       Team[]
+  aktionen    Aktion[]
+  statistiken AktionStatistik[]
+  createdAt   DateTime          @default(now())
 
   @@map("wahlkreise")
 }
@@ -96,6 +98,7 @@ model Aktion {
   team                  Team         @relation(fields: [teamId], references: [id])
   anmeldungen           Anmeldung[]
   emailLogs             EmailLog[]
+  statistik             AktionStatistik?
   createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
 
@@ -127,4 +130,19 @@ model EmailLog {
   status          String
 
   @@map("email_logs")
+}
+
+model AktionStatistik {
+  id               String    @id @default(cuid())
+  aktionId         String    @unique
+  aktion           Aktion    @relation(fields: [aktionId], references: [id], onDelete: Restrict)
+  anmeldungenCount Int
+  aktionDatum      DateTime  @db.Date
+  wahlkreisId      String
+  wahlkreis        Wahlkreis @relation(fields: [wahlkreisId], references: [id])
+  teamId           String
+  team             Team      @relation(fields: [teamId], references: [id])
+  geloeschtAm      DateTime  @default(now())
+
+  @@map("aktion_statistiken")
 }

@@ -224,11 +224,15 @@ export async function createVorlageExcel(): Promise<Buffer> {
     { header: "Max. Teilnehmer", key: "maxTeilnehmer", width: 15 },
   ];
 
+  sheet.getColumn("datum").style = { numFmt: "DD.MM.YYYY" };
+  sheet.getColumn("startzeit").style = { numFmt: "HH:MM" };
+  sheet.getColumn("endzeit").style = { numFmt: "HH:MM" };
+
   sheet.addRow({
     titel: "Infostand Alexanderplatz",
-    datum: "15.04.2026",
-    startzeit: "10:00",
-    endzeit: "13:00",
+    datum: new Date(2026, 3, 15),
+    startzeit: new Date(Date.UTC(1899, 11, 30, 10, 0)),
+    endzeit: new Date(Date.UTC(1899, 11, 30, 13, 0)),
     adresse: "Alexanderplatz 1, 10178 Berlin",
     wahlkreis: 1,
     ansprechpersonName: "Max Mustermann",
