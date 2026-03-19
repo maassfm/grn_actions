@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Card, { CardHeader, CardTitle } from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
+import Select from "@/components/ui/Select";
+
+interface Team {
+  id: string;
+  name: string;
+}
 
 interface ValidationResult {
   index: number;
@@ -13,7 +19,12 @@ interface ValidationResult {
   errors: string[];
 }
 
-export default function ExcelUpload() {
+interface ExcelUploadProps {
+  userTeams?: Team[];
+  needsTeamSelect?: boolean;
+}
+
+export default function ExcelUpload({ userTeams = [], needsTeamSelect = false }: ExcelUploadProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [results, setResults] = useState<ValidationResult[]>([]);
@@ -21,6 +32,7 @@ export default function ExcelUpload() {
   const [importing, setImporting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState("");
 
   async function handleFile(file: File) {
     setFileName(file.name);
@@ -52,6 +64,11 @@ export default function ExcelUpload() {
   }
 
   async function handleImport() {
+    if (needsTeamSelect && userTeams.length > 0 && !selectedTeamId) {
+      alert("Bitte wähle ein Team aus.");
+      return;
+    }
+
     setImporting(true);
 
     const formData = new FormData();
@@ -60,6 +77,9 @@ export default function ExcelUpload() {
 
     formData.append("file", file);
     formData.append("import", "true");
+    if (selectedTeamId) {
+      formData.append("teamId", selectedTeamId);
+    }
 
     const res = await fetch("/api/upload", {
       method: "POST",
@@ -90,6 +110,18 @@ export default function ExcelUpload() {
           📥 Vorlage herunterladen
         </a>
       </div>
+
+      {needsTeamSelect && userTeams.length > 0 && (
+        <div className="mb-4">
+          <Select
+            label="Team"
+            value={selectedTeamId}
+            onChange={(e) => setSelectedTeamId(e.target.value)}
+            options={userTeams.map((t) => ({ value: t.id, label: t.name }))}
+            placeholder="Bitte Team wählen"
+          />
+        </div>
+      )}
 
       <div
         onDragOver={(e) => {

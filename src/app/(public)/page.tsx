@@ -53,6 +53,7 @@ export default function AktionenPage() {
       params.set("wahlkreis", filters.wahlkreise.join(","));
     }
 
+    params.set("public", "true");
     fetch(`/api/aktionen?${params}`)
       .then((r) => r.json())
       .then((data) => {

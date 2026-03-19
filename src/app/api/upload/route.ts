@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
       const teamIds = session.user.teamIds ?? [];
       const teamId =
-        session.user.role === "ADMIN"
+        session.user.role === "ADMIN" || teamIds.length > 1
           ? (formData.get("teamId") as string) || teamIds[0]
           : teamIds[0];
 

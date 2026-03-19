@@ -259,7 +259,7 @@ export default function NewAktionPage() {
           </form>
         </Card>
       ) : (
-        <ExcelUpload />
+        <ExcelUpload userTeams={userTeams} needsTeamSelect={needsTeamSelect} />
       )}
     </div>
   );

@@ -14,12 +14,13 @@ export async function GET(req: NextRequest) {
   const datumBis = searchParams.get("datumBis");
   const tageszeit = searchParams.get("tageszeit");
   const teamId = searchParams.get("teamId");
+  const isPublic = searchParams.get("public") === "true";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
   // Public: only active/changed, future actions
-  if (!session) {
+  if (!session || isPublic) {
     where.status = { in: ["AKTIV", "GEAENDERT"] };
     where.datum = { gte: new Date(new Date().toISOString().split("T")[0]) };
   } else if (session.user.role === "EXPERT" && session.user.teamIds?.length > 0) {
