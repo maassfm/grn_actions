@@ -29,7 +29,11 @@ export async function POST(req: NextRequest) {
         include: {
           team: {
             include: {
-              users: true,
+              members: {
+                include: {
+                  user: true,
+                },
+              },
             },
           },
         },
@@ -45,7 +49,7 @@ export async function POST(req: NextRequest) {
   const byTeam = new Map<
     string,
     {
-      team: { id: string; name: string; users: { id: string; name: string; email: string }[] };
+      team: { id: string; name: string; members: { user: { id: string; name: string; email: string; active: boolean } }[] };
       aktionen: Map<string, { titel: string; datum: Date; startzeit: string; anmeldungen: typeof todaysAnmeldungen }>;
     }
   >();
@@ -57,7 +61,7 @@ export async function POST(req: NextRequest) {
         team: {
           id: team.id,
           name: team.name,
-          users: team.users.filter((u) => u.active),
+          members: team.members.filter((m) => m.user.active),
         },
         aktionen: new Map(),
       });
@@ -93,7 +97,7 @@ export async function POST(req: NextRequest) {
       })),
     }));
 
-    for (const user of team.users) {
+    for (const { user } of team.members) {
       const emailData = tagesUebersichtEmail(user.name, today, aktionenList);
       await sendEmail({
         to: user.email,
