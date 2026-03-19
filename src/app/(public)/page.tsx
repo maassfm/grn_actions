@@ -85,7 +85,7 @@ export default function AktionenPage() {
   }
 
   return (
-    <div className={selectedIds.size > 0 ? "pb-80" : ""}>
+    <div className={selectedIds.size > 0 ? "pb-16" : ""}>
       <FilterBar filters={filters} onFilterChange={setFilters} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
