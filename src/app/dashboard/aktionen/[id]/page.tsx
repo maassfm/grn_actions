@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -13,10 +14,18 @@ interface Wahlkreis {
   name: string;
 }
 
+interface Team {
+  id: string;
+  name: string;
+}
+
 export default function EditAktionPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const { data: session } = useSession();
+  const isAdmin = session?.user.role === "ADMIN";
   const [wahlkreise, setWahlkreise] = useState<Wahlkreis[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -29,6 +38,7 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
     endzeit: "",
     adresse: "",
     wahlkreisId: "",
+    teamId: "",
     ansprechpersonName: "",
     ansprechpersonEmail: "",
     ansprechpersonTelefon: "",
@@ -40,8 +50,10 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
     Promise.all([
       fetch(`/api/aktionen/${id}`).then((r) => r.json()),
       fetch("/api/wahlkreise").then((r) => r.json()),
-    ]).then(([aktion, wk]) => {
+      isAdmin ? fetch("/api/admin/teams").then((r) => r.json()) : Promise.resolve([]),
+    ]).then(([aktion, wk, tm]) => {
       setWahlkreise(wk);
+      setTeams(tm);
       setForm({
         titel: aktion.titel,
         beschreibung: aktion.beschreibung || "",
@@ -50,6 +62,7 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
         endzeit: aktion.endzeit,
         adresse: aktion.adresse,
         wahlkreisId: aktion.wahlkreisId,
+        teamId: aktion.teamId,
         ansprechpersonName: aktion.ansprechpersonName,
         ansprechpersonEmail: aktion.ansprechpersonEmail,
         ansprechpersonTelefon: aktion.ansprechpersonTelefon,
@@ -57,7 +70,7 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
       });
       setLoading(false);
     });
-  }, [id]);
+  }, [id, isAdmin]);
 
   function updateForm(field: string, value: string) {
     setForm({ ...form, [field]: value });
@@ -163,6 +176,15 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
               label: `${wk.nummer}: ${wk.name}`,
             }))}
           />
+
+          {isAdmin && teams.length > 0 && (
+            <Select
+              label="Team"
+              value={form.teamId}
+              onChange={(e) => updateForm("teamId", e.target.value)}
+              options={teams.map((t) => ({ value: t.id, label: t.name }))}
+            />
+          )}
 
           <div className="border-t border-gray-200 pt-4 mt-4">
             <h3 className="font-bold text-gray-700 mb-3">Ansprechperson</h3>

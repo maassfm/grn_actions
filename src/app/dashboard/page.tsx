@@ -16,6 +16,7 @@ interface Aktion {
   adresse: string;
   status: string;
   wahlkreis: { nummer: number; name: string };
+  team: { name: string };
   _count: { anmeldungen: number };
   maxTeilnehmer: number | null;
 }
@@ -83,6 +84,7 @@ export default function DashboardPage() {
                       📅 {format(new Date(aktion.datum), "EEEE, d. MMMM yyyy", { locale: de })} · {aktion.startzeit} – {aktion.endzeit}
                     </p>
                     <p>📍 {aktion.adresse}</p>
+                    <p>🏷️ {aktion.team.name}</p>
                     <p>
                       👥 {aktion._count.anmeldungen} Anmeldungen
                       {aktion.maxTeilnehmer ? ` / ${aktion.maxTeilnehmer} Plätze` : ""}

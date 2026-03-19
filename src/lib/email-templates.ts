@@ -28,10 +28,11 @@ function baseLayout(content: string): string {
     .header .logo { width: 56px; height: 56px; margin-bottom: 8px; }
     .header .subtitle { color: #FFF17A; font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 4px 0; }
     .content { padding: 32px; }
-    .content h2 { color: #005538; font-size: 18px; font-weight: 700; text-transform: uppercase; margin-top: 0; }
+    .content p {font-size: 16px;}
+    .content h2 { color: #005538; font-size: 18px; font-weight: 700; margin-top: 0; }
     .aktion-card { background: #F5F1E9; border-radius: 8px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #008939; }
     .aktion-card h3 { color: #005538; margin: 0 0 8px 0; font-size: 16px; }
-    .aktion-card p { margin: 4px 0; font-size: 14px; color: #404040; }
+    .aktion-card p { margin: 4px 0; font-size: 16px; color: #404040; }
     .footer { background-color: #F5F1E9; padding: 24px 32px; font-size: 12px; color: #737373; text-align: center; }
     .footer a { color: #005538; }
     .change-highlight { background: #FFF17A; padding: 2px 6px; border-radius: 4px; }
@@ -50,7 +51,6 @@ function baseLayout(content: string): string {
     <div class="footer">
       <p>BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
       <p>Diese E-Mail wurde automatisch versendet. Bitte antworte nicht auf diese E-Mail.</p>
-      <p>Deine Daten werden nur zur Koordination von Wahlkampfaktionen verwendet und nach der Wahl gelöscht.</p>
       <p><a href="${baseUrl}/datenschutz">Datenschutzerklärung</a> · <a href="${baseUrl}/impressum">Impressum</a></p>
     </div>
   </div>
@@ -83,7 +83,7 @@ export function anmeldebestaetigungEmail(
     <p>Wir freuen uns auf Dich! 💚</p>
     <p>Viele Grüße<br>
     Annalena, Florian, Lara, Linus, Madlen und Timur<br>
-    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte/p>
+    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
   `;
 
   return { subject, html: baseLayout(content) };
@@ -144,37 +144,75 @@ interface TagesAktion {
   anmeldungen: TagesAnmeldung[];
 }
 
+interface MorgenAktion {
+  titel: string;
+  datum: Date;
+  startzeit: string;
+  endzeit: string;
+  adresse: string;
+  anmeldungen: TagesAnmeldung[];
+}
+
 export function tagesUebersichtEmail(
   expertName: string,
   datum: Date,
-  aktionen: TagesAktion[]
+  aktionen: TagesAktion[],
+  aktionenMorgen: MorgenAktion[] = []
 ): { subject: string; html: string } {
   const datumStr = format(datum, "d. MMMM yyyy", { locale: de });
   const subject = `Neue Anmeldungen – Tagesübersicht ${datumStr}`;
 
-  const aktionenHtml = aktionen
-    .map((a) => {
-      const anmeldungenList = a.anmeldungen
-        .map((an) => {
-          const kontakt = an.signalName
-            ? `Signal: ${an.signalName}`
-            : an.telefon || "";
-          return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
-        })
-        .join("");
+  const morgenHtml = aktionenMorgen.length > 0
+    ? `
+      <h2>Morgen findet statt</h2>
+      ${aktionenMorgen.map((a) => {
+        const aktionDatum = format(a.datum, "EEEE, d. MMMM", { locale: de });
+        const anmeldungenList = a.anmeldungen.length > 0
+          ? `<ul>${a.anmeldungen.map((an) => {
+              const kontakt = an.signalName
+                ? `Signal: ${an.signalName}`
+                : an.telefon || "";
+              return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
+            }).join("")}</ul>`
+          : `<p><em>Noch keine Anmeldungen.</em></p>`;
+        return `
+          <div class="aktion-card">
+            <h3>${a.titel}</h3>
+            <p>📅 ${aktionDatum}, ${a.startzeit}–${a.endzeit} Uhr</p>
+            <p>📍 ${a.adresse}</p>
+            <p><strong>${a.anmeldungen.length} Anmeldung${a.anmeldungen.length !== 1 ? "en" : ""}:</strong></p>
+            ${anmeldungenList}
+          </div>
+        `;
+      }).join("")}
+    `
+    : "";
 
-      const aktionDatum = format(a.datum, "d. MMMM", { locale: de });
-      return `
-        <h3>${a.titel} (${aktionDatum}, ${a.startzeit} Uhr)</h3>
-        <ul>${anmeldungenList}</ul>
-      `;
-    })
-    .join("");
+  const neueAnmeldungenHtml = aktionen.length > 0
+    ? `
+      <h2>Neue Anmeldungen heute</h2>
+      ${aktionen.map((a) => {
+        const anmeldungenList = a.anmeldungen
+          .map((an) => {
+            const kontakt = an.signalName
+              ? `Signal: ${an.signalName}`
+              : an.telefon || "";
+            return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
+          })
+          .join("");
+        const aktionDatum = format(a.datum, "d. MMMM", { locale: de });
+        return `
+          <h3>${a.titel} (${aktionDatum}, ${a.startzeit} Uhr)</h3>
+          <ul>${anmeldungenList}</ul>
+        `;
+      }).join("")}
+    `
+    : "";
 
   const content = `
     <h2>Hallo ${expertName}!</h2>
-    <p>Hier ist die Übersicht der heutigen neuen Anmeldungen für deine Aktionen:</p>
-    ${aktionenHtml}
+    ${morgenHtml}
+    ${neueAnmeldungenHtml}
     <p><a href="${baseUrl}/dashboard">Zum Dashboard →</a></p>
   `;
 

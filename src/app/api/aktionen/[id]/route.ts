@@ -88,6 +88,10 @@ export async function PUT(
       changes.push({ field: "Adresse", oldValue: existing.adresse, newValue: validated.adresse });
     }
 
+    // Allow admin to reassign team
+    const newTeamId =
+      session.user.role === "ADMIN" && body.teamId ? body.teamId : undefined;
+
     const aktion = await prisma.aktion.update({
       where: { id },
       data: {
@@ -105,6 +109,7 @@ export async function PUT(
         ansprechpersonTelefon: validated.ansprechpersonTelefon,
         maxTeilnehmer: validated.maxTeilnehmer || null,
         status: changes.length > 0 ? "GEAENDERT" : existing.status,
+        ...(newTeamId ? { teamId: newTeamId } : {}),
       },
       include: { wahlkreis: true },
     });
