@@ -23,7 +23,8 @@ function baseLayout(content: string): string {
     .container { max-width: 600px; margin: 0 auto; background: #FFFFFF; }
     .header { background-color: #005538; padding: 24px 32px; text-align: center; }
     .header h1 { color: #FFFFFF; font-size: 22px; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-    .header .sunflower { font-size: 28px; margin-bottom: 8px; }
+    .header .logo { width: 56px; height: 56px; margin-bottom: 8px; }
+    .header .subtitle { color: #FFF17A; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 4px 0; }
     .content { padding: 32px; }
     .content h2 { color: #005538; font-size: 18px; font-weight: 700; text-transform: uppercase; margin-top: 0; }
     .aktion-card { background: #F5F1E9; border-radius: 8px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #008939; }
@@ -37,8 +38,9 @@ function baseLayout(content: string): string {
 <body>
   <div class="container">
     <div class="header">
-      <div class="sunflower">🌻</div>
-      <h1>GRÜNE Berlin-Mitte</h1>
+      <img src="https://aktionen.gruene-mitte.de/logo.png" alt="Sonnenblume" class="logo" />
+      <p class="subtitle">Kreisvorstand</p>
+      <h1>B90/GRÜNE Berlin-Mitte</h1>
     </div>
     <div class="content">
       ${content}
@@ -69,7 +71,7 @@ export function anmeldebestaetigungEmail(
   vorname: string,
   aktionen: AktionInfo[]
 ): { subject: string; html: string } {
-  const subject = `Deine Anmeldung bei GRÜNE Berlin-Mitte – ${aktionen.length} Aktion${aktionen.length > 1 ? "en" : ""}`;
+  const subject = `Deine Anmeldung bei B90/GRÜNE Berlin-Mitte – ${aktionen.length} Aktion${aktionen.length > 1 ? "en" : ""}`;
 
   const content = `
     <h2>Hallo ${vorname}!</h2>
