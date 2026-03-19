@@ -22,8 +22,8 @@ export async function GET(req: NextRequest) {
   if (!session) {
     where.status = { in: ["AKTIV", "GEAENDERT"] };
     where.datum = { gte: new Date(new Date().toISOString().split("T")[0]) };
-  } else if (session.user.role === "EXPERT" && session.user.teamId) {
-    where.teamId = session.user.teamId;
+  } else if (session.user.role === "EXPERT" && session.user.teamIds?.length > 0) {
+    where.teamId = { in: session.user.teamIds };
   }
 
   // Filters
@@ -90,10 +90,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const teamId =
-      session.user.role === "ADMIN" && body.teamId
-        ? body.teamId
-        : session.user.teamId;
+    let teamId: string | null = null;
+    if (session.user.role === "ADMIN" && body.teamId) {
+      teamId = body.teamId;
+    } else if (body.teamId && session.user.teamIds?.includes(body.teamId)) {
+      teamId = body.teamId;
+    } else if (session.user.teamIds?.length === 1) {
+      teamId = session.user.teamIds[0];
+    }
 
     if (!teamId) {
       return NextResponse.json(

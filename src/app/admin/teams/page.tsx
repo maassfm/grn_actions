@@ -8,7 +8,7 @@ interface Team {
   id: string;
   name: string;
   wahlkreis: { id: string; nummer: number; name: string } | null;
-  _count: { users: number; aktionen: number };
+  _count: { members: number; aktionen: number };
 }
 
 export default function TeamsPage() {
@@ -63,15 +63,23 @@ export default function TeamsPage() {
                     : "Bezirksweit"}
                 </p>
               </div>
-              <button
-                onClick={() => handleDelete(team.id)}
-                className="text-sm text-red-500 hover:underline"
-              >
-                Löschen
-              </button>
+              <div className="flex gap-3">
+                <Link
+                  href={`/admin/teams/${team.id}`}
+                  className="text-sm text-tanne hover:underline"
+                >
+                  Bearbeiten
+                </Link>
+                <button
+                  onClick={() => handleDelete(team.id)}
+                  className="text-sm text-red-500 hover:underline"
+                >
+                  Löschen
+                </button>
+              </div>
             </div>
             <div className="flex gap-4 mt-3 text-sm text-gray-600">
-              <span>👤 {team._count.users} Mitglieder</span>
+              <span>👤 {team._count.members} Mitglieder</span>
               <span>📋 {team._count.aktionen} Aktionen</span>
             </div>
           </div>

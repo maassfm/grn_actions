@@ -24,8 +24,8 @@ export async function GET(req: NextRequest) {
     where.aktionId = aktionId;
   }
 
-  if (session.user.role === "EXPERT" && session.user.teamId) {
-    where.aktion = { teamId: session.user.teamId };
+  if (session.user.role === "EXPERT" && session.user.teamIds?.length > 0) {
+    where.aktion = { teamId: { in: session.user.teamIds } };
   } else if (teamId) {
     where.aktion = { ...(where.aktion || {}), teamId };
   }

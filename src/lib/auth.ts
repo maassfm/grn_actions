@@ -16,6 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
+          include: { teams: { select: { teamId: true } } },
         });
 
         if (!user || !user.active) return null;
@@ -32,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role,
-          teamId: user.teamId,
+          teamIds: user.teams.map((t) => t.teamId),
         };
       },
     }),
@@ -48,7 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
-        token.teamId = user.teamId;
+        token.teamIds = user.teamIds;
       }
       return token;
     },
@@ -56,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.sub!;
         session.user.role = token.role as string;
-        session.user.teamId = token.teamId as string | null;
+        session.user.teamIds = (token.teamIds as string[]) ?? [];
       }
       return session;
     },

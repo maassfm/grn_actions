@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useState, type ReactNode } from "react";
 
 const navItems = [
@@ -14,6 +14,9 @@ const navItems = [
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
+
+  const isAdmin = session?.user.role === "ADMIN";
 
   return (
     <div className="min-h-screen bg-sand">
@@ -35,6 +38,16 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            {session && (
+              <span className="text-white/70 text-xs hidden sm:inline">
+                {session.user.name} &middot; {isAdmin ? "Admin" : "Expert*in"}
+              </span>
+            )}
+            {isAdmin && (
+              <Link href="/admin" className="text-sm text-sonne hover:text-white transition-colors font-medium">
+                Admin Panel
+              </Link>
+            )}
             <Link href="/" className="text-sm text-white/70 hover:text-white transition-colors">
               Zur Übersicht
             </Link>

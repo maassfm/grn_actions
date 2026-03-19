@@ -22,7 +22,7 @@ export async function GET(
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
-  if (session.user.role === "EXPERT" && aktion.teamId !== session.user.teamId) {
+  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(aktion.teamId)) {
     return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
   }
 
@@ -32,4 +32,38 @@ export async function GET(
   });
 
   return NextResponse.json(anmeldungen);
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const { searchParams } = new URL(req.url);
+  const anmeldungId = searchParams.get("anmeldungId");
+
+  if (!anmeldungId) {
+    return NextResponse.json({ error: "anmeldungId fehlt" }, { status: 400 });
+  }
+
+  const aktion = await prisma.aktion.findUnique({
+    where: { id },
+    select: { teamId: true },
+  });
+
+  if (!aktion) {
+    return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
+  }
+
+  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(aktion.teamId)) {
+    return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+  }
+
+  await prisma.anmeldung.delete({ where: { id: anmeldungId } });
+  return NextResponse.json({ message: "Anmeldung gelöscht" });
 }

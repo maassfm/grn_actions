@@ -11,12 +11,14 @@ export async function GET() {
   }
 
   const users = await prisma.user.findMany({
-    include: { team: true },
+    include: { teams: { include: { team: true } } },
     orderBy: { createdAt: "desc" },
   });
 
-  // Remove passwords from response
-  const sanitized = users.map(({ password: _, ...user }) => user);
+  const sanitized = users.map(({ password: _, ...user }) => ({
+    ...user,
+    teams: user.teams.map((ut) => ut.team),
+  }));
   return NextResponse.json(sanitized);
 }
 
@@ -49,13 +51,18 @@ export async function POST(req: NextRequest) {
         email: validated.email,
         password: hashedPassword,
         role: validated.role,
-        teamId: validated.teamId || null,
+        teams: {
+          create: (validated.teamIds ?? []).map((teamId) => ({ teamId })),
+        },
       },
-      include: { team: true },
+      include: { teams: { include: { team: true } } },
     });
 
     const { password: _, ...sanitized } = user;
-    return NextResponse.json(sanitized, { status: 201 });
+    return NextResponse.json(
+      { ...sanitized, teams: sanitized.teams.map((ut) => ut.team) },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof Error && error.name === "ZodError") {
       return NextResponse.json({ error: "Validierungsfehler", details: error }, { status: 400 });
@@ -72,7 +79,7 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { id, ...data } = body;
+    const { id, teamIds, ...data } = body;
 
     if (!id) {
       return NextResponse.json({ error: "ID fehlt" }, { status: 400 });
@@ -83,18 +90,25 @@ export async function PUT(req: NextRequest) {
     if (data.name) updateData.name = data.name;
     if (data.email) updateData.email = data.email;
     if (data.role) updateData.role = data.role;
-    if (data.teamId !== undefined) updateData.teamId = data.teamId || null;
     if (data.active !== undefined) updateData.active = data.active;
     if (data.password) updateData.password = await bcrypt.hash(data.password, 12);
+
+    // Update teams if provided
+    if (teamIds !== undefined) {
+      updateData.teams = {
+        deleteMany: {},
+        create: (teamIds as string[]).map((teamId: string) => ({ teamId })),
+      };
+    }
 
     const user = await prisma.user.update({
       where: { id },
       data: updateData,
-      include: { team: true },
+      include: { teams: { include: { team: true } } },
     });
 
     const { password: _, ...sanitized } = user;
-    return NextResponse.json(sanitized);
+    return NextResponse.json({ ...sanitized, teams: sanitized.teams.map((ut) => ut.team) });
   } catch {
     return NextResponse.json({ error: "Serverfehler" }, { status: 500 });
   }

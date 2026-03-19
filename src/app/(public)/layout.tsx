@@ -1,8 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { auth } from "@/lib/auth";
+import NavAuthSection from "./NavAuthSection";
 
-export default function PublicLayout({ children }: { children: ReactNode }) {
+export default async function PublicLayout({ children }: { children: ReactNode }) {
+  const session = await auth();
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="bg-tanne text-white sticky top-0 z-50">
@@ -22,12 +26,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
             <Link href="/" className="hover:text-sonne transition-colors">
               Aktionen
             </Link>
-            <Link
-              href="/login"
-              className="text-white/70 hover:text-white transition-colors"
-            >
-              Login
-            </Link>
+            <NavAuthSection session={session} />
           </nav>
         </div>
       </header>

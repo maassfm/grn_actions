@@ -60,7 +60,6 @@ async function main() {
       password: hashedPassword,
       name: "Admin",
       role: "ADMIN",
-      teamId: null,
     },
   });
 
@@ -74,8 +73,14 @@ async function main() {
       password: expertPassword,
       name: "Expert Testperson",
       role: "EXPERT",
-      teamId: team.id,
     },
+  });
+
+  // Assign expert to team via UserTeam
+  await prisma.userTeam.upsert({
+    where: { userId_teamId: { userId: expert.id, teamId: team.id } },
+    update: {},
+    create: { userId: expert.id, teamId: team.id },
   });
 
   console.log(`User angelegt: ${admin.email} (Admin), ${expert.email} (Expert)`);

@@ -51,7 +51,7 @@ export async function PUT(
   }
 
   // Check team access for experts
-  if (session.user.role === "EXPERT" && existing.teamId !== session.user.teamId) {
+  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(existing.teamId)) {
     return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
   }
 
@@ -166,7 +166,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
-  if (session.user.role === "EXPERT" && existing.teamId !== session.user.teamId) {
+  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(existing.teamId)) {
     return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
   }
 
