@@ -5,13 +5,18 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 
+interface Team {
+  id: string;
+  name: string;
+}
+
 interface User {
   id: string;
   name: string;
   email: string;
   role: string;
   active: boolean;
-  team: { id: string; name: string } | null;
+  teams: Team[];
 }
 
 export default function UsersPage() {
@@ -58,7 +63,7 @@ export default function UsersPage() {
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Name</th>
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">E-Mail</th>
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Rolle</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Team</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Teams</th>
               <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Status</th>
               <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Aktionen</th>
             </tr>
@@ -73,16 +78,24 @@ export default function UsersPage() {
                     {user.role === "ADMIN" ? "Admin" : "Expert*in"}
                   </Badge>
                 </td>
-                <td className="px-4 py-3 text-gray-600">{user.team?.name || "–"}</td>
+                <td className="px-4 py-3 text-gray-600 text-sm">
+                  {user.teams.length > 0 ? user.teams.map((t) => t.name).join(", ") : "–"}
+                </td>
                 <td className="px-4 py-3">
                   <Badge variant={user.active ? "success" : "danger"}>
                     {user.active ? "Aktiv" : "Inaktiv"}
                   </Badge>
                 </td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-3 text-right flex gap-3 justify-end">
+                  <Link
+                    href={`/admin/users/${user.id}`}
+                    className="text-sm text-tanne hover:underline"
+                  >
+                    Bearbeiten
+                  </Link>
                   <button
                     onClick={() => toggleActive(user)}
-                    className="text-sm text-tanne hover:underline"
+                    className="text-sm text-gray-500 hover:underline"
                   >
                     {user.active ? "Deaktivieren" : "Aktivieren"}
                   </button>

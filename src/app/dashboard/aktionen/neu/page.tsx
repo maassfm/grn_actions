@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -14,9 +15,16 @@ interface Wahlkreis {
   name: string;
 }
 
+interface Team {
+  id: string;
+  name: string;
+}
+
 export default function NewAktionPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [wahlkreise, setWahlkreise] = useState<Wahlkreis[]>([]);
+  const [userTeams, setUserTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [tab, setTab] = useState<"manual" | "excel">("manual");
@@ -33,6 +41,7 @@ export default function NewAktionPage() {
     ansprechpersonEmail: "",
     ansprechpersonTelefon: "",
     maxTeilnehmer: "",
+    teamId: "",
   });
 
   useEffect(() => {
@@ -40,6 +49,16 @@ export default function NewAktionPage() {
       .then((r) => r.json())
       .then(setWahlkreise);
   }, []);
+
+  useEffect(() => {
+    if (!session) return;
+    const teamIds = session.user.teamIds ?? [];
+    if (teamIds.length <= 1) return; // No need to fetch if 0 or 1 team
+
+    fetch("/api/user/teams")
+      .then((r) => r.json())
+      .then((teams: Team[]) => setUserTeams(teams));
+  }, [session]);
 
   function updateForm(field: string, value: string) {
     setForm({ ...form, [field]: value });
@@ -50,8 +69,14 @@ export default function NewAktionPage() {
     setLoading(true);
     setError("");
 
+    const teamIds = session?.user.teamIds ?? [];
+    const selectedTeamId =
+      form.teamId ||
+      (teamIds.length === 1 ? teamIds[0] : undefined);
+
     const body = {
       ...form,
+      teamId: selectedTeamId,
       maxTeilnehmer: form.maxTeilnehmer ? parseInt(form.maxTeilnehmer) : null,
     };
 
@@ -69,6 +94,10 @@ export default function NewAktionPage() {
     }
     setLoading(false);
   }
+
+  const teamIds = session?.user.teamIds ?? [];
+  const isAdmin = session?.user.role === "ADMIN";
+  const needsTeamSelect = isAdmin || teamIds.length > 1;
 
   return (
     <div className="max-w-2xl">
@@ -165,6 +194,16 @@ export default function NewAktionPage() {
               }))}
               placeholder="Bitte wählen"
             />
+
+            {needsTeamSelect && userTeams.length > 0 && (
+              <Select
+                label="Team"
+                value={form.teamId}
+                onChange={(e) => updateForm("teamId", e.target.value)}
+                options={userTeams.map((t) => ({ value: t.id, label: t.name }))}
+                placeholder="Bitte Team wählen"
+              />
+            )}
 
             <div className="border-t border-gray-200 pt-4 mt-4">
               <h3 className="font-bold text-gray-700 mb-3">Ansprechperson</h3>

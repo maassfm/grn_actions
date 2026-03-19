@@ -12,7 +12,7 @@ export async function GET() {
   const teams = await prisma.team.findMany({
     include: {
       wahlkreis: true,
-      _count: { select: { users: true, aktionen: true } },
+      _count: { select: { members: true, aktionen: true } },
     },
     orderBy: { name: "asc" },
   });
@@ -47,6 +47,35 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PUT(req: NextRequest) {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
+  }
+
+  try {
+    const body = await req.json();
+    const { id, name, wahlkreisId } = body;
+
+    if (!id || !name) {
+      return NextResponse.json({ error: "ID und Name erforderlich" }, { status: 400 });
+    }
+
+    const team = await prisma.team.update({
+      where: { id },
+      data: {
+        name,
+        wahlkreisId: wahlkreisId || null,
+      },
+      include: { wahlkreis: true },
+    });
+
+    return NextResponse.json(team);
+  } catch {
+    return NextResponse.json({ error: "Serverfehler" }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
@@ -63,10 +92,10 @@ export async function DELETE(req: NextRequest) {
   // Check if team has users or aktionen
   const team = await prisma.team.findUnique({
     where: { id },
-    include: { _count: { select: { users: true, aktionen: true } } },
+    include: { _count: { select: { members: true, aktionen: true } } },
   });
 
-  if (team && (team._count.users > 0 || team._count.aktionen > 0)) {
+  if (team && (team._count.members > 0 || team._count.aktionen > 0)) {
     return NextResponse.json(
       { error: "Team kann nicht gelöscht werden, da es noch Mitglieder oder Aktionen hat." },
       { status: 400 }

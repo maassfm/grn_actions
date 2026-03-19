@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useState, type ReactNode } from "react";
 
 const navItems = [
@@ -15,6 +15,7 @@ const navItems = [
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <div className="min-h-screen bg-sand">
@@ -36,6 +37,11 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </Link>
           </div>
           <div className="flex items-center gap-4">
+            {session && (
+              <span className="text-white/70 text-xs hidden sm:inline">
+                {session.user.name} &middot; Admin
+              </span>
+            )}
             <Link href="/dashboard" className="text-sm text-white/70 hover:text-white transition-colors">
               Dashboard
             </Link>

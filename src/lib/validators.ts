@@ -10,7 +10,7 @@ export const userSchema = z.object({
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein"),
   password: z.string().min(8, "Passwort muss mindestens 8 Zeichen lang sein"),
   role: z.enum(["ADMIN", "EXPERT"]),
-  teamId: z.string().optional().nullable(),
+  teamIds: z.array(z.string()).optional().default([]),
 });
 
 export const teamSchema = z.object({

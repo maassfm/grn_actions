@@ -62,10 +62,11 @@ export async function POST(req: NextRequest) {
       const wahlkreise = await prisma.wahlkreis.findMany();
       const wahlkreisMap = new Map(wahlkreise.map((wk) => [wk.nummer, wk.id]));
 
+      const teamIds = session.user.teamIds ?? [];
       const teamId =
         session.user.role === "ADMIN"
-          ? (formData.get("teamId") as string) || session.user.teamId
-          : session.user.teamId;
+          ? (formData.get("teamId") as string) || teamIds[0]
+          : teamIds[0];
 
       if (!teamId) {
         return NextResponse.json({ error: "Kein Team zugeordnet" }, { status: 400 });

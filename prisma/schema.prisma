@@ -26,17 +26,16 @@ enum EmailTyp {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   password  String
   name      String
-  role      Role     @default(EXPERT)
-  active    Boolean  @default(true)
-  teamId    String?
-  team      Team?    @relation(fields: [teamId], references: [id])
+  role      Role       @default(EXPERT)
+  active    Boolean    @default(true)
+  teams     UserTeam[]
   aktionen  Aktion[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@map("users")
 }
@@ -46,11 +45,21 @@ model Team {
   name        String
   wahlkreisId String?
   wahlkreis   Wahlkreis? @relation(fields: [wahlkreisId], references: [id])
-  users       User[]
+  members     UserTeam[]
   aktionen    Aktion[]
   createdAt   DateTime   @default(now())
 
   @@map("teams")
+}
+
+model UserTeam {
+  userId String
+  teamId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@id([userId, teamId])
+  @@map("user_teams")
 }
 
 model Wahlkreis {

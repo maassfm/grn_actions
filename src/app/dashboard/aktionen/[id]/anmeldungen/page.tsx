@@ -37,6 +37,18 @@ export default function AnmeldungenPage({ params }: { params: Promise<{ id: stri
     });
   }, [id]);
 
+  async function handleDelete(anmeldungId: string) {
+    if (!confirm("Anmeldung wirklich löschen?")) return;
+    const res = await fetch(`/api/aktionen/${id}/anmeldungen?anmeldungId=${anmeldungId}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setAnmeldungen((prev) => prev.filter((a) => a.id !== anmeldungId));
+    } else {
+      alert("Fehler beim Löschen der Anmeldung");
+    }
+  }
+
   function downloadExport(format: "xlsx" | "txt") {
     window.open(`/api/export?aktionId=${id}&format=${format}`, "_blank");
   }
@@ -83,6 +95,7 @@ export default function AnmeldungenPage({ params }: { params: Promise<{ id: stri
                   <th className="text-left py-2 text-sm font-bold text-gray-600">E-Mail</th>
                   <th className="text-left py-2 text-sm font-bold text-gray-600">Telefon</th>
                   <th className="text-left py-2 text-sm font-bold text-gray-600">Signal</th>
+                  <th className="text-right py-2 text-sm font-bold text-gray-600">Aktionen</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -94,6 +107,14 @@ export default function AnmeldungenPage({ params }: { params: Promise<{ id: stri
                     <td className="py-2 text-gray-600">{a.email}</td>
                     <td className="py-2 text-gray-600">{a.telefon || "–"}</td>
                     <td className="py-2 text-gray-600">{a.signalName || "–"}</td>
+                    <td className="py-2 text-right">
+                      <button
+                        onClick={() => handleDelete(a.id)}
+                        className="text-sm text-red-500 hover:underline"
+                      >
+                        Löschen
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
