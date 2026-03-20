@@ -50,9 +50,13 @@ export async function PUT(
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
-  // Check team access for experts
-  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(existing.teamId)) {
-    return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+  // Check team access for experts (also allow if user created the action without a team)
+  if (session.user.role === "EXPERT") {
+    const inTeam = existing.teamId != null && session.user.teamIds?.includes(existing.teamId);
+    const isCreator = existing.createdById === session.user.id;
+    if (!inTeam && !isCreator) {
+      return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+    }
   }
 
   try {
@@ -165,14 +169,19 @@ export async function DELETE(
   const existing = await prisma.aktion.findUnique({
     where: { id },
     include: { anmeldungen: true },
+    // createdById is a scalar field – included automatically
   });
 
   if (!existing) {
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
-  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(existing.teamId)) {
-    return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+  if (session.user.role === "EXPERT") {
+    const inTeam = existing.teamId != null && session.user.teamIds?.includes(existing.teamId);
+    const isCreator = existing.createdById === session.user.id;
+    if (!inTeam && !isCreator) {
+      return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+    }
   }
 
   await prisma.aktion.update({

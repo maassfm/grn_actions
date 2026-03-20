@@ -94,8 +94,8 @@ model Aktion {
   status                AktionStatus @default(AKTIV)
   createdById           String
   createdBy             User         @relation(fields: [createdById], references: [id])
-  teamId                String
-  team                  Team         @relation(fields: [teamId], references: [id])
+  teamId                String?
+  team                  Team?        @relation(fields: [teamId], references: [id])
   anmeldungen           Anmeldung[]
   emailLogs             EmailLog[]
   statistik             AktionStatistik?
