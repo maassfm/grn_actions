@@ -63,14 +63,10 @@ export async function POST(req: NextRequest) {
       const wahlkreisMap = new Map(wahlkreise.map((wk) => [wk.nummer, wk.id]));
 
       const teamIds = session.user.teamIds ?? [];
-      const teamId =
+      const teamId: string | null =
         session.user.role === "ADMIN" || teamIds.length > 1
-          ? (formData.get("teamId") as string) || teamIds[0]
-          : teamIds[0];
-
-      if (!teamId) {
-        return NextResponse.json({ error: "Kein Team zugeordnet" }, { status: 400 });
-      }
+          ? (formData.get("teamId") as string) || teamIds[0] || null
+          : teamIds[0] || null;
 
       const created = [];
 
@@ -103,6 +99,7 @@ export async function POST(req: NextRequest) {
             ansprechpersonEmail: row.ansprechpersonEmail,
             ansprechpersonTelefon: row.ansprechpersonTelefon,
             maxTeilnehmer: row.maxTeilnehmer || null,
+            beschreibung: row.beschreibung || null,
             createdById: session.user.id,
             teamId,
           },

@@ -1,5 +1,16 @@
 import ExcelJS from "exceljs";
 
+export function formatSignalInfo(
+  datumMitTag: string,
+  startzeit: string,
+  endzeit: string,
+  titel: string,
+  adresse: string,
+  ansprechpersonName: string
+): string {
+  return `📆 ${datumMitTag}: ${startzeit}-${endzeit} Uhr 📢 ${titel} 📍${adresse} 👋 mit ${ansprechpersonName}`;
+}
+
 interface ExcelRow {
   titel: string;
   datum: string;
@@ -11,6 +22,7 @@ interface ExcelRow {
   ansprechpersonEmail: string;
   ansprechpersonTelefon: string;
   maxTeilnehmer?: number | null;
+  beschreibung?: string | null;
 }
 
 const COLUMN_MAP: Record<string, keyof ExcelRow> = {
@@ -24,6 +36,7 @@ const COLUMN_MAP: Record<string, keyof ExcelRow> = {
   "Ansprechperson E-Mail": "ansprechpersonEmail",
   "Ansprechperson Telefon": "ansprechpersonTelefon",
   "Max. Teilnehmer": "maxTeilnehmer",
+  "Beschreibung": "beschreibung",
 };
 
 function formatDate(value: ExcelJS.CellValue): string {
@@ -105,6 +118,10 @@ interface AnmeldungExport {
   aktionTitel: string;
   aktionDatum: string;
   aktionOrt: string;
+  aktionDatumMitTag: string;
+  aktionStartzeit: string;
+  aktionEndzeit: string;
+  aktionAnsprechpersonName: string;
 }
 
 export async function createAnmeldungenExcel(anmeldungen: AnmeldungExport[]): Promise<Buffer> {
@@ -120,6 +137,7 @@ export async function createAnmeldungenExcel(anmeldungen: AnmeldungExport[]): Pr
     { header: "Aktion", key: "aktion", width: 30 },
     { header: "Datum", key: "datum", width: 12 },
     { header: "Ort", key: "ort", width: 40 },
+    { header: "Signal-Info", key: "signalInfo", width: 70 },
   ];
 
   for (const a of anmeldungen) {
@@ -132,6 +150,7 @@ export async function createAnmeldungenExcel(anmeldungen: AnmeldungExport[]): Pr
       aktion: a.aktionTitel,
       datum: a.aktionDatum,
       ort: a.aktionOrt,
+      signalInfo: formatSignalInfo(a.aktionDatumMitTag, a.aktionStartzeit, a.aktionEndzeit, a.aktionTitel, a.aktionOrt, a.aktionAnsprechpersonName),
     });
   }
 
@@ -154,6 +173,7 @@ export function createAnmeldungenTxt(anmeldungen: AnmeldungExport[]): string {
 export interface AktionExport {
   titel: string;
   datum: string;
+  datumMitTag: string;
   startzeit: string;
   endzeit: string;
   adresse: string;
@@ -162,6 +182,7 @@ export interface AktionExport {
   status: string;
   anmeldungen: number;
   maxTeilnehmer?: number | null;
+  ansprechpersonName: string;
 }
 
 export async function createAktionenExcel(aktionen: AktionExport[]): Promise<Buffer> {
@@ -201,9 +222,7 @@ export async function createAktionenExcel(aktionen: AktionExport[]): Promise<Buf
 
 export function createAktionenTxt(aktionen: AktionExport[]): string {
   return aktionen
-    .map((a) =>
-      `${a.datum} ${a.startzeit}–${a.endzeit} | ${a.titel} | ${a.adresse} | WK ${a.wahlkreis} | ${a.team} | ${a.status} | ${a.anmeldungen}${a.maxTeilnehmer ? `/${a.maxTeilnehmer}` : ""} Anmeldungen`
-    )
+    .map((a) => formatSignalInfo(a.datumMitTag, a.startzeit, a.endzeit, a.titel, a.adresse, a.ansprechpersonName))
     .join("\n");
 }
 
@@ -222,6 +241,7 @@ export async function createVorlageExcel(): Promise<Buffer> {
     { header: "Ansprechperson E-Mail", key: "ansprechpersonEmail", width: 25 },
     { header: "Ansprechperson Telefon", key: "ansprechpersonTelefon", width: 20 },
     { header: "Max. Teilnehmer", key: "maxTeilnehmer", width: 15 },
+    { header: "Beschreibung", key: "beschreibung", width: 50 },
   ];
 
   sheet.getColumn("datum").style = { numFmt: "DD.MM.YYYY" };
@@ -239,6 +259,7 @@ export async function createVorlageExcel(): Promise<Buffer> {
     ansprechpersonEmail: "max@example.com",
     ansprechpersonTelefon: "030 1234567",
     maxTeilnehmer: "",
+    beschreibung: "",
   });
 
   return Buffer.from(await workbook.xlsx.writeBuffer());

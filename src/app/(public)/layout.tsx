@@ -35,12 +35,12 @@ export default async function PublicLayout({ children }: { children: ReactNode }
 
       <footer className="bg-tanne text-white/70 text-sm">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p>&copy; BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+          <p>BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
           <div className="flex gap-4">
             <Link href="/datenschutz" className="hover:text-white transition-colors">
               Datenschutz
             </Link>
-            <Link href="/impressum" className="hover:text-white transition-colors">
+            <Link href="https://gruene-mitte.de/impressum" className="hover:text-white transition-colors">
               Impressum
             </Link>
           </div>

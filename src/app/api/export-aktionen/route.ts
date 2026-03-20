@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
   const exportData = aktionen.map((a) => ({
     titel: a.titel,
     datum: format(a.datum, "dd.MM.yyyy", { locale: de }),
+    datumMitTag: format(a.datum, "dd.MM.yyyy (EEE)", { locale: de }),
     startzeit: a.startzeit,
     endzeit: a.endzeit,
     adresse: a.adresse,
@@ -34,6 +35,7 @@ export async function GET(req: NextRequest) {
     status: a.status,
     anmeldungen: a._count.anmeldungen,
     maxTeilnehmer: a.maxTeilnehmer,
+    ansprechpersonName: a.ansprechpersonName,
   }));
 
   if (exportFormat === "txt") {

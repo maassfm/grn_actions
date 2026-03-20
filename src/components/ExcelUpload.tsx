@@ -32,10 +32,12 @@ export default function ExcelUpload({ userTeams = [], needsTeamSelect = false }:
   const [importing, setImporting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState("");
 
   async function handleFile(file: File) {
     setFileName(file.name);
+    setSelectedFile(file);
     setUploading(true);
 
     const formData = new FormData();
@@ -72,8 +74,11 @@ export default function ExcelUpload({ userTeams = [], needsTeamSelect = false }:
     setImporting(true);
 
     const formData = new FormData();
-    const file = fileInputRef.current?.files?.[0];
-    if (!file) return;
+    const file = selectedFile ?? fileInputRef.current?.files?.[0];
+    if (!file) {
+      setImporting(false);
+      return;
+    }
 
     formData.append("file", file);
     formData.append("import", "true");

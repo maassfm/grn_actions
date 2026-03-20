@@ -15,15 +15,19 @@ export async function GET(
 
   const aktion = await prisma.aktion.findUnique({
     where: { id },
-    select: { teamId: true },
+    select: { teamId: true, createdById: true },
   });
 
   if (!aktion) {
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
-  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(aktion.teamId)) {
-    return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+  if (session.user.role === "EXPERT") {
+    const inTeam = aktion.teamId != null && session.user.teamIds?.includes(aktion.teamId);
+    const isCreator = aktion.createdById === session.user.id;
+    if (!inTeam && !isCreator) {
+      return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+    }
   }
 
   const anmeldungen = await prisma.anmeldung.findMany({
@@ -53,15 +57,19 @@ export async function DELETE(
 
   const aktion = await prisma.aktion.findUnique({
     where: { id },
-    select: { teamId: true },
+    select: { teamId: true, createdById: true },
   });
 
   if (!aktion) {
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
-  if (session.user.role === "EXPERT" && !session.user.teamIds?.includes(aktion.teamId)) {
-    return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+  if (session.user.role === "EXPERT") {
+    const inTeam = aktion.teamId != null && session.user.teamIds?.includes(aktion.teamId);
+    const isCreator = aktion.createdById === session.user.id;
+    if (!inTeam && !isCreator) {
+      return NextResponse.json({ error: "Kein Zugriff" }, { status: 403 });
+    }
   }
 
   await prisma.anmeldung.delete({ where: { id: anmeldungId } });

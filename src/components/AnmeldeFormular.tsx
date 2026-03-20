@@ -30,6 +30,7 @@ export default function AnmeldeFormular({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [contactError, setContactError] = useState("");
+  const [signalError, setSignalError] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
   const touchStartY = useRef<number | null>(null);
   const touchStartTime = useRef<number>(0);
@@ -38,6 +39,9 @@ export default function AnmeldeFormular({
     setForm({ ...form, [field]: value });
     if (field === "telefon" || field === "signalName") {
       setContactError("");
+    }
+    if (field === "signalName") {
+      setSignalError("");
     }
   }
 
@@ -62,7 +66,13 @@ export default function AnmeldeFormular({
 
     // Validate at least one contact method
     if (!form.telefon && !form.signalName) {
-      setContactError("Bitte gib eine Telefonnummer oder einen Signal-Namen an");
+      setContactError("Bitte gib eine Telefonnummer oder einen Signal-Nutzernamen an");
+      return;
+    }
+
+    // Validate Signal username format
+    if (form.signalName && !/^[a-zA-Z0-9_]{2,32}\.\d+$/.test(form.signalName)) {
+      setSignalError("Bitte gib deinen Signal-Nutzernamen ein (Format: name.123)");
       return;
     }
 
@@ -124,31 +134,32 @@ export default function AnmeldeFormular({
             Aktion{selectedIds.length !== 1 ? "en" : ""} ausgewählt
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClear();
-            }}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </button>
-          {/* Chevron – points up by default, rotates when expanded */}
+        {/* Chevron – points up by default, rotates when expanded */}
+        <div className="rounded-full bg-klee/10 p-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth={2.5}
+            strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"
-            className={`w-5 h-5 text-tanne transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            className={`w-7 h-7 text-klee transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
           >
             <path d="M4.5 15.75l7.5-7.5 7.5 7.5" />
           </svg>
         </div>
       </div>
+
+      {/* Hint line – only visible when collapsed */}
+      {!isExpanded && (
+        <p
+          className="font-headline text-gray-700 text-center pb-2 px-4 cursor-pointer"
+          onClick={() => setIsExpanded(true)}
+        >
+          Melde Dich hier für die Aktion{selectedIds.length !== 1 ? "en" : ""} an:
+        </p>
+      )}
 
       {/* Animated form body */}
       <div
@@ -213,16 +224,19 @@ export default function AnmeldeFormular({
                 onChange={(e) => updateForm("telefon", e.target.value)}
                 error={contactError}
               />
-              <Input
-                label="Signal-Name"
-                value={form.signalName}
-                onChange={(e) => updateForm("signalName", e.target.value)}
-                placeholder="z.B. @meinname"
-              />
+              <div>
+                <Input
+                  label="Signal-Nutzername"
+                  value={form.signalName}
+                  onChange={(e) => updateForm("signalName", e.target.value)}
+                  placeholder="z.B. name.123"
+                  error={signalError}
+                />
+              </div>
             </div>
             {!contactError && (
               <p className="text-xs text-gray-500 -mt-2">
-                Bitte gib mindestens eine Telefonnummer oder einen Signal-Namen an.
+                Bitte gib mindestens eine Telefonnummer oder einen Signal-Nutzernamen an.
               </p>
             )}
 
@@ -237,8 +251,7 @@ export default function AnmeldeFormular({
               />
               <label htmlFor="datenschutz" className="text-sm text-gray-600">
                 Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
-                von Wahlkampfaktionen zu. Meine Daten werden nur für diesen Zweck
-                verwendet und nach der Wahl gelöscht.{" "}
+                von Wahlkampfaktionen zu.{" "}
                 <Link
                   href="/datenschutz"
                   target="_blank"

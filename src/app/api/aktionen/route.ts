@@ -23,8 +23,12 @@ export async function GET(req: NextRequest) {
   if (!session || isPublic) {
     where.status = { in: ["AKTIV", "GEAENDERT"] };
     where.datum = { gte: new Date(new Date().toISOString().split("T")[0]) };
-  } else if (session.user.role === "EXPERT" && session.user.teamIds?.length > 0) {
-    where.teamId = { in: session.user.teamIds };
+  } else if (session.user.role === "EXPERT") {
+    if (session.user.teamIds?.length > 0) {
+      where.teamId = { in: session.user.teamIds };
+    } else {
+      where.createdById = session.user.id;
+    }
   }
 
   // Filters
@@ -98,13 +102,6 @@ export async function POST(req: NextRequest) {
       teamId = body.teamId;
     } else if (session.user.teamIds?.length === 1) {
       teamId = session.user.teamIds[0];
-    }
-
-    if (!teamId) {
-      return NextResponse.json(
-        { error: "Kein Team zugeordnet" },
-        { status: 400 }
-      );
     }
 
     const aktion = await prisma.aktion.create({

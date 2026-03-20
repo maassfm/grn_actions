@@ -40,14 +40,21 @@ export const anmeldungSchema = z.object({
   nachname: z.string().min(2, "Nachname muss mindestens 2 Zeichen lang sein"),
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein"),
   telefon: z.string().optional().nullable(),
-  signalName: z.string().optional().nullable(),
+  signalName: z
+    .string()
+    .refine(
+      (val) => !val || /^[a-zA-Z0-9_]{2,32}\.\d+$/.test(val),
+      { message: "Bitte gib deinen Signal-Nutzernamen ein (Format: name.123)" }
+    )
+    .optional()
+    .nullable(),
   datenschutz: z.literal(true, {
     error: "Du musst der Datenschutzerklärung zustimmen",
   }),
   honeypot: z.string().max(0).optional(),
 }).refine(
   (data) => (data.telefon && data.telefon.length > 0) || (data.signalName && data.signalName.length > 0),
-  { message: "Bitte gib eine Telefonnummer oder einen Signal-Namen an", path: ["telefon"] }
+  { message: "Bitte gib eine Telefonnummer oder einen Signal-Nutzernamen an", path: ["telefon"] }
 );
 
 export const excelRowSchema = z.object({
@@ -61,6 +68,7 @@ export const excelRowSchema = z.object({
   ansprechpersonEmail: z.string().email("Ungültige E-Mail der Ansprechperson"),
   ansprechpersonTelefon: z.string().min(1, "Telefon der Ansprechperson fehlt"),
   maxTeilnehmer: z.number().int().positive().optional().nullable(),
+  beschreibung: z.string().optional().nullable(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
