@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     endzeit: a.endzeit,
     adresse: a.adresse,
     wahlkreis: `WK ${a.wahlkreis.nummer} – ${a.wahlkreis.name}`,
-    team: a.team.name,
+    team: a.team?.name ?? "",
     status: a.status,
     anmeldungen: a._count.anmeldungen,
     maxTeilnehmer: a.maxTeilnehmer,
