@@ -124,31 +124,32 @@ export default function AnmeldeFormular({
             Aktion{selectedIds.length !== 1 ? "en" : ""} ausgewählt
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onClear();
-            }}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </button>
-          {/* Chevron – points up by default, rotates when expanded */}
+        {/* Chevron – points up by default, rotates when expanded */}
+        <div className="rounded-full bg-klee/10 p-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth={2.5}
+            strokeWidth={3}
             strokeLinecap="round"
             strokeLinejoin="round"
-            className={`w-5 h-5 text-tanne transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            className={`w-7 h-7 text-klee transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
           >
             <path d="M4.5 15.75l7.5-7.5 7.5 7.5" />
           </svg>
         </div>
       </div>
+
+      {/* Hint line – only visible when collapsed */}
+      {!isExpanded && (
+        <p
+          className="text-xs text-gray-500 text-center pb-2 px-4 cursor-pointer"
+          onClick={() => setIsExpanded(true)}
+        >
+          Hier Daten eingeben und für die Aktion anmelden
+        </p>
+      )}
 
       {/* Animated form body */}
       <div
