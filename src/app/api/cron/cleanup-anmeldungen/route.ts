@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
             anmeldungenCount: count,
             aktionDatum: aktion.datum,
             wahlkreisId: aktion.wahlkreisId,
-            teamId: aktion.teamId ?? undefined,
+            teamId: aktion.teamId ?? null,
           },
         });
 
