@@ -140,8 +140,8 @@ model AktionStatistik {
   aktionDatum      DateTime  @db.Date
   wahlkreisId      String
   wahlkreis        Wahlkreis @relation(fields: [wahlkreisId], references: [id])
-  teamId           String
-  team             Team      @relation(fields: [teamId], references: [id])
+  teamId           String?
+  team             Team?     @relation(fields: [teamId], references: [id])
   geloeschtAm      DateTime  @default(now())
 
   @@map("aktion_statistiken")
