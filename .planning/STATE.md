@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to execute
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-03-24T22:46:45.571Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-03-24T22:48:13.845Z"
 progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 6
-  completed_plans: 3
+  completed_plans: 5
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-24)
 ## Current Position
 
 Phase: 02 (dsgvo-konformit-t-jwt-h-rtung) — EXECUTING
-Plan: 2 of 4
+Plan: 4 of 4
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: 2 of 4
 | Phase 01 P02 | 10 | 2 tasks | 3 files |
 | Phase 01 P01 | 8 | 2 tasks | 3 files |
 | Phase 02-dsgvo-konformit-t-jwt-h-rtung P01 | 5 | 2 tasks | 2 files |
+| Phase 02 P03 | 15 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,8 @@ Recent decisions affecting current work:
 - [Phase 01]: SEC-01: EXPERT team isolation in export-aktionen uses direct where.teamId (not nested where.aktion.teamId) since query targets prisma.aktion.findMany directly, unlike export/route.ts which queries prisma.anmeldung.findMany
 - [Phase 02]: DEPLOY-BLOCKER JSX comments mark both address placeholders in datenschutz/impressum — caught by code review or grep before go-live
 - [Phase 02]: Kanonische Formulierung D-04 used verbatim: 72h retention for Anmeldedaten, anonymized Gesamtzahlen remain after deletion
+- [Phase 02]: cancelToken stored as nullable @unique column on Anmeldung (not separate table) — simpler schema, sufficient for single-token-per-registration use case
+- [Phase 02]: abmelden route uses GET (not POST) — token acts as capability credential in URL for single-use email-link flow
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:46:45.568Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-03-24T22:48:01.465Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None

@@ -18,7 +18,7 @@
 
 - [x] **DSGVO-01**: Datenschutzerklärung und Impressum enthalten vollständige Pflichtangaben (Postadresse, Verantwortlicher, Rechtsgrundlage) — harter Go-Live-Blocker
 - [ ] **DSGVO-02**: Datenschutzerklärung nennt eine konkrete maximale Aufbewahrungsfrist (keine vage "nach der Wahl"-Formulierung)
-- [ ] **DSGVO-03**: Freiwillige können sich über einen tokenbasierten Link in der Bestätigungs-E-Mail selbst von einer Aktion abmelden (DSGVO Art. 7 Widerruf)
+- [x] **DSGVO-03**: Freiwillige können sich über einen tokenbasierten Link in der Bestätigungs-E-Mail selbst von einer Aktion abmelden (DSGVO Art. 7 Widerruf)
 
 ### UI — Öffentliche Aktionsübersicht
 
@@ -63,7 +63,7 @@
 | SEC-06 | Phase 1 | Complete |
 | DSGVO-01 | Phase 2 | Complete |
 | DSGVO-02 | Phase 2 | Pending |
-| DSGVO-03 | Phase 2 | Pending |
+| DSGVO-03 | Phase 2 | Complete |
 | SEC-04 | Phase 2 | Pending |
 | SEC-05 | Phase 2 | Pending |
 | SEC-03 | Phase 3 | Pending |
