@@ -12,6 +12,9 @@ export default function DatenschutzPage() {
           </h2>
           <p>
             BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte<br />
+            {/* TODO: DEPLOY-BLOCKER — Echte Postadresse des Kreisverbands eintragen.
+                Die App darf nicht live gehen solange dieser Platzhalter aktiv ist.
+                Kontakt: Kreisgeschaeftsstelle BUENDNIS 90/DIE GRUENEN Berlin-Mitte */}
             Anschrift wird noch ergänzt<br />
             E-Mail: info@gruene-mitte.de
           </p>
@@ -62,9 +65,19 @@ export default function DatenschutzPage() {
             Löschung der Daten
           </h2>
           <p>
-            Alle personenbezogenen Daten der Anmeldungen werden nach Abschluss
-            der Wahlperiode gelöscht. Accounts für Wahlkampfexpert*innen werden
-            ebenfalls nach der Wahl deaktiviert und die Daten gelöscht.
+            Deine Anmeldedaten (Vorname, Nachname, E-Mail-Adresse, Telefonnummer, Signal-Name) werden
+            72 Stunden nach Ende der jeweiligen Aktion automatisch gelöscht. Anschließend werden
+            ausschließlich anonymisierte Gesamtzahlen (Anzahl der Anmeldungen pro Aktion) zu
+            statistischen Zwecken gespeichert. Ein Rückschluss auf einzelne Personen ist danach
+            nicht mehr möglich.
+          </p>
+          <p className="mt-3">
+            Alle anderen personenbezogenen Daten (Nutzer-Accounts der Expert*innen und
+            Administrator*innen, Team-Zuordnungen) werden spätestens am 31. Oktober 2026 gelöscht.
+          </p>
+          <p className="mt-3">
+            Die anonymisierten statistischen Daten (Anzahl Anmeldungen pro Aktion) werden ebenfalls
+            spätestens am 31. Oktober 2026 gelöscht.
           </p>
         </section>
 
@@ -79,6 +92,7 @@ export default function DatenschutzPage() {
             <li>Löschung deiner Daten</li>
             <li>Einschränkung der Verarbeitung</li>
             <li>Widerruf deiner Einwilligung</li>
+            <li>Selbstabmeldung von Aktionen über den Link in deiner Bestätigungs-E-Mail</li>
             <li>Beschwerde bei einer Aufsichtsbehörde</li>
           </ul>
         </section>

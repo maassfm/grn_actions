@@ -39,7 +39,13 @@ Plans:
   1. Die Datenschutzerklärung und das Impressum enthalten eine vollständige Postadresse, den/die Verantwortliche(n), die Rechtsgrundlage und eine konkrete maximale Aufbewahrungsfrist — keine Platzhaltertexte
   2. Ein Freiwilliger kann auf den Link in seiner Bestätigungs-E-Mail klicken und sich damit eigenständig von einer Aktion abmelden (Token-basiert, ohne Login)
   3. Ein im Admin-Bereich deaktivierter Nutzer kann sich spätestens nach 5 Minuten nicht mehr mit einem vorhandenen JWT einloggen oder API-Calls durchführen
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — DSGVO-01/02: Datenschutzerklaerung + Impressum mit konkreten Loeschfristen und DEPLOY-BLOCKER
+- [ ] 02-02-PLAN.md — SEC-04 + SEC-05: JWT lastChecked User-Check + Rate Limiting auf GET-Endpunkte
+- [ ] 02-03-PLAN.md — DSGVO-03 Teil 1: Prisma cancelToken-Migration + Token-Generierung + Abmelde-Route + Bestaetigungsseite
+- [ ] 02-04-PLAN.md — DSGVO-03 Teil 2: E-Mail-Templates mit Abmelde-Links + EmailLog ABMELDUNG-Tracking + Tagesuebersicht
 
 ### Phase 3: Rate Limiting, CSP und Accessibility
 **Goal**: Öffentliche Endpunkte sind gegen PII-Harvesting geschützt, die App sendet einen CSP-Header der XSS einschränkt ohne die Leaflet-Karte zu brechen, und die öffentliche Aktionsübersicht ist für ältere Nutzer gut bedienbar
@@ -61,5 +67,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Kritische Sicherheitslücken | 2/2 | Complete   | 2026-03-24 |
-| 2. DSGVO-Konformität + JWT-Härtung | 0/? | Not started | - |
+| 2. DSGVO-Konformität + JWT-Härtung | 0/4 | Planned | - |
 | 3. Rate Limiting, CSP und Accessibility | 0/? | Not started | - |
