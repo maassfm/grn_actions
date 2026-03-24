@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-24T22:48:24.193Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-03-24T22:54:03.880Z"
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -51,6 +51,7 @@ Plan: 4 of 4
 | Phase 02-dsgvo-konformit-t-jwt-h-rtung P01 | 5 | 2 tasks | 2 files |
 | Phase 02 P03 | 15 | 2 tasks | 5 files |
 | Phase 02 P02 | 156 | 2 tasks | 5 files |
+| Phase 02-dsgvo-konformit-t-jwt-h-rtung P04 | 15 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 02]: abmelden route uses GET (not POST) — token acts as capability credential in URL for single-use email-link flow
 - [Phase 02]: JWT-lastChecked: check user.active every 5 minutes via jwt callback null-return for session invalidation
 - [Phase 02]: Rate limits: 60/min for GET /api/aktionen, 30/min for GET /api/aktionen/[id] - in-memory Map pattern
+- [Phase 02]: ABMELDUNG EmailLog status field stores 'ABMELDUNG: Vorname Nachname' to preserve volunteer name after Anmeldung deletion without a separate table
+- [Phase 02]: cancelTokens[] passed as optional parallel array to anmeldebestaetigungEmail — backward-compatible signature extension
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:48:24.191Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-24T22:54:03.878Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None

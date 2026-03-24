@@ -45,7 +45,7 @@ Plans:
 - [x] 02-01-PLAN.md — DSGVO-01/02: Datenschutzerklaerung + Impressum mit konkreten Loeschfristen und DEPLOY-BLOCKER
 - [x] 02-02-PLAN.md — SEC-04 + SEC-05: JWT lastChecked User-Check + Rate Limiting auf GET-Endpunkte
 - [x] 02-03-PLAN.md — DSGVO-03 Teil 1: Prisma cancelToken-Migration + Token-Generierung + Abmelde-Route + Bestaetigungsseite
-- [ ] 02-04-PLAN.md — DSGVO-03 Teil 2: E-Mail-Templates mit Abmelde-Links + EmailLog ABMELDUNG-Tracking + Tagesuebersicht
+- [x] 02-04-PLAN.md — DSGVO-03 Teil 2: E-Mail-Templates mit Abmelde-Links + EmailLog ABMELDUNG-Tracking + Tagesuebersicht
 
 ### Phase 3: Rate Limiting, CSP und Accessibility
 **Goal**: Öffentliche Endpunkte sind gegen PII-Harvesting geschützt, die App sendet einen CSP-Header der XSS einschränkt ohne die Leaflet-Karte zu brechen, und die öffentliche Aktionsübersicht ist für ältere Nutzer gut bedienbar
