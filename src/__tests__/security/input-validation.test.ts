@@ -5,6 +5,11 @@
  * korrekt abgelehnt werden (Schutz gegen Injection-Angriffe).
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { mockAuth, createJsonRequest, ADMIN_SESSION } from "./helpers";
+
+vi.mock("@/lib/auth", () => ({
+  auth: vi.fn(),
+}));
 
 vi.mock("@/lib/db", () => ({
   prisma: {
@@ -146,5 +151,112 @@ describe("Eingabevalidierung: Öffentliche Anmeldung", () => {
 
     const res = await POST(req as any);
     expect(res.status).toBe(400);
+  });
+});
+
+describe("Input-Validierung: PUT /api/admin/users (userUpdateSchema)", () => {
+  it("PUT ohne ID wird abgelehnt (400)", async () => {
+    await mockAuth(ADMIN_SESSION);
+    const { PUT } = await import("@/app/api/admin/users/route");
+    const { prisma } = await import("@/lib/db");
+
+    const req = createJsonRequest("/api/admin/users", { name: "Test" }, "PUT");
+    const res = await PUT(req as any);
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("Validierungsfehler");
+    expect(prisma.user.update as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
+  });
+
+  it("PUT mit ungueltigem E-Mail-Format wird abgelehnt (400)", async () => {
+    await mockAuth(ADMIN_SESSION);
+    const { PUT } = await import("@/app/api/admin/users/route");
+    const { prisma } = await import("@/lib/db");
+
+    const req = createJsonRequest("/api/admin/users", { id: "user-1", email: "not-an-email" }, "PUT");
+    const res = await PUT(req as any);
+
+    expect(res.status).toBe(400);
+    expect(prisma.user.update as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
+  });
+
+  it("PUT mit zu kurzem Passwort wird abgelehnt (400)", async () => {
+    await mockAuth(ADMIN_SESSION);
+    const { PUT } = await import("@/app/api/admin/users/route");
+    const { prisma } = await import("@/lib/db");
+
+    const req = createJsonRequest("/api/admin/users", { id: "user-1", password: "abc" }, "PUT");
+    const res = await PUT(req as any);
+
+    expect(res.status).toBe(400);
+    expect(prisma.user.update as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
+  });
+
+  it("PUT mit ungueltiger Role wird abgelehnt (400)", async () => {
+    await mockAuth(ADMIN_SESSION);
+    const { PUT } = await import("@/app/api/admin/users/route");
+    const { prisma } = await import("@/lib/db");
+
+    const req = createJsonRequest("/api/admin/users", { id: "user-1", role: "SUPERADMIN" }, "PUT");
+    const res = await PUT(req as any);
+
+    expect(res.status).toBe(400);
+    expect(prisma.user.update as ReturnType<typeof vi.fn>).not.toHaveBeenCalled();
+  });
+
+  it("PUT mit gueltigem partiellem Update funktioniert (200)", async () => {
+    await mockAuth(ADMIN_SESSION);
+    const { PUT } = await import("@/app/api/admin/users/route");
+    const { prisma } = await import("@/lib/db");
+
+    (prisma.user.update as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: "user-1",
+      name: "Neuer Name",
+      email: "test@test.de",
+      role: "EXPERT",
+      active: true,
+      password: "hash",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      teams: [],
+    });
+
+    const req = createJsonRequest("/api/admin/users", { id: "user-1", name: "Neuer Name" }, "PUT");
+    const res = await PUT(req as any);
+
+    expect(res.status).toBe(200);
+    expect(prisma.user.update as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: "user-1" } })
+    );
+  });
+
+  it("PUT mit active=false funktioniert (boolean-Validierung)", async () => {
+    await mockAuth(ADMIN_SESSION);
+    const { PUT } = await import("@/app/api/admin/users/route");
+    const { prisma } = await import("@/lib/db");
+
+    (prisma.user.update as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: "user-1",
+      name: "Test User",
+      email: "test@test.de",
+      role: "EXPERT",
+      active: false,
+      password: "hash",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      teams: [],
+    });
+
+    const req = createJsonRequest("/api/admin/users", { id: "user-1", active: false }, "PUT");
+    const res = await PUT(req as any);
+
+    expect(res.status).toBe(200);
+    expect(prisma.user.update as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "user-1" },
+        data: expect.objectContaining({ active: false }),
+      })
+    );
   });
 });
