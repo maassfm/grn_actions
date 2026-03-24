@@ -12,6 +12,12 @@ vi.mock("@/lib/db", () => ({
     anmeldung: {
       findMany: vi.fn(),
     },
+    aktion: {
+      findMany: vi.fn(),
+    },
+    emailLog: {
+      findMany: vi.fn(),
+    },
   },
 }));
 
@@ -58,6 +64,8 @@ describe("Cron-Endpunkt-Schutz", () => {
     const { prisma } = await import("@/lib/db");
 
     (prisma.anmeldung.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+    (prisma.aktion.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+    (prisma.emailLog.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
 
     const req = new Request("http://localhost:3000/api/cron/daily-summary", {
       method: "POST",
