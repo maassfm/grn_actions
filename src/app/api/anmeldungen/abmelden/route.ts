@@ -12,6 +12,14 @@ export async function GET(req: NextRequest) {
   try {
     const anmeldung = await prisma.anmeldung.findUnique({
       where: { cancelToken: token },
+      select: {
+        id: true,
+        aktionId: true,
+        vorname: true,
+        nachname: true,
+        email: true,
+        cancelToken: true,
+      },
     });
 
     if (!anmeldung) {
@@ -19,6 +27,16 @@ export async function GET(req: NextRequest) {
     }
 
     await prisma.anmeldung.delete({ where: { cancelToken: token } });
+
+    // Log cancellation for daily summary (per D-10)
+    await prisma.emailLog.create({
+      data: {
+        typ: "ABMELDUNG",
+        empfaengerEmail: anmeldung.email,
+        aktionId: anmeldung.aktionId,
+        status: `ABMELDUNG: ${anmeldung.vorname} ${anmeldung.nachname}`,
+      },
+    });
 
     return NextResponse.redirect(new URL("/abmeldung", origin));
   } catch {
