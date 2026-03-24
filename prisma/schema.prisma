@@ -113,8 +113,9 @@ model Anmeldung {
   nachname   String
   email      String
   telefon    String?
-  signalName String?
-  createdAt  DateTime @default(now())
+  signalName  String?
+  cancelToken String?  @unique
+  createdAt   DateTime @default(now())
 
   @@unique([aktionId, email])
   @@map("anmeldungen")
