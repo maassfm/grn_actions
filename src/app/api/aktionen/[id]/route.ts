@@ -27,6 +27,12 @@ export async function GET(
     return NextResponse.json({ error: "Aktion nicht gefunden" }, { status: 404 });
   }
 
+  const session = await auth();
+  if (!session) {
+    const { ansprechpersonEmail: _, ansprechpersonTelefon: __, ...publicAktion } = aktion;
+    return NextResponse.json(publicAktion);
+  }
+
   return NextResponse.json(aktion);
 }
 

@@ -13,8 +13,19 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const exportFormat = searchParams.get("format") || "xlsx";
+  const teamId = searchParams.get("teamId");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {};
+
+  if (session.user.role === "EXPERT" && session.user.teamIds?.length > 0) {
+    where.teamId = { in: session.user.teamIds };
+  } else if (teamId) {
+    where.teamId = teamId;
+  }
 
   const aktionen = await prisma.aktion.findMany({
+    where,
     include: {
       wahlkreis: true,
       team: true,
