@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { userSchema } from "@/lib/validators";
+import { userSchema, userUpdateSchema } from "@/lib/validators";
 import bcrypt from "bcryptjs";
 
 export async function GET() {
@@ -79,37 +79,36 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { id, teamIds, ...data } = body;
-
-    if (!id) {
-      return NextResponse.json({ error: "ID fehlt" }, { status: 400 });
-    }
+    const validated = userUpdateSchema.parse(body);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {};
-    if (data.name) updateData.name = data.name;
-    if (data.email) updateData.email = data.email;
-    if (data.role) updateData.role = data.role;
-    if (data.active !== undefined) updateData.active = data.active;
-    if (data.password) updateData.password = await bcrypt.hash(data.password, 12);
+    if (validated.name !== undefined) updateData.name = validated.name;
+    if (validated.email !== undefined) updateData.email = validated.email;
+    if (validated.role !== undefined) updateData.role = validated.role;
+    if (validated.active !== undefined) updateData.active = validated.active;
+    if (validated.password !== undefined) updateData.password = await bcrypt.hash(validated.password, 12);
 
     // Update teams if provided
-    if (teamIds !== undefined) {
+    if (validated.teamIds !== undefined) {
       updateData.teams = {
         deleteMany: {},
-        create: (teamIds as string[]).map((teamId: string) => ({ teamId })),
+        create: validated.teamIds.map((teamId: string) => ({ teamId })),
       };
     }
 
     const user = await prisma.user.update({
-      where: { id },
+      where: { id: validated.id },
       data: updateData,
       include: { teams: { include: { team: true } } },
     });
 
     const { password: _, ...sanitized } = user;
     return NextResponse.json({ ...sanitized, teams: sanitized.teams.map((ut) => ut.team) });
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.name === "ZodError") {
+      return NextResponse.json({ error: "Validierungsfehler", details: error }, { status: 400 });
+    }
     return NextResponse.json({ error: "Serverfehler" }, { status: 500 });
   }
 }

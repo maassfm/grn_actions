@@ -13,6 +13,18 @@ export const userSchema = z.object({
   teamIds: z.array(z.string()).optional().default([]),
 });
 
+export const userUpdateSchema = z.object({
+  id: z.string().min(1, "ID fehlt"),
+  name: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein").optional(),
+  email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein").optional(),
+  password: z.string().min(8, "Passwort muss mindestens 8 Zeichen lang sein").optional(),
+  role: z.enum(["ADMIN", "EXPERT"]).optional(),
+  active: z.boolean().optional(),
+  teamIds: z.array(z.string()).optional(),
+});
+
+export type UserUpdateInput = z.infer<typeof userUpdateSchema>;
+
 export const teamSchema = z.object({
   name: z.string().min(2, "Teamname muss mindestens 2 Zeichen lang sein"),
   wahlkreisId: z.string().optional().nullable(),
