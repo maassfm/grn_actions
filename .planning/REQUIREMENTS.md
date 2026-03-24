@@ -7,8 +7,8 @@
 
 ### Sicherheit (Kritische Fixes)
 
-- [ ] **SEC-01**: Experte kann nicht auf Aktionsdaten fremder Teams über `/api/export-aktionen` zugreifen (Team-Isolation-Lücke schließen)
-- [ ] **SEC-02**: `GET /api/aktionen/[id]` gibt unauthentifizierten Aufrufern keine Kontaktpersonen-E-Mail oder -Telefonnummer zurück
+- [x] **SEC-01**: Experte kann nicht auf Aktionsdaten fremder Teams über `/api/export-aktionen` zugreifen (Team-Isolation-Lücke schließen)
+- [x] **SEC-02**: `GET /api/aktionen/[id]` gibt unauthentifizierten Aufrufern keine Kontaktpersonen-E-Mail oder -Telefonnummer zurück
 - [ ] **SEC-03**: Die App sendet einen Content-Security-Policy-Header der XSS-Angriffe einschränkt und die Leaflet-Karte nicht bricht
 - [ ] **SEC-04**: Ein deaktivierter Nutzer verliert den Zugang innerhalb von maximal 5 Minuten (JWT-TTL-Verkürzung + aktiver User-Check)
 - [ ] **SEC-05**: `GET /api/aktionen` und `GET /api/aktionen/[id]` sind rate-limited um PII-Harvesting zu verhindern
@@ -58,8 +58,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SEC-01 | Phase 1 | Pending |
-| SEC-02 | Phase 1 | Pending |
+| SEC-01 | Phase 1 | Complete |
+| SEC-02 | Phase 1 | Complete |
 | SEC-06 | Phase 1 | Complete |
 | DSGVO-01 | Phase 2 | Pending |
 | DSGVO-02 | Phase 2 | Pending |

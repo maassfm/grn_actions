@@ -10,7 +10,7 @@ Brownfield milestone on an existing, functional campaign coordination platform. 
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Kritische Sicherheitslücken** - Aktive Daten-Exfiltrationsvektoren und Input-Validierungslücken schließen
+- [x] **Phase 1: Kritische Sicherheitslücken** - Aktive Daten-Exfiltrationsvektoren und Input-Validierungslücken schließen (completed 2026-03-24)
 - [ ] **Phase 2: DSGVO-Konformität + JWT-Härtung** - App vor Live-Betrieb mit echten Registrierungen rechtskonform machen
 - [ ] **Phase 3: Rate Limiting, CSP und Accessibility** - Verbleibende Sicherheits-Header, öffentliche Endpunkt-Absicherung und WCAG-AA-Basiskonformität
 
@@ -25,10 +25,10 @@ Brownfield milestone on an existing, functional campaign coordination platform. 
   2. Ein unauthentifizierter Caller erhält von `GET /api/aktionen/[id]` keine `ansprechpersonEmail` und keine `ansprechpersonTelefon`-Felder in der Antwort
   3. `PUT /api/admin/users` lehnt Request-Bodies mit fehlenden oder typfalschen Feldern mit einem validierten Fehler ab, bevor irgendein Datenbankschreibvorgang stattfindet
   4. Ein Sicherheits-Test schlägt fehl, wenn die Team-Isolation-Klausel in `export-aktionen` entfernt wird (Regression wird erkannt)
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — SEC-01 + SEC-02: Team-Isolation in export-aktionen + PII-Strip in GET /api/aktionen/[id] + Regressionstests
+- [x] 01-01-PLAN.md — SEC-01 + SEC-02: Team-Isolation in export-aktionen + PII-Strip in GET /api/aktionen/[id] + Regressionstests
 - [x] 01-02-PLAN.md — SEC-06: Zod-Validierung (userUpdateSchema) fuer PUT /api/admin/users + Regressionstests
 
 ### Phase 2: DSGVO-Konformität + JWT-Härtung
@@ -60,6 +60,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Kritische Sicherheitslücken | 1/2 | In Progress|  |
+| 1. Kritische Sicherheitslücken | 2/2 | Complete   | 2026-03-24 |
 | 2. DSGVO-Konformität + JWT-Härtung | 0/? | Not started | - |
 | 3. Rate Limiting, CSP und Accessibility | 0/? | Not started | - |
