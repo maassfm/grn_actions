@@ -4,8 +4,32 @@ import { prisma } from "@/lib/db";
 import { aktionSchema } from "@/lib/validators";
 import { geocodeAddress } from "@/lib/geocoding";
 
+// Rate limiting for public GET endpoint (SEC-05)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 60; // max requests per minute for list endpoint
+const RATE_WINDOW = 60 * 1000; // 1 minute
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT;
+}
+
 // GET: Public listing (active actions) or authenticated (team-filtered)
 export async function GET(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Zu viele Anfragen. Bitte versuche es spaeter erneut." },
+      { status: 429 }
+    );
+  }
+
   const session = await auth();
   const { searchParams } = new URL(req.url);
 

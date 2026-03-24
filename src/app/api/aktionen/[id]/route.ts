@@ -8,10 +8,34 @@ import { aenderungsEmail, absageEmail } from "@/lib/email-templates";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 
+// Rate limiting for public GET endpoint (SEC-05)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 30; // max requests per minute for detail endpoint
+const RATE_WINDOW = 60 * 1000; // 1 minute
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT;
+}
+
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const ip = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "unknown";
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Zu viele Anfragen. Bitte versuche es spaeter erneut." },
+      { status: 429 }
+    );
+  }
+
   const { id } = await params;
 
   const aktion = await prisma.aktion.findUnique({
