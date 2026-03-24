@@ -42,7 +42,7 @@ Plans:
 **Plans:** 4 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — DSGVO-01/02: Datenschutzerklaerung + Impressum mit konkreten Loeschfristen und DEPLOY-BLOCKER
+- [x] 02-01-PLAN.md — DSGVO-01/02: Datenschutzerklaerung + Impressum mit konkreten Loeschfristen und DEPLOY-BLOCKER
 - [ ] 02-02-PLAN.md — SEC-04 + SEC-05: JWT lastChecked User-Check + Rate Limiting auf GET-Endpunkte
 - [ ] 02-03-PLAN.md — DSGVO-03 Teil 1: Prisma cancelToken-Migration + Token-Generierung + Abmelde-Route + Bestaetigungsseite
 - [ ] 02-04-PLAN.md — DSGVO-03 Teil 2: E-Mail-Templates mit Abmelde-Links + EmailLog ABMELDUNG-Tracking + Tagesuebersicht

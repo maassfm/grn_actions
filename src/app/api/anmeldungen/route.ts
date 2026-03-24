@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { prisma } from "@/lib/db";
 import { anmeldungSchema } from "@/lib/validators";
 import { sendEmail } from "@/lib/email";
@@ -20,6 +21,21 @@ function isRateLimited(ip: string): boolean {
 
   entry.count++;
   return entry.count > RATE_LIMIT;
+}
+
+interface AktionWithCount {
+  id: string;
+  titel: string;
+  datum: Date;
+  startzeit: string;
+  endzeit: string;
+  adresse: string;
+  ansprechpersonName: string;
+  ansprechpersonEmail: string;
+  ansprechpersonTelefon: string;
+  maxTeilnehmer: number | null;
+  status: string;
+  _count: { anmeldungen: number };
 }
 
 export async function POST(req: NextRequest) {
@@ -45,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     // Create registrations for each action
     const results = [];
-    const successfulAktionen = [];
+    const successfulAktionen: Array<{ aktion: AktionWithCount; cancelToken: string }> = [];
 
     for (const aktionId of validated.aktionIds) {
       // Check if action exists and is active
@@ -66,6 +82,7 @@ export async function POST(req: NextRequest) {
       }
 
       try {
+        const cancelToken = crypto.randomBytes(32).toString("hex");
         await prisma.anmeldung.create({
           data: {
             aktionId,
@@ -74,9 +91,10 @@ export async function POST(req: NextRequest) {
             email: validated.email,
             telefon: validated.telefon || null,
             signalName: validated.signalName || null,
+            cancelToken,
           },
         });
-        successfulAktionen.push(aktion);
+        successfulAktionen.push({ aktion, cancelToken });
         results.push({ aktionId, success: true });
       } catch (err) {
         // Unique constraint violation
@@ -92,15 +110,15 @@ export async function POST(req: NextRequest) {
     if (successfulAktionen.length > 0) {
       const emailData = anmeldebestaetigungEmail(
         validated.vorname,
-        successfulAktionen.map((a) => ({
-          titel: a.titel,
-          datum: a.datum,
-          startzeit: a.startzeit,
-          endzeit: a.endzeit,
-          adresse: a.adresse,
-          ansprechpersonName: a.ansprechpersonName,
-          ansprechpersonEmail: a.ansprechpersonEmail,
-          ansprechpersonTelefon: a.ansprechpersonTelefon,
+        successfulAktionen.map((s) => ({
+          titel: s.aktion.titel,
+          datum: s.aktion.datum,
+          startzeit: s.aktion.startzeit,
+          endzeit: s.aktion.endzeit,
+          adresse: s.aktion.adresse,
+          ansprechpersonName: s.aktion.ansprechpersonName,
+          ansprechpersonEmail: s.aktion.ansprechpersonEmail,
+          ansprechpersonTelefon: s.aktion.ansprechpersonTelefon,
         }))
       );
 
