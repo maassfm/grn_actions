@@ -47,6 +47,8 @@ vi.mock("@/lib/email-templates", () => ({
 vi.mock("@/lib/excel", () => ({
   createAnmeldungenExcel: vi.fn(() => new ArrayBuffer(0)),
   createAnmeldungenTxt: vi.fn(() => ""),
+  createAktionenExcel: vi.fn(() => new ArrayBuffer(0)),
+  createAktionenTxt: vi.fn(() => ""),
 }));
 
 beforeEach(() => {
@@ -191,5 +193,114 @@ describe("Team-Isolation: Datenexport", () => {
     // Auch wenn teamId=team-b übergeben wird, muss der Filter team-a verwenden
     const callArgs = mockPrisma.anmeldung.findMany.mock.calls[0][0];
     expect(callArgs.where.aktion.teamId).toEqual({ in: ["team-a"] });
+  });
+});
+
+describe("Team-Isolation: Aktionen-Export (export-aktionen)", () => {
+  it("EXPERT-Export filtert automatisch auf eigenes Team", async () => {
+    await mockAuth(EXPERT_TEAM_A);
+
+    mockPrisma.aktion.findMany.mockResolvedValue([]);
+
+    const { GET } = await import("@/app/api/export-aktionen/route");
+    const req = createRequest("/api/export-aktionen?format=txt");
+    const res = await GET(req as any);
+
+    expect(res.status).toBe(200);
+
+    const callArgs = mockPrisma.aktion.findMany.mock.calls[0][0];
+    expect(callArgs.where.teamId).toEqual({ in: ["team-a"] });
+  });
+
+  it("EXPERT kann NICHT Aktionen anderer Teams exportieren (teamId-Parameter wird ignoriert)", async () => {
+    await mockAuth(EXPERT_TEAM_A);
+
+    mockPrisma.aktion.findMany.mockResolvedValue([]);
+
+    const { GET } = await import("@/app/api/export-aktionen/route");
+    const req = createRequest("/api/export-aktionen?format=txt&teamId=team-b");
+    const res = await GET(req as any);
+
+    expect(res.status).toBe(200);
+
+    // Auch wenn teamId=team-b übergeben wird, muss der Filter team-a verwenden
+    const callArgs = mockPrisma.aktion.findMany.mock.calls[0][0];
+    expect(callArgs.where.teamId).toEqual({ in: ["team-a"] });
+  });
+
+  it("ADMIN sieht alle Aktionen ohne Filter", async () => {
+    await mockAuth(ADMIN_SESSION);
+
+    mockPrisma.aktion.findMany.mockResolvedValue([]);
+
+    const { GET } = await import("@/app/api/export-aktionen/route");
+    const req = createRequest("/api/export-aktionen?format=txt");
+    const res = await GET(req as any);
+
+    expect(res.status).toBe(200);
+
+    const callArgs = mockPrisma.aktion.findMany.mock.calls[0][0];
+    expect(callArgs.where).not.toHaveProperty("teamId");
+  });
+
+  it("ADMIN kann nach teamId filtern", async () => {
+    await mockAuth(ADMIN_SESSION);
+
+    mockPrisma.aktion.findMany.mockResolvedValue([]);
+
+    const { GET } = await import("@/app/api/export-aktionen/route");
+    const req = createRequest("/api/export-aktionen?format=txt&teamId=team-b");
+    const res = await GET(req as any);
+
+    expect(res.status).toBe(200);
+
+    const callArgs = mockPrisma.aktion.findMany.mock.calls[0][0];
+    expect(callArgs.where.teamId).toBe("team-b");
+  });
+});
+
+describe("PII-Schutz: Oeffentlicher Aktionszugriff", () => {
+  const aktionMitPII = {
+    id: "aktion-1",
+    teamId: "team-a",
+    ansprechpersonName: "Max Muster",
+    ansprechpersonEmail: "max@test.de",
+    ansprechpersonTelefon: "0171234",
+    wahlkreis: { id: "wk-1", name: "WK1", nummer: 1 },
+    team: { id: "team-a", name: "Team A" },
+    _count: { anmeldungen: 3 },
+  };
+
+  it("Unauthentifizierter Caller sieht keine Kontakt-PII", async () => {
+    await mockAuth(null);
+
+    mockPrisma.aktion.findUnique.mockResolvedValue(aktionMitPII);
+
+    const { GET } = await import("@/app/api/aktionen/[id]/route");
+    const req = createRequest("/api/aktionen/aktion-1");
+    const res = await GET(req as any, { params: Promise.resolve({ id: "aktion-1" }) });
+
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.ansprechpersonName).toBe("Max Muster");
+    expect(data.ansprechpersonEmail).toBeUndefined();
+    expect(data.ansprechpersonTelefon).toBeUndefined();
+  });
+
+  it("Authentifizierter Nutzer sieht Kontakt-PII", async () => {
+    await mockAuth(EXPERT_TEAM_A);
+
+    mockPrisma.aktion.findUnique.mockResolvedValue(aktionMitPII);
+
+    const { GET } = await import("@/app/api/aktionen/[id]/route");
+    const req = createRequest("/api/aktionen/aktion-1");
+    const res = await GET(req as any, { params: Promise.resolve({ id: "aktion-1" }) });
+
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.ansprechpersonEmail).toBe("max@test.de");
+    expect(data.ansprechpersonTelefon).toBe("0171234");
   });
 });
