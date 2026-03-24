@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Ready to execute
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-03-24T22:48:13.845Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-24T22:48:24.193Z"
 progress:
   total_phases: 3
   completed_phases: 1
@@ -50,6 +50,7 @@ Plan: 4 of 4
 | Phase 01 P01 | 8 | 2 tasks | 3 files |
 | Phase 02-dsgvo-konformit-t-jwt-h-rtung P01 | 5 | 2 tasks | 2 files |
 | Phase 02 P03 | 15 | 2 tasks | 5 files |
+| Phase 02 P02 | 156 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - [Phase 02]: Kanonische Formulierung D-04 used verbatim: 72h retention for Anmeldedaten, anonymized Gesamtzahlen remain after deletion
 - [Phase 02]: cancelToken stored as nullable @unique column on Anmeldung (not separate table) — simpler schema, sufficient for single-token-per-registration use case
 - [Phase 02]: abmelden route uses GET (not POST) — token acts as capability credential in URL for single-use email-link flow
+- [Phase 02]: JWT-lastChecked: check user.active every 5 minutes via jwt callback null-return for session invalidation
+- [Phase 02]: Rate limits: 60/min for GET /api/aktionen, 30/min for GET /api/aktionen/[id] - in-memory Map pattern
 
 ### Pending Todos
 
@@ -79,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T22:48:01.465Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-03-24T22:48:24.191Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

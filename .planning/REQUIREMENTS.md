@@ -10,8 +10,8 @@
 - [x] **SEC-01**: Experte kann nicht auf Aktionsdaten fremder Teams über `/api/export-aktionen` zugreifen (Team-Isolation-Lücke schließen)
 - [x] **SEC-02**: `GET /api/aktionen/[id]` gibt unauthentifizierten Aufrufern keine Kontaktpersonen-E-Mail oder -Telefonnummer zurück
 - [ ] **SEC-03**: Die App sendet einen Content-Security-Policy-Header der XSS-Angriffe einschränkt und die Leaflet-Karte nicht bricht
-- [ ] **SEC-04**: Ein deaktivierter Nutzer verliert den Zugang innerhalb von maximal 5 Minuten (JWT-TTL-Verkürzung + aktiver User-Check)
-- [ ] **SEC-05**: `GET /api/aktionen` und `GET /api/aktionen/[id]` sind rate-limited um PII-Harvesting zu verhindern
+- [x] **SEC-04**: Ein deaktivierter Nutzer verliert den Zugang innerhalb von maximal 5 Minuten (JWT-TTL-Verkürzung + aktiver User-Check)
+- [x] **SEC-05**: `GET /api/aktionen` und `GET /api/aktionen/[id]` sind rate-limited um PII-Harvesting zu verhindern
 - [x] **SEC-06**: `PUT /api/admin/users` validiert den Request-Body mit Zod bevor Datenbankschreibvorgänge stattfinden
 
 ### DSGVO-Konformität
@@ -64,8 +64,8 @@
 | DSGVO-01 | Phase 2 | Complete |
 | DSGVO-02 | Phase 2 | Pending |
 | DSGVO-03 | Phase 2 | Complete |
-| SEC-04 | Phase 2 | Pending |
-| SEC-05 | Phase 2 | Pending |
+| SEC-04 | Phase 2 | Complete |
+| SEC-05 | Phase 2 | Complete |
 | SEC-03 | Phase 3 | Pending |
 | UI-01 | Phase 3 | Pending |
 | UI-02 | Phase 3 | Pending |
