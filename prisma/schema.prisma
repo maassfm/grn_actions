@@ -23,6 +23,7 @@ enum EmailTyp {
   AENDERUNG
   ABSAGE
   TAEGLICHE_UEBERSICHT
+  ABMELDUNG
 }
 
 model User {

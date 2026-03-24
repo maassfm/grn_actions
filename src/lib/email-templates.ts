@@ -58,7 +58,7 @@ function baseLayout(content: string): string {
 </html>`;
 }
 
-function formatAktionCard(aktion: AktionInfo): string {
+function formatAktionCard(aktion: AktionInfo, cancelLink?: string): string {
   const datumStr = format(aktion.datum, "EEEE, d. MMMM yyyy", { locale: de });
   return `<div class="aktion-card">
     <h3>${aktion.titel}</h3>
@@ -66,20 +66,27 @@ function formatAktionCard(aktion: AktionInfo): string {
     <p>🕐 ${aktion.startzeit} – ${aktion.endzeit} Uhr</p>
     <p>📍 ${aktion.adresse}</p>
     <p>👤 ${aktion.ansprechpersonName} · <a href="mailto:${aktion.ansprechpersonEmail}">${aktion.ansprechpersonEmail}</a> · ${aktion.ansprechpersonTelefon}</p>
+    ${cancelLink ? `<p style="margin-top: 12px;"><a href="${cancelLink}" style="color: #005538; font-size: 14px;">Von dieser Aktion abmelden</a></p>` : ""}
   </div>`;
 }
 
 export function anmeldebestaetigungEmail(
   vorname: string,
-  aktionen: AktionInfo[]
+  aktionen: AktionInfo[],
+  cancelTokens?: string[]
 ): { subject: string; html: string } {
   const subject = `Deine Anmeldung bei B90/GRÜNE Berlin-Mitte – ${aktionen.length} Aktion${aktionen.length > 1 ? "en" : ""}`;
 
   const content = `
     <h2>Hallo ${vorname},</h2>
     <p>vielen Dank für Deine Anmeldung! Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
-    ${aktionen.map(formatAktionCard).join("")}
-    <p>Bei Fragen oder wenn Du absagen möchtest, wende Dich bitte direkt an die jeweilige Ansprechperson.</p>
+    ${aktionen.map((a, i) => {
+      const cancelLink = cancelTokens?.[i]
+        ? `${baseUrl}/api/anmeldungen/abmelden?token=${cancelTokens[i]}`
+        : undefined;
+      return formatAktionCard(a, cancelLink);
+    }).join("")}
+    <p>Du kannst dich jederzeit über den Link in der jeweiligen Aktion von der Teilnahme abmelden.</p>
     <p>Wir freuen uns auf Dich! 💚</p>
     <p>Viele Grüße<br>
     Annalena, Florian, Lara, Linus, Madlen und Timur<br>
@@ -153,11 +160,19 @@ interface MorgenAktion {
   anmeldungen: TagesAnmeldung[];
 }
 
+interface TagesAbmeldung {
+  vorname: string;
+  nachname: string;
+  aktionTitel: string;
+  aktionDatum: Date;
+}
+
 export function tagesUebersichtEmail(
   expertName: string,
   datum: Date,
   aktionen: TagesAktion[],
-  aktionenMorgen: MorgenAktion[] = []
+  aktionenMorgen: MorgenAktion[] = [],
+  abmeldungen: TagesAbmeldung[] = []
 ): { subject: string; html: string } {
   const datumStr = format(datum, "d. MMMM yyyy", { locale: de });
   const subject = `Neue Anmeldungen – Tagesübersicht ${datumStr}`;
@@ -209,10 +224,23 @@ export function tagesUebersichtEmail(
     `
     : "";
 
+  const abmeldungenHtml = abmeldungen.length > 0
+    ? `
+      <h2>Abmeldungen heute</h2>
+      <ul>
+        ${abmeldungen.map((a) => {
+          const aktionDatum = format(a.aktionDatum, "d. MMMM", { locale: de });
+          return `<li>${a.vorname} ${a.nachname} — ${a.aktionTitel} (${aktionDatum})</li>`;
+        }).join("")}
+      </ul>
+    `
+    : "";
+
   const content = `
     <h2>Hallo ${expertName}!</h2>
     ${morgenHtml}
     ${neueAnmeldungenHtml}
+    ${abmeldungenHtml}
     <p><a href="${baseUrl}/dashboard">Zum Dashboard →</a></p>
   `;
 

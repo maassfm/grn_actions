@@ -119,7 +119,8 @@ export async function POST(req: NextRequest) {
           ansprechpersonName: s.aktion.ansprechpersonName,
           ansprechpersonEmail: s.aktion.ansprechpersonEmail,
           ansprechpersonTelefon: s.aktion.ansprechpersonTelefon,
-        }))
+        })),
+        successfulAktionen.map((s) => s.cancelToken)
       );
 
       await sendEmail({
