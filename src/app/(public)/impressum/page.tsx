@@ -13,6 +13,9 @@ export default function ImpressumPage() {
           <p>
             BÜNDNIS 90/DIE GRÜNEN<br />
             Kreisverband Berlin-Mitte<br />
+            {/* TODO: DEPLOY-BLOCKER — Echte Postadresse des Kreisverbands eintragen.
+                Die App darf nicht live gehen solange dieser Platzhalter aktiv ist.
+                Kontakt: Kreisgeschaeftsstelle BUENDNIS 90/DIE GRUENEN Berlin-Mitte */}
             Anschrift wird noch ergänzt<br />
             10115 Berlin
           </p>
@@ -34,6 +37,9 @@ export default function ImpressumPage() {
           </h2>
           <p>
             Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte<br />
+            {/* TODO: DEPLOY-BLOCKER — Echte Postadresse des Kreisverbands eintragen.
+                Die App darf nicht live gehen solange dieser Platzhalter aktiv ist.
+                Kontakt: Kreisgeschaeftsstelle BUENDNIS 90/DIE GRUENEN Berlin-Mitte */}
             Anschrift wird noch ergänzt<br />
             10115 Berlin
           </p>
