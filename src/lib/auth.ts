@@ -50,7 +50,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.role = user.role;
         token.teamIds = user.teamIds;
+        token.lastChecked = Date.now();
       }
+
+      // Alle 5 Minuten User-Status aus DB prüfen (SEC-04)
+      const CHECK_INTERVAL = 5 * 60 * 1000; // 5 Minuten
+      if (Date.now() - ((token.lastChecked as number) ?? 0) > CHECK_INTERVAL) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.sub! },
+          select: { active: true },
+        });
+        if (!dbUser || !dbUser.active) {
+          return null; // Session invalidiert — deaktivierter oder gelöschter Nutzer
+        }
+        token.lastChecked = Date.now();
+      }
+
       return token;
     },
     async session({ session, token }) {
