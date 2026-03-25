@@ -58,7 +58,8 @@ export default function AktionenPage() {
       .then((data) => {
         setAktionen(data);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, [filters]);
 
   const toggleSelection = useCallback((id: string) => {
@@ -78,14 +79,6 @@ export default function AktionenPage() {
     [aktionen]
   );
 
-<<<<<<< HEAD
-  function handleSuccess() {
-    setSelectedIds(new Set());
-    setShowSuccess(true);
-  }
-
-=======
->>>>>>> 694866d (feat: Anmeldung auf eigene Seite auslagern + Sticky Selection Bar)
   return (
     <div className={selectedIds.size > 0 ? "pb-24" : ""}>
       <FilterBar filters={filters} onFilterChange={setFilters} />
