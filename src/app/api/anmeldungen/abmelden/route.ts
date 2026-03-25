@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
+const baseUrl =
+  process.env.NEXTAUTH_URL ?? "https://aktionen.gruene-mitte.de";
+
 export async function GET(req: NextRequest) {
-  const { origin, searchParams } = new URL(req.url);
+  const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
 
   if (!token) {
-    return NextResponse.redirect(new URL("/abmeldung?fehler=1", origin));
+    return NextResponse.redirect(new URL("/abmeldung?fehler=1", baseUrl));
   }
 
   try {
@@ -23,7 +26,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!anmeldung) {
-      return NextResponse.redirect(new URL("/abmeldung?fehler=1", origin));
+      return NextResponse.redirect(new URL("/abmeldung?fehler=1", baseUrl));
     }
 
     await prisma.anmeldung.delete({ where: { cancelToken: token } });
@@ -38,8 +41,8 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.redirect(new URL("/abmeldung", origin));
+    return NextResponse.redirect(new URL("/abmeldung", baseUrl));
   } catch {
-    return NextResponse.redirect(new URL("/abmeldung?fehler=1", origin));
+    return NextResponse.redirect(new URL("/abmeldung?fehler=1", baseUrl));
   }
 }
