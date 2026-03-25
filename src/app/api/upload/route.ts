@@ -99,7 +99,6 @@ export async function POST(req: NextRequest) {
             ansprechpersonEmail: row.ansprechpersonEmail,
             ansprechpersonTelefon: row.ansprechpersonTelefon,
             maxTeilnehmer: row.maxTeilnehmer || null,
-            beschreibung: row.beschreibung || null,
             createdById: session.user.id,
             teamId,
           },

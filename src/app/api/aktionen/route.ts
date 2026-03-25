@@ -131,7 +131,6 @@ export async function POST(req: NextRequest) {
     const aktion = await prisma.aktion.create({
       data: {
         titel: validated.titel,
-        beschreibung: validated.beschreibung || null,
         datum: new Date(validated.datum),
         startzeit: validated.startzeit,
         endzeit: validated.endzeit,
