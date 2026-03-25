@@ -24,7 +24,7 @@ function baseLayout(content: string, accentBar?: string): string {
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #F0EDE6; color: #000000; }
-    .wrapper { padding: 24px 16px; background-color: #F0EDE6; }
+    .wrapper { padding: 24px 16px; background-color: #ffffff; }
     .container { max-width: 600px; margin: 0 auto; background: #FFFFFF; border: 3px solid #000000; }
     .accent-bar { height: 6px; background-color: ${accent}; }
     .header { background-color: #005538; padding: 24px 32px; border-bottom: 3px solid #000000; }
@@ -66,7 +66,6 @@ function baseLayout(content: string, accentBar?: string): string {
 <body>
   <div class="wrapper">
     <div class="container">
-      <div class="accent-bar"></div>
       <div class="header">
         <div class="header-inner">
           <img src="${baseUrl}/logo.png" alt="Sonnenblume" class="header-logo" />
@@ -83,7 +82,7 @@ function baseLayout(content: string, accentBar?: string): string {
         <p>BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
         <p>Diese E-Mail wurde automatisch versendet. Bitte antworte nicht auf diese E-Mail.</p>
         <div class="footer-links">
-          <a href="${baseUrl}/datenschutz">Datenschutzerklärung</a><span class="footer-separator">·</span><a href="${baseUrl}/impressum">Impressum</a>
+          <a href="${baseUrl}/datenschutz">Datenschutzerklärung</a><span class="footer-separator">·</span><a href="https://gruene-mitte.de/impressum>Impressum</a>
         </div>
       </div>
     </div>
