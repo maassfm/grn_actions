@@ -89,7 +89,7 @@ export default function AktionCard({ aktion, selected, onToggle }: AktionCardPro
           </p>
           <p>📍 {aktion.adresse}</p>
           <div className="flex items-center justify-between mt-3 mb-1">
-            <span className="text-sm font-medium">
+            <span className="text-base font-medium">
               👋 {aktion.ansprechpersonName}
             </span>
           </div>

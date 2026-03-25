@@ -130,7 +130,6 @@ export async function PUT(
       where: { id },
       data: {
         titel: validated.titel,
-        beschreibung: validated.beschreibung || null,
         datum: new Date(validated.datum),
         startzeit: validated.startzeit,
         endzeit: validated.endzeit,
