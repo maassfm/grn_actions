@@ -7,14 +7,14 @@ export default async function AbmeldungPage({
   const isError = fehler === "1";
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 text-center">
+    <div className="max-w-2xl mx-auto px-4 py-12 text-center">
+      <div className="bg-white border-2 border-black p-8 shadow-[6px_6px_0_#005538]">
         {isError ? (
           <>
-            <h1 className="font-headline text-2xl font-bold text-red-700 uppercase mb-4">
+            <p className="font-headline font-bold text-signal text-2xl uppercase mb-2">
               Abmeldung nicht möglich
-            </h1>
-            <p className="text-gray-700 text-lg">
+            </p>
+            <p className="text-black mt-2">
               Der Abmelde-Link ist ungültig oder wurde bereits verwendet.
               Falls du dich von einer Aktion abmelden möchtest, wende dich
               bitte direkt an die Ansprechperson.
@@ -22,23 +22,21 @@ export default async function AbmeldungPage({
           </>
         ) : (
           <>
-            <h1 className="font-headline text-2xl font-bold text-tanne uppercase mb-4">
+            <p className="font-headline font-bold text-tanne text-2xl uppercase mb-2">
               Erfolgreich abgemeldet
-            </h1>
-            <p className="text-gray-700 text-lg">
+            </p>
+            <p className="text-black mt-2">
               Du wurdest erfolgreich von der Aktion abgemeldet.
               Vielen Dank für dein Interesse!
             </p>
           </>
         )}
-        <div className="mt-8">
-          <a
-            href="/"
-            className="inline-block bg-tanne text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-800 transition-colors"
-          >
-            Zurück zur Übersicht
-          </a>
-        </div>
+        <a
+          href="/"
+          className="mt-6 inline-block text-tanne hover:underline font-bold"
+        >
+          ← Zurück zur Aktionsübersicht
+        </a>
       </div>
     </div>
   );

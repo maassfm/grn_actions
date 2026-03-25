@@ -32,7 +32,7 @@ function baseLayout(content: string, accentBar?: string): string {
     .header-logo { width: 48px; height: 48px; flex-shrink: 0; }
     .header-text { flex: 1; }
     .header h1 { color: #FFFFFF; font-size: 20px; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.2; }
-    .header .subtitle { color: #FFF17A; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700; }
+    .header .subtitle { color: #FFF17A; font-size: 16px; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700; }
     .content { padding: 32px; }
     .content p { font-size: 16px; line-height: 1.6; margin: 0 0 12px 0; }
     .content h2 { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 20px 0; border-bottom: 3px solid #000000; padding-bottom: 8px; }
@@ -113,19 +113,20 @@ export function anmeldebestaetigungEmail(
 
   const content = `
     <p class="greeting">Hallo ${vorname}!</p>
-    <p>Vielen Dank für Deine Anmeldung! Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
+    <p>Vielen Dank für Deine Anmeldung und Deine Unterstützung im Wahlkampf!</p>
+    <p>Du kannst Dich jederzeit über den Link in der jeweiligen Aktion von der Teilnahme abmelden.</p>
+    <p>Wir freuen uns auf Dich! 💚</p>
+    <p>Viele Grüße<br>
+    <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
+    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p> 
+    <hr class="section-divider" />
+    <p>Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
     ${aktionen.map((a, i) => {
       const cancelLink = cancelTokens?.[i]
         ? `${baseUrl}/api/anmeldungen/abmelden?token=${cancelTokens[i]}`
         : undefined;
       return formatAktionCard(a, cancelLink);
     }).join("")}
-    <hr class="section-divider" />
-    <p>Du kannst Dich jederzeit über den Link in der jeweiligen Aktion von der Teilnahme abmelden.</p>
-    <p>Wir freuen uns auf Dich! 💚</p>
-    <p>Viele Grüße<br>
-    <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
-    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
   `;
 
   return { subject, html: baseLayout(content) };
