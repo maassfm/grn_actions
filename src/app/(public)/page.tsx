@@ -9,7 +9,7 @@ import AnmeldeFormular from "@/components/AnmeldeFormular";
 const AktionMap = dynamic(() => import("@/components/AktionMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-[500px] md:h-[600px] rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+    <div className="h-[500px] md:h-[600px] rounded-xl bg-gray-100 flex items-center justify-center text-gray-600">
       Karte wird geladen...
     </div>
   ),
@@ -82,7 +82,6 @@ export default function AktionenPage() {
   function handleSuccess() {
     setSelectedIds(new Set());
     setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 5000);
   }
 
   return (
@@ -98,7 +97,7 @@ export default function AktionenPage() {
           <div className="flex rounded-lg overflow-hidden border border-gray-300">
             <button
               onClick={() => setView("liste")}
-              className={`px-3 py-1.5 text-sm font-bold transition-colors ${
+              className={`px-4 py-2 text-base font-bold min-h-[44px] transition-colors ${
                 view === "liste"
                   ? "bg-tanne text-white"
                   : "bg-white text-gray-600 hover:bg-gray-50"
@@ -108,7 +107,7 @@ export default function AktionenPage() {
             </button>
             <button
               onClick={() => setView("karte")}
-              className={`px-3 py-1.5 text-sm font-bold transition-colors ${
+              className={`px-4 py-2 text-base font-bold min-h-[44px] transition-colors ${
                 view === "karte"
                   ? "bg-tanne text-white"
                   : "bg-white text-gray-600 hover:bg-gray-50"
@@ -130,7 +129,7 @@ export default function AktionenPage() {
         )}
 
         {loading ? (
-          <div className="flex items-center justify-center h-64 text-gray-400">
+          <div className="flex items-center justify-center h-64 text-gray-600">
             Lade Aktionen...
           </div>
         ) : aktionen.length === 0 ? (
@@ -138,14 +137,14 @@ export default function AktionenPage() {
             <p className="text-gray-500 text-lg">
               Aktuell keine Aktionen geplant.
             </p>
-            <p className="text-gray-400 text-sm mt-2">
+            <p className="text-gray-600 text-base mt-2">
               Schau später nochmal vorbei!
             </p>
           </div>
         ) : view === "liste" ? (
           <div className="space-y-3">
             {selectedIds.size === 0 && (
-              <p className="text-sm text-gray-500">
+              <p className="text-base text-gray-500">
                 Wähle eine oder mehrere Aktionen aus, um dich anzumelden.
               </p>
             )}

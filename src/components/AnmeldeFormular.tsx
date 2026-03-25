@@ -173,7 +173,7 @@ export default function AnmeldeFormular({
             {selectedIds.map((id) => (
               <span
                 key={id}
-                className="text-xs bg-klee/10 text-klee px-2 py-1 rounded-full font-medium"
+                className="text-base bg-klee/10 text-klee px-3 py-1 rounded-full font-medium"
               >
                 {aktionTitles.get(id) || id}
               </span>
@@ -235,7 +235,7 @@ export default function AnmeldeFormular({
               </div>
             </div>
             {!contactError && (
-              <p className="text-xs text-gray-500 -mt-2">
+              <p className="text-base text-gray-500 -mt-2">
                 Bitte gib mindestens eine Telefonnummer oder einen Signal-Nutzernamen an.
               </p>
             )}
@@ -249,7 +249,7 @@ export default function AnmeldeFormular({
                 required
                 className="mt-1 w-4 h-4 rounded border-gray-300 text-klee focus:ring-klee"
               />
-              <label htmlFor="datenschutz" className="text-sm text-gray-600">
+              <label htmlFor="datenschutz" className="text-base text-gray-600">
                 Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
                 von Wahlkampfaktionen zu.{" "}
                 <Link
