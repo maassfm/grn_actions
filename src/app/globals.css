@@ -28,7 +28,7 @@
   --color-green-600: #16A34A;
   --color-background: var(--color-sand);
   --color-foreground: var(--color-gray-900);
-  --font-sans: "PT Sans", Arial, Helvetica, sans-serif;
+  --font-sans: "DM Sans", Arial, Helvetica, sans-serif;
   --font-headline: "GrueneType Neue", "Barlow Condensed", "Arial Narrow", sans-serif;
 }
 
@@ -57,6 +57,22 @@
   font-display: swap;
   src: url("/fonts/PTSans-Bold.woff2") format("woff2"),
        url("/fonts/PTSans-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/DMSans-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/DMSans-Bold.woff2") format("woff2");
 }
 
 body {

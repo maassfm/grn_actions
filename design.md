@@ -44,7 +44,7 @@ Das UI folgt einem **Soft Brutalist**-Ansatz: rohe Ehrlichkeit in der Darstellun
 - **Labels / Filter-Beschriftungen** — DM Sans Bold, gut lesbar beim schnellen Scannen
 - **Fließtext / Eingabefelder** — DM Sans Regular, großzügiger Zeilenabstand (`line-height: 1.6`)
 
-> Schriftdateien für GrueneType Neue liegen unter `/public/fonts/`. DM Sans ist über Google Fonts (`fonts.googleapis.com`) einzubinden oder als WOFF2 lokal abzulegen.
+> Schriftdateien liegen unter `/public/fonts/`: GrueneType Neue (Regular) sowie DM Sans (Regular + Bold als WOFF2, aus `googlefonts/dm-fonts`). Keine externe Abhängigkeit nötig.
 
 ---
 
