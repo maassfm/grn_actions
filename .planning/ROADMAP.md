@@ -56,7 +56,11 @@ Plans:
   2. `GET /api/aktionen` und `GET /api/aktionen/[id]` geben bei mehr als N Anfragen pro IP-Adresse innerhalb eines definierten Zeitfensters einen `429`-Status zurück
   3. Alle Text-Elemente in der öffentlichen Aktionsübersicht erfüllen WCAG 2.1 AA Kontrastanforderungen (4,5:1) und verwenden mindestens 16px Schriftgröße
   4. Alle interaktiven Filter-Elemente (Wahlkreis, Datum, Tageszeit) haben eine Trefferzone von mindestens 44×44px und besitzen sichtbare Beschriftungen (keine rein Icon-only-Elemente)
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — SEC-03 + SEC-05: CSP-Header in next.config.ts mit Leaflet-kompatiblen Direktiven + Regressionstest
+- [ ] 03-02-PLAN.md — UI-01 + UI-02: WCAG AA Kontrast + 16px Mindestschrift + 44px Touch-Targets + persistente Erfolgsmeldung
 **UI hint**: yes
 
 ## Progress
@@ -68,4 +72,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Kritische Sicherheitslücken | 2/2 | Complete   | 2026-03-24 |
 | 2. DSGVO-Konformität + JWT-Härtung | 3/4 | In Progress|  |
-| 3. Rate Limiting, CSP und Accessibility | 0/? | Not started | - |
+| 3. Rate Limiting, CSP und Accessibility | 0/2 | Not started | - |

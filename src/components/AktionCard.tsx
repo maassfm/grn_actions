@@ -57,7 +57,7 @@ export default function AktionCard({ aktion, selected, onToggle }: AktionCardPro
           </div>
         </div>
 
-        <div className="space-y-1 text-sm text-gray-600">
+        <div className="space-y-1 text-base text-gray-600">
           <p>
             📅{" "}
             <span className="font-medium">
@@ -67,15 +67,15 @@ export default function AktionCard({ aktion, selected, onToggle }: AktionCardPro
           </p>
           <p>📍 {aktion.adresse}</p>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-xs bg-sand rounded-full px-2 py-0.5 font-medium">
+            <span className="text-base bg-sand rounded-full px-3 py-1 font-medium">
               WK {aktion.wahlkreis.nummer}: {aktion.wahlkreis.name}
             </span>
-            <span className="text-xs">
+            <span className="text-base">
               👤 {aktion.ansprechpersonName}
             </span>
           </div>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-xs text-gray-500">
+            <span className="text-base text-gray-600">
               {aktion._count.anmeldungen} Anmeldung{aktion._count.anmeldungen !== 1 ? "en" : ""}
               {aktion.maxTeilnehmer ? ` / ${aktion.maxTeilnehmer} Plätze` : ""}
             </span>
