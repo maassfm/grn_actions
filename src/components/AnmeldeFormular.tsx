@@ -10,6 +10,7 @@ interface AnmeldeFormularProps {
   aktionTitles: Map<string, string>;
   onSuccess: () => void;
   onClear: () => void;
+  variant?: "bottomsheet" | "page";
 }
 
 export default function AnmeldeFormular({
@@ -17,6 +18,7 @@ export default function AnmeldeFormular({
   aktionTitles,
   onSuccess,
   onClear,
+  variant = "bottomsheet",
 }: AnmeldeFormularProps) {
   const [form, setForm] = useState({
     vorname: "",
@@ -105,6 +107,105 @@ export default function AnmeldeFormular({
     } finally {
       setLoading(false);
     }
+  }
+
+  if (variant === "page") {
+    return (
+      <div className="max-w-2xl">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Honeypot - hidden from humans */}
+          <div className="hidden" aria-hidden="true">
+            <input
+              type="text"
+              name="website"
+              value={form.honeypot}
+              onChange={(e) => updateForm("honeypot", e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Vorname"
+              value={form.vorname}
+              onChange={(e) => updateForm("vorname", e.target.value)}
+              required
+            />
+            <Input
+              label="Nachname"
+              value={form.nachname}
+              onChange={(e) => updateForm("nachname", e.target.value)}
+              required
+            />
+          </div>
+
+          <Input
+            label="E-Mail"
+            type="email"
+            value={form.email}
+            onChange={(e) => updateForm("email", e.target.value)}
+            required
+          />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Telefonnummer"
+              type="tel"
+              value={form.telefon}
+              onChange={(e) => updateForm("telefon", e.target.value)}
+              error={contactError}
+            />
+            <div>
+              <Input
+                label="Signal-Nutzername"
+                value={form.signalName}
+                onChange={(e) => updateForm("signalName", e.target.value)}
+                placeholder="z.B. name.123"
+                error={signalError}
+              />
+            </div>
+          </div>
+          {!contactError && (
+            <p className="text-xs text-gray-500 -mt-2">
+              Bitte gib mindestens eine Telefonnummer oder einen Signal-Nutzernamen an.
+            </p>
+          )}
+
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="datenschutz-page"
+              checked={form.datenschutz}
+              onChange={(e) => updateForm("datenschutz", e.target.checked)}
+              required
+              className="mt-1 w-4 h-4 rounded border-gray-300 text-klee focus:ring-klee"
+            />
+            <label htmlFor="datenschutz-page" className="text-sm text-gray-600">
+              Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
+              von Wahlkampfaktionen zu.{" "}
+              <Link
+                href="/datenschutz"
+                target="_blank"
+                className="text-tanne hover:underline"
+              >
+                Datenschutzerklärung
+              </Link>
+            </label>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+              {error}
+            </div>
+          )}
+
+          <Button type="submit" loading={loading} size="lg" className="w-full sm:w-auto">
+            Jetzt anmelden
+          </Button>
+        </form>
+      </div>
+    );
   }
 
   if (selectedIds.length === 0) return null;

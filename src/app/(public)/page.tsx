@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import FilterBar, { type FilterState } from "@/components/FilterBar";
 import AktionCard from "@/components/AktionCard";
-import AnmeldeFormular from "@/components/AnmeldeFormular";
+import SelectionBar from "@/components/SelectionBar";
 
 const AktionMap = dynamic(() => import("@/components/AktionMap"), {
   ssr: false,
@@ -36,7 +36,6 @@ export default function AktionenPage() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"liste" | "karte">("liste");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [showSuccess, setShowSuccess] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     datum: "",
     datumBis: "",
@@ -79,13 +78,16 @@ export default function AktionenPage() {
     [aktionen]
   );
 
+<<<<<<< HEAD
   function handleSuccess() {
     setSelectedIds(new Set());
     setShowSuccess(true);
   }
 
+=======
+>>>>>>> 694866d (feat: Anmeldung auf eigene Seite auslagern + Sticky Selection Bar)
   return (
-    <div className={selectedIds.size > 0 ? "pb-16" : ""}>
+    <div className={selectedIds.size > 0 ? "pb-24" : ""}>
       <FilterBar filters={filters} onFilterChange={setFilters} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
@@ -117,16 +119,6 @@ export default function AktionenPage() {
             </button>
           </div>
         </div>
-
-        {/* Success message */}
-        {showSuccess && (
-          <div className="bg-green-50 border border-green-200 text-green-600 rounded-lg p-4 mb-4">
-            <p className="font-bold">Anmeldung erfolgreich! 🎉</p>
-            <p className="text-sm mt-1">
-              Du erhältst in Kürze eine Bestätigungs-E-Mail.
-            </p>
-          </div>
-        )}
 
         {loading ? (
           <div className="flex items-center justify-center h-64 text-gray-600">
@@ -162,12 +154,9 @@ export default function AktionenPage() {
         )}
       </div>
 
-      {/* Registration form */}
-      <AnmeldeFormular
+      <SelectionBar
         selectedIds={Array.from(selectedIds)}
         aktionTitles={aktionTitles}
-        onSuccess={handleSuccess}
-        onClear={() => setSelectedIds(new Set())}
       />
     </div>
   );
