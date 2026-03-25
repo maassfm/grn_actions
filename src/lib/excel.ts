@@ -22,7 +22,6 @@ interface ExcelRow {
   ansprechpersonEmail: string;
   ansprechpersonTelefon: string;
   maxTeilnehmer?: number | null;
-  beschreibung?: string | null;
 }
 
 const COLUMN_MAP: Record<string, keyof ExcelRow> = {
@@ -36,7 +35,6 @@ const COLUMN_MAP: Record<string, keyof ExcelRow> = {
   "Ansprechperson E-Mail": "ansprechpersonEmail",
   "Ansprechperson Telefon": "ansprechpersonTelefon",
   "Max. Teilnehmer": "maxTeilnehmer",
-  "Beschreibung": "beschreibung",
 };
 
 function formatDate(value: ExcelJS.CellValue): string {
@@ -241,7 +239,6 @@ export async function createVorlageExcel(): Promise<Buffer> {
     { header: "Ansprechperson E-Mail", key: "ansprechpersonEmail", width: 25 },
     { header: "Ansprechperson Telefon", key: "ansprechpersonTelefon", width: 20 },
     { header: "Max. Teilnehmer", key: "maxTeilnehmer", width: 15 },
-    { header: "Beschreibung", key: "beschreibung", width: 50 },
   ];
 
   sheet.getColumn("datum").style = { numFmt: "DD.MM.YYYY" };
@@ -259,7 +256,6 @@ export async function createVorlageExcel(): Promise<Buffer> {
     ansprechpersonEmail: "max@example.com",
     ansprechpersonTelefon: "030 1234567",
     maxTeilnehmer: "",
-    beschreibung: "",
   });
 
   return Buffer.from(await workbook.xlsx.writeBuffer());

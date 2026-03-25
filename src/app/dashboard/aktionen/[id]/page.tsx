@@ -32,7 +32,6 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
 
   const [form, setForm] = useState({
     titel: "",
-    beschreibung: "",
     datum: "",
     startzeit: "",
     endzeit: "",
@@ -56,7 +55,6 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
       setTeams(tm);
       setForm({
         titel: aktion.titel,
-        beschreibung: aktion.beschreibung || "",
         datum: aktion.datum.split("T")[0],
         startzeit: aktion.startzeit,
         endzeit: aktion.endzeit,
@@ -123,18 +121,6 @@ export default function EditAktionPage({ params }: { params: Promise<{ id: strin
             onChange={(e) => updateForm("titel", e.target.value)}
             required
           />
-
-          <div>
-            <label className="block text-sm font-bold text-gray-700 mb-1">
-              Beschreibung (optional)
-            </label>
-            <textarea
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tanne"
-              value={form.beschreibung}
-              onChange={(e) => updateForm("beschreibung", e.target.value)}
-              rows={3}
-            />
-          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Input

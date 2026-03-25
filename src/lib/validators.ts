@@ -32,7 +32,6 @@ export const teamSchema = z.object({
 
 export const aktionSchema = z.object({
   titel: z.string().min(3, "Titel muss mindestens 3 Zeichen lang sein"),
-  beschreibung: z.string().optional().nullable(),
   datum: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Datum im Format JJJJ-MM-TT"),
   startzeit: z.string().regex(/^\d{2}:\d{2}$/, "Startzeit im Format HH:MM"),
   endzeit: z.string().regex(/^\d{2}:\d{2}$/, "Endzeit im Format HH:MM"),
@@ -80,7 +79,6 @@ export const excelRowSchema = z.object({
   ansprechpersonEmail: z.string().email("Ungültige E-Mail der Ansprechperson"),
   ansprechpersonTelefon: z.string().min(1, "Telefon der Ansprechperson fehlt"),
   maxTeilnehmer: z.number().int().positive().optional().nullable(),
-  beschreibung: z.string().optional().nullable(),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;

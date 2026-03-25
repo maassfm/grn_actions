@@ -4,12 +4,12 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
 import FilterBar, { type FilterState } from "@/components/FilterBar";
 import AktionCard from "@/components/AktionCard";
-import AnmeldeFormular from "@/components/AnmeldeFormular";
+import SelectionBar from "@/components/SelectionBar";
 
 const AktionMap = dynamic(() => import("@/components/AktionMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-[500px] md:h-[600px] rounded-xl bg-gray-100 flex items-center justify-center text-gray-600">
+    <div className="h-[500px] md:h-[600px] bg-gray-100 border-2 border-black flex items-center justify-center text-black font-bold uppercase tracking-wide">
       Karte wird geladen...
     </div>
   ),
@@ -36,7 +36,6 @@ export default function AktionenPage() {
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"liste" | "karte">("liste");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [showSuccess, setShowSuccess] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     datum: "",
     datumBis: "",
@@ -59,7 +58,8 @@ export default function AktionenPage() {
       .then((data) => {
         setAktionen(data);
         setLoading(false);
-      });
+      })
+      .catch(() => setLoading(false));
   }, [filters]);
 
   const toggleSelection = useCallback((id: string) => {
@@ -79,38 +79,33 @@ export default function AktionenPage() {
     [aktionen]
   );
 
-  function handleSuccess() {
-    setSelectedIds(new Set());
-    setShowSuccess(true);
-  }
-
   return (
-    <div className={selectedIds.size > 0 ? "pb-16" : ""}>
+    <div className={selectedIds.size > 0 ? "pb-24" : ""}>
       <FilterBar filters={filters} onFilterChange={setFilters} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* View toggle */}
         <div className="flex items-center justify-between mb-4">
-          <h1 className="font-headline text-xl md:text-2xl font-bold text-tanne uppercase">
+          <h1 className="font-headline text-xl md:text-3xl font-bold text-tanne uppercase">
             Aktionen
           </h1>
-          <div className="flex rounded-lg overflow-hidden border border-gray-300">
+          <div className="flex overflow-hidden border-2 border-black">
             <button
               onClick={() => setView("liste")}
-              className={`px-4 py-2 text-base font-bold min-h-[44px] transition-colors ${
+              className={`px-4 py-2 text-sm font-bold uppercase tracking-wide min-h-[44px] transition-colors focus:outline-none focus-visible:outline-[3px] focus-visible:outline-black ${
                 view === "liste"
                   ? "bg-tanne text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
+                  : "bg-white text-black hover:bg-black hover:text-white"
               }`}
             >
               Liste
             </button>
             <button
               onClick={() => setView("karte")}
-              className={`px-4 py-2 text-base font-bold min-h-[44px] transition-colors ${
+              className={`px-4 py-2 text-sm font-bold uppercase tracking-wide min-h-[44px] transition-colors border-l-2 border-black focus:outline-none focus-visible:outline-[3px] focus-visible:outline-black ${
                 view === "karte"
                   ? "bg-tanne text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-50"
+                  : "bg-white text-black hover:bg-black hover:text-white"
               }`}
             >
               Karte
@@ -118,23 +113,13 @@ export default function AktionenPage() {
           </div>
         </div>
 
-        {/* Success message */}
-        {showSuccess && (
-          <div className="bg-green-50 border border-green-200 text-green-600 rounded-lg p-4 mb-4">
-            <p className="font-bold">Anmeldung erfolgreich! 🎉</p>
-            <p className="text-sm mt-1">
-              Du erhältst in Kürze eine Bestätigungs-E-Mail.
-            </p>
-          </div>
-        )}
-
         {loading ? (
-          <div className="flex items-center justify-center h-64 text-gray-600">
+          <div className="flex items-center justify-center h-64 text-black font-bold uppercase tracking-wide">
             Lade Aktionen...
           </div>
         ) : aktionen.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-            <p className="text-gray-500 text-lg">
+          <div className="bg-white border-2 border-black p-8 text-center shadow-[4px_4px_0_#000]">
+            <p className="font-headline font-bold text-lg uppercase tracking-wide">
               Aktuell keine Aktionen geplant.
             </p>
             <p className="text-gray-600 text-base mt-2">
@@ -162,12 +147,9 @@ export default function AktionenPage() {
         )}
       </div>
 
-      {/* Registration form */}
-      <AnmeldeFormular
+      <SelectionBar
         selectedIds={Array.from(selectedIds)}
         aktionTitles={aktionTitles}
-        onSuccess={handleSuccess}
-        onClear={() => setSelectedIds(new Set())}
       />
     </div>
   );
