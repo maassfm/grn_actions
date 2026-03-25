@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import AnmeldeFormular from "@/components/AnmeldeFormular";
@@ -21,7 +21,7 @@ interface Aktion {
   _count: { anmeldungen: number };
 }
 
-export default function AnmeldenPage() {
+function AnmeldenPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -138,5 +138,19 @@ export default function AnmeldenPage() {
         onClear={() => router.push("/")}
       />
     </div>
+  );
+}
+
+export default function AnmeldenPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-64 text-gray-400">
+          Lade...
+        </div>
+      }
+    >
+      <AnmeldenPageContent />
+    </Suspense>
   );
 }
