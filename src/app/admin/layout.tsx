@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               ☰
             </button>
             <Link href="/admin" className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Sonnenblume" width={32} height={32} />
+              <Image src="/logo_white.png" alt="Sonnenblume" width={32} height={32} />
               <span className="font-headline font-bold text-lg uppercase tracking-wide">
                 Administration
               </span>

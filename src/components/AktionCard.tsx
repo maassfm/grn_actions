@@ -30,52 +30,76 @@ export default function AktionCard({ aktion, selected, onToggle }: AktionCardPro
 
   return (
     <div
-      className={`bg-white rounded-xl border-2 transition-all cursor-pointer ${
+      className={`bg-white border-2 transition-all cursor-pointer ${
         selected
-          ? "border-klee shadow-md"
-          : "border-gray-200 shadow-sm hover:border-gray-300"
-      }`}
+          ? "border-tanne shadow-[4px_4px_0_#005538]"
+          : "border-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px]"
+      } ${isFull ? "opacity-60 cursor-not-allowed" : ""}`}
       onClick={() => !isFull && onToggle(aktion.id)}
     >
       <div className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="font-bold text-tanne text-lg leading-tight">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <h3 className="font-headline font-bold text-tanne text-xl leading-tight uppercase tracking-wide">
             {aktion.titel}
           </h3>
           <div className="flex items-center gap-2 shrink-0">
             {aktion.status === "GEAENDERT" && (
               <Badge variant="warning">Geändert</Badge>
             )}
-            <input
-              type="checkbox"
-              checked={selected}
-              onChange={() => !isFull && onToggle(aktion.id)}
-              disabled={isFull}
-              className="w-5 h-5 rounded border-gray-300 text-klee focus:ring-klee"
-              onClick={(e) => e.stopPropagation()}
-            />
+            {aktion.status === "ABGESAGT" && (
+              <Badge variant="danger">Abgesagt</Badge>
+            )}
+            {/* Square brutalist checkbox */}
+            <div
+              className={`w-6 h-6 border-2 flex items-center justify-center shrink-0 transition-colors ${
+                selected
+                  ? "bg-tanne border-tanne"
+                  : "bg-white border-black"
+              } ${isFull ? "opacity-50" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                !isFull && onToggle(aktion.id);
+              }}
+              role="checkbox"
+              aria-checked={selected}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === " " || e.key === "Enter") {
+                  e.preventDefault();
+                  !isFull && onToggle(aktion.id);
+                }
+              }}
+            >
+              {selected && (
+                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="space-y-1 text-base text-gray-600">
+        <div className="space-y-1 text-base text-black">
           <p>
             📅{" "}
-            <span className="font-medium">
+            <span className="font-bold">
               {format(datum, "EEEE, d. MMMM", { locale: de })}
             </span>{" "}
             · {aktion.startzeit} – {aktion.endzeit} Uhr
           </p>
           <p>📍 {aktion.adresse}</p>
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-xs bg-sand rounded-full px-2 py-0.5 font-medium">
-              WK {aktion.wahlkreis.nummer}: {aktion.wahlkreis.name}
+          <div className="flex items-center justify-between mt-3 mb-1">
+            <span className="text-sm font-medium">
+              👋 {aktion.ansprechpersonName}
             </span>
-            <span className="text-base">
-              👤 {aktion.ansprechpersonName}
+          </div>
+          <div className="pt-2 border-t border-gray-200">
+            <span className="text-xs font-bold uppercase tracking-wide bg-black text-white px-2 py-0.5 inline-block">
+              WK {aktion.wahlkreis.nummer}: {aktion.wahlkreis.name}
             </span>
           </div>
           <div className="flex items-center justify-between mt-1">
-            <span className="text-base text-gray-600">
+            <span className="text-sm text-gray-600 font-medium">
               {aktion._count.anmeldungen} Anmeldung{aktion._count.anmeldungen !== 1 ? "en" : ""}
               {aktion.maxTeilnehmer ? ` / ${aktion.maxTeilnehmer} Plätze` : ""}
             </span>

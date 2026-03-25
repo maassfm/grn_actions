@@ -66,13 +66,11 @@ export default function AnmeldeFormular({
     setError("");
     setContactError("");
 
-    // Validate at least one contact method
     if (!form.telefon && !form.signalName) {
       setContactError("Bitte gib eine Telefonnummer oder einen Signal-Nutzernamen an");
       return;
     }
 
-    // Validate Signal username format
     if (form.signalName && !/^[a-zA-Z0-9_]{2,32}\.\d+$/.test(form.signalName)) {
       setSignalError("Bitte gib deinen Signal-Nutzernamen ein (Format: name.123)");
       return;
@@ -173,21 +171,36 @@ export default function AnmeldeFormular({
           )}
 
           <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="datenschutz-page"
-              checked={form.datenschutz}
-              onChange={(e) => updateForm("datenschutz", e.target.checked)}
-              required
-              className="mt-1 w-4 h-4 rounded border-gray-300 text-klee focus:ring-klee"
-            />
-            <label htmlFor="datenschutz-page" className="text-sm text-gray-600">
+            {/* Square brutalist checkbox */}
+            <div className="relative mt-1 shrink-0">
+              <input
+                type="checkbox"
+                id="datenschutz-page"
+                checked={form.datenschutz}
+                onChange={(e) => updateForm("datenschutz", e.target.checked)}
+                required
+                className="sr-only"
+              />
+              <label
+                htmlFor="datenschutz-page"
+                className={`w-5 h-5 border-2 border-black flex items-center justify-center cursor-pointer transition-colors ${
+                  form.datenschutz ? "bg-tanne" : "bg-white"
+                }`}
+              >
+                {form.datenschutz && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </label>
+            </div>
+            <label htmlFor="datenschutz-page" className="text-sm text-gray-700 cursor-pointer">
               Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
               von Wahlkampfaktionen zu.{" "}
               <Link
                 href="/datenschutz"
                 target="_blank"
-                className="text-tanne hover:underline"
+                className="text-tanne font-bold hover:underline"
               >
                 Datenschutzerklärung
               </Link>
@@ -195,7 +208,7 @@ export default function AnmeldeFormular({
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+            <div className="bg-white border-2 border-signal text-black p-3 text-sm font-bold">
               {error}
             </div>
           )}
@@ -211,12 +224,7 @@ export default function AnmeldeFormular({
   if (selectedIds.length === 0) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-klee shadow-2xl z-50">
-      {/* Drag handle pill */}
-      <div className="flex justify-center pt-2 pb-0">
-        <div className="w-10 h-1 bg-gray-300 rounded-full" />
-      </div>
-
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t-[3px] border-black shadow-[0_-4px_0_#000] z-50">
       {/* Collapsed header bar – always visible, tap or swipe to expand */}
       <div
         className="flex items-center justify-between cursor-pointer select-none py-3 px-4"
@@ -228,37 +236,31 @@ export default function AnmeldeFormular({
         aria-label="Anmeldeformular öffnen"
       >
         <div className="flex items-center gap-2">
-          <span className="bg-klee text-white text-sm font-bold px-2.5 py-0.5 rounded-full">
-            {selectedIds.length}
-          </span>
-          <span className="font-headline font-bold text-tanne uppercase text-base">
-            Aktion{selectedIds.length !== 1 ? "en" : ""} ausgewählt
+          <span className="font-headline font-bold text-black uppercase text-base">
+            {selectedIds.length} Aktion{selectedIds.length !== 1 ? "en" : ""} ausgewählt
           </span>
         </div>
-        {/* Chevron – points up by default, rotates when expanded */}
-        <div className="rounded-full bg-klee/10 p-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={3}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={`w-7 h-7 text-klee transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
-          >
-            <path d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-          </svg>
-        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={3}
+          strokeLinecap="square"
+          strokeLinejoin="miter"
+          className={`w-5 h-5 text-black transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+        >
+          <path d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+        </svg>
       </div>
 
       {/* Hint line – only visible when collapsed */}
       {!isExpanded && (
         <p
-          className="font-headline text-gray-700 text-center pb-2 px-4 cursor-pointer"
+          className="font-headline font-bold uppercase text-black text-center pb-2 px-4 cursor-pointer text-sm tracking-wide"
           onClick={() => setIsExpanded(true)}
         >
-          Melde Dich hier für die Aktion{selectedIds.length !== 1 ? "en" : ""} an:
+          Melde Dich hier für die Aktion{selectedIds.length !== 1 ? "en" : ""} an →
         </p>
       )}
 
@@ -274,7 +276,7 @@ export default function AnmeldeFormular({
             {selectedIds.map((id) => (
               <span
                 key={id}
-                className="text-base bg-klee/10 text-klee px-3 py-1 rounded-full font-medium"
+                className="text-xs bg-tanne text-white px-2 py-1 font-bold uppercase tracking-wide border border-black"
               >
                 {aktionTitles.get(id) || id}
               </span>
@@ -336,27 +338,42 @@ export default function AnmeldeFormular({
               </div>
             </div>
             {!contactError && (
-              <p className="text-base text-gray-500 -mt-2">
+              <p className="text-xs text-gray-500 -mt-2">
                 Bitte gib mindestens eine Telefonnummer oder einen Signal-Nutzernamen an.
               </p>
             )}
 
             <div className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                id="datenschutz"
-                checked={form.datenschutz}
-                onChange={(e) => updateForm("datenschutz", e.target.checked)}
-                required
-                className="mt-1 w-4 h-4 rounded border-gray-300 text-klee focus:ring-klee"
-              />
-              <label htmlFor="datenschutz" className="text-base text-gray-600">
+              {/* Square brutalist checkbox */}
+              <div className="relative mt-1 shrink-0">
+                <input
+                  type="checkbox"
+                  id="datenschutz"
+                  checked={form.datenschutz}
+                  onChange={(e) => updateForm("datenschutz", e.target.checked)}
+                  required
+                  className="sr-only"
+                />
+                <label
+                  htmlFor="datenschutz"
+                  className={`w-5 h-5 border-2 border-black flex items-center justify-center cursor-pointer transition-colors ${
+                    form.datenschutz ? "bg-tanne" : "bg-white"
+                  }`}
+                >
+                  {form.datenschutz && (
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="square" strokeLinejoin="miter" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </label>
+              </div>
+              <label htmlFor="datenschutz" className="text-sm text-gray-700 cursor-pointer">
                 Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
                 von Wahlkampfaktionen zu.{" "}
                 <Link
                   href="/datenschutz"
                   target="_blank"
-                  className="text-tanne hover:underline"
+                  className="text-tanne font-bold hover:underline"
                 >
                   Datenschutzerklärung
                 </Link>
@@ -364,7 +381,7 @@ export default function AnmeldeFormular({
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+              <div className="bg-white border-2 border-signal text-black p-3 text-sm font-bold">
                 {error}
               </div>
             )}

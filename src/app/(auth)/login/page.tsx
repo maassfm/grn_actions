@@ -40,17 +40,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-sand flex items-center justify-center px-4">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mb-4 flex justify-center"><Image src="/logo.png" alt="Sonnenblume" width={64} height={64} /></div>
+          <div className="mb-4 flex justify-center"><Image src="/logo_green.png" alt="Sonnenblume" width={64} height={64} /></div>
           <h1 className="font-headline text-3xl font-bold text-tanne uppercase tracking-wide">
-            GRÜNE Berlin-Mitte
+            B90/GRÜNE Berlin-Mitte
           </h1>
           <p className="text-gray-600 mt-2">Wahlkampf-Aktionsportal</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+        <div className="bg-white border-2 border-black p-8 shadow-[6px_6px_0_#000]">
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-6">
             Anmelden
           </h2>
@@ -75,7 +75,7 @@ export default function LoginPage() {
             />
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+              <div className="bg-white border-2 border-signal text-black p-3 text-sm font-bold">
                 {error}
               </div>
             )}

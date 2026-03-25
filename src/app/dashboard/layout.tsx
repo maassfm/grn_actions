@@ -19,8 +19,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const isAdmin = session?.user.role === "ADMIN";
 
   return (
-    <div className="min-h-screen bg-sand">
-      <header className="bg-tanne text-white sticky top-0 z-50">
+    <div className="min-h-screen bg-white">
+      <header className="bg-tanne text-white sticky top-0 z-50 border-b-[3px] border-black">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               ☰
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
+              <Image src="/logo_white.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
               <span className="font-headline font-bold text-lg uppercase tracking-wide">
                 B90/GRÜNE Berlin-Mitte
               </span>
@@ -66,7 +66,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <aside
           className={`${
             menuOpen ? "block" : "hidden"
-          } md:block w-64 shrink-0 bg-white border-r border-gray-200 min-h-[calc(100vh-56px)] p-4`}
+          } md:block w-64 shrink-0 bg-white border-r-2 border-black min-h-[calc(100vh-56px)] p-4`}
         >
           <nav className="space-y-1">
             {navItems.map((item) => (
@@ -74,10 +74,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 text-sm font-bold uppercase tracking-wide transition-colors border-2 mb-1 ${
                   pathname === item.href
-                    ? "bg-tanne/10 text-tanne"
-                    : "text-gray-600 hover:bg-gray-100"
+                    ? "bg-tanne text-white border-black shadow-[2px_2px_0_#000]"
+                    : "text-black border-transparent hover:border-black hover:shadow-[2px_2px_0_#000]"
                 }`}
               >
                 <span>{item.icon}</span>

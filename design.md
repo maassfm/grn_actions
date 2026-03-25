@@ -35,12 +35,12 @@ Das UI folgt einem **Soft Brutalist**-Ansatz: rohe Ehrlichkeit in der Darstellun
 
 | Schrift | Einsatz | Gewicht |
 |--------|---------|--------|
-| **GrueneType Neue** | Überschriften (H1–H6), Markentext | Extra Bold · Uppercase |
+| **GrueneType Neue** | Überschriften (H1–H6), Markentext | Uppercase |
 | **DM Sans** | Fließtext, Labels, Formularelemente | Regular (400) · Bold (700) |
 
 ### Hierarchie
 
-- **H1 / Titel** — GrueneType Neue, Extra Bold, sehr prominent, uppercase
+- **H1 / Titel** — GrueneType Neue, sehr prominent, uppercase
 - **Labels / Filter-Beschriftungen** — DM Sans Bold, gut lesbar beim schnellen Scannen
 - **Fließtext / Eingabefelder** — DM Sans Regular, großzügiger Zeilenabstand (`line-height: 1.6`)
 
@@ -91,7 +91,7 @@ Das UI folgt einem **Soft Brutalist**-Ansatz: rohe Ehrlichkeit in der Darstellun
 - **Icons:** System-Emojis (📅 Datum/Zeit, 📍 Ort, 👤 Ansprechperson) — keine Custom-SVGs
 - **Checkbox rechts:** großes quadratisches Auswahlfeld
   - Inaktiv: weißes Quadrat, schwarzer Rahmen
-  - Aktiv: schwarzes Quadrat mit weißem ✓
+  - Aktiv: grünes Quadrat mit weißem ✓
 
 **Status-Badges:**
 | Status | Hintergrund | Text | Rahmen |
@@ -120,7 +120,7 @@ Prominenter Zähler direkt oberhalb der Kartenliste:
 ### 4.5 Anmeldeformular (Bottom Sheet / Seite)
 
 **Layout:**
-- Als Bottom Sheet auf Mobile (fixiert, hochschiebbar) oder als eigene Seite
+- Als eigene Seite
 
 **Felder:**
 - Scharfe Ecken, schwarzer Rahmen (2 px), weißer Hintergrund
@@ -143,7 +143,7 @@ Prominenter Zähler direkt oberhalb der Kartenliste:
 - `#005538` Hintergrund, weißer Text, schwarzer Rahmen (2 px)
 - Box-Shadow: `4px 4px 0 #000` (leicht versetzt, ohne blur)
 - `border-radius: 0`
-- Text: „REGISTRIEREN" (uppercase, bold)
+- Text: „JETZT ANMELDEN" (uppercase, bold)
 
 **Feedback-Boxen:**
 | Typ | Hintergrund | Rahmen |

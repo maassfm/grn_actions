@@ -14,44 +14,78 @@ interface AktionInfo {
 
 const baseUrl = process.env.NEXTAUTH_URL ?? "https://aktionen.gruene-mitte.de";
 
-function baseLayout(content: string): string {
+function baseLayout(content: string, accentBar?: string): string {
+  const accent = accentBar ?? "#005538";
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { margin: 0; padding: 0; font-family: 'PT Sans', Arial, sans-serif; background-color: #F5F1E9; color: #171717; }
-    .container { max-width: 600px; margin: 0 auto; background: #FFFFFF; }
-    .header { background-color: #005538; padding: 24px 32px; text-align: center; }
-    .header h1 { color: #FFFFFF; font-size: 22px; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-    .header .logo { width: 56px; height: 56px; margin-bottom: 8px; }
-    .header .subtitle { color: #FFF17A; font-size: 16px; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 4px 0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #F0EDE6; color: #000000; }
+    .wrapper { padding: 24px 16px; background-color: #F0EDE6; }
+    .container { max-width: 600px; margin: 0 auto; background: #FFFFFF; border: 3px solid #000000; }
+    .accent-bar { height: 6px; background-color: ${accent}; }
+    .header { background-color: #005538; padding: 24px 32px; border-bottom: 3px solid #000000; }
+    .header-inner { display: flex; align-items: center; gap: 16px; }
+    .header-logo { width: 48px; height: 48px; flex-shrink: 0; }
+    .header-text { flex: 1; }
+    .header h1 { color: #FFFFFF; font-size: 20px; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.2; }
+    .header .subtitle { color: #FFF17A; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700; }
     .content { padding: 32px; }
-    .content p {font-size: 16px;}
-    .content h2 { color: #005538; font-size: 18px; font-weight: 700; margin-top: 0; }
-    .aktion-card { background: #F5F1E9; border-radius: 8px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #008939; }
-    .aktion-card h3 { color: #005538; margin: 0 0 8px 0; font-size: 16px; }
-    .aktion-card p { margin: 4px 0; font-size: 16px; color: #404040; }
-    .footer { background-color: #F5F1E9; padding: 24px 32px; font-size: 12px; color: #737373; text-align: center; }
-    .footer a { color: #005538; }
-    .change-highlight { background: #FFF17A; padding: 2px 6px; border-radius: 4px; }
+    .content p { font-size: 16px; line-height: 1.6; margin: 0 0 12px 0; }
+    .content h2 { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 20px 0; border-bottom: 3px solid #000000; padding-bottom: 8px; }
+    .content h3 { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 24px 0 8px 0; }
+    .content ul { margin: 0 0 16px 0; padding-left: 20px; }
+    .content li { font-size: 15px; line-height: 1.6; margin-bottom: 4px; }
+    .content a { color: #005538; font-weight: 700; text-decoration: underline; }
+    .aktion-card { background: #FFFFFF; border: 2px solid #000000; padding: 20px; margin-bottom: 16px; box-shadow: 4px 4px 0 #000000; }
+    .aktion-card-title { font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 12px 0; color: #000000; border-bottom: 2px solid #000000; padding-bottom: 8px; }
+    .aktion-card p { margin: 5px 0; font-size: 15px; color: #000000; line-height: 1.5; }
+    .aktion-card a { color: #005538; font-weight: 700; }
+    .aktion-card .cancel-link { display: inline-block; margin-top: 12px; font-size: 13px; color: #000000; text-decoration: underline; font-weight: 400; }
+    .change-row { border: 2px solid #000000; padding: 12px 16px; margin-bottom: 8px; background: #FFFFFF; }
+    .change-row strong { font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.08em; display: block; margin-bottom: 4px; }
+    .change-old { background: #E6007E; color: #FFFFFF; padding: 2px 6px; font-size: 14px; font-weight: 700; display: inline-block; }
+    .change-arrow { font-size: 18px; font-weight: 700; margin: 0 6px; }
+    .change-new { background: #FFF17A; color: #000000; padding: 2px 6px; font-size: 14px; font-weight: 700; border: 1px solid #000000; display: inline-block; }
+    .cta-button { display: inline-block; background-color: #005538; color: #FFFFFF; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; font-size: 14px; padding: 12px 24px; text-decoration: none; border: 2px solid #000000; box-shadow: 3px 3px 0 #000000; margin-top: 8px; }
+    .greeting { font-size: 24px; font-weight: 700; margin: 0 0 16px 0; }
+    .section-divider { border: none; border-top: 3px solid #000000; margin: 24px 0; }
+    .badge-geaendert { background: #FFF17A; color: #000000; border: 1px solid #000000; padding: 2px 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; display: inline-block; }
+    .badge-absage { background: #E6007E; color: #FFFFFF; border: 1px solid #000000; padding: 2px 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; display: inline-block; }
+    .count-badge { background: #005538; color: #FFFFFF; border: 1px solid #000000; padding: 2px 8px; font-size: 12px; font-weight: 700; display: inline-block; }
+    .footer { background-color: #000000; padding: 20px 32px; font-size: 12px; color: #FFFFFF; }
+    .footer p { margin: 4px 0; line-height: 1.5; }
+    .footer a { color: #FFF17A; text-decoration: none; font-weight: 700; }
+    .footer-links { margin-top: 8px; }
+    .footer-separator { color: #555555; margin: 0 8px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <img src="${baseUrl}/logo.png" alt="Sonnenblume" class="logo" />
-      <p class="subtitle">Kreisvorstand</p>
-      <h1>B90/GRÜNE Berlin-Mitte</h1>
-    </div>
-    <div class="content">
-      ${content}
-    </div>
-    <div class="footer">
-      <p>BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
-      <p>Diese E-Mail wurde automatisch versendet. Bitte antworte nicht auf diese E-Mail.</p>
-      <p><a href="${baseUrl}/datenschutz">Datenschutzerklärung</a> · <a href="${baseUrl}/impressum">Impressum</a></p>
+  <div class="wrapper">
+    <div class="container">
+      <div class="accent-bar"></div>
+      <div class="header">
+        <div class="header-inner">
+          <img src="${baseUrl}/logo.png" alt="Sonnenblume" class="header-logo" />
+          <div class="header-text">
+            <p class="subtitle">Kreisvorstand</p>
+            <h1>B90/GRÜNE<br>Berlin-Mitte</h1>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        ${content}
+      </div>
+      <div class="footer">
+        <p>BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+        <p>Diese E-Mail wurde automatisch versendet. Bitte antworte nicht auf diese E-Mail.</p>
+        <div class="footer-links">
+          <a href="${baseUrl}/datenschutz">Datenschutzerklärung</a><span class="footer-separator">·</span><a href="${baseUrl}/impressum">Impressum</a>
+        </div>
+      </div>
     </div>
   </div>
 </body>
@@ -61,12 +95,12 @@ function baseLayout(content: string): string {
 function formatAktionCard(aktion: AktionInfo, cancelLink?: string): string {
   const datumStr = format(aktion.datum, "EEEE, d. MMMM yyyy", { locale: de });
   return `<div class="aktion-card">
-    <h3>${aktion.titel}</h3>
+    <div class="aktion-card-title">${aktion.titel}</div>
     <p>📅 ${datumStr}</p>
     <p>🕐 ${aktion.startzeit} – ${aktion.endzeit} Uhr</p>
     <p>📍 ${aktion.adresse}</p>
     <p>👤 ${aktion.ansprechpersonName} · <a href="mailto:${aktion.ansprechpersonEmail}">${aktion.ansprechpersonEmail}</a> · ${aktion.ansprechpersonTelefon}</p>
-    ${cancelLink ? `<p style="margin-top: 12px;"><a href="${cancelLink}" style="color: #005538; font-size: 14px;">Von dieser Aktion abmelden</a></p>` : ""}
+    ${cancelLink ? `<p><a href="${cancelLink}" class="cancel-link">Von dieser Aktion abmelden →</a></p>` : ""}
   </div>`;
 }
 
@@ -78,18 +112,19 @@ export function anmeldebestaetigungEmail(
   const subject = `Deine Anmeldung bei B90/GRÜNE Berlin-Mitte – ${aktionen.length} Aktion${aktionen.length > 1 ? "en" : ""}`;
 
   const content = `
-    <h2>Hallo ${vorname},</h2>
-    <p>vielen Dank für Deine Anmeldung! Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
+    <p class="greeting">Hallo ${vorname}!</p>
+    <p>Vielen Dank für Deine Anmeldung! Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
     ${aktionen.map((a, i) => {
       const cancelLink = cancelTokens?.[i]
         ? `${baseUrl}/api/anmeldungen/abmelden?token=${cancelTokens[i]}`
         : undefined;
       return formatAktionCard(a, cancelLink);
     }).join("")}
-    <p>Du kannst dich jederzeit über den Link in der jeweiligen Aktion von der Teilnahme abmelden.</p>
+    <hr class="section-divider" />
+    <p>Du kannst Dich jederzeit über den Link in der jeweiligen Aktion von der Teilnahme abmelden.</p>
     <p>Wir freuen uns auf Dich! 💚</p>
     <p>Viele Grüße<br>
-    Annalena, Florian, Lara, Linus, Madlen und Timur<br>
+    <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
     Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
   `;
 
@@ -105,21 +140,27 @@ export function aenderungsEmail(
   const changesList = changes
     .map(
       (c) =>
-        `<p><strong>${c.field}:</strong> <span class="change-highlight">${c.oldValue}</span> → <span class="change-highlight">${c.newValue}</span></p>`
+        `<div class="change-row">
+          <strong>${c.field}</strong>
+          <span class="change-old">${c.oldValue}</span>
+          <span class="change-arrow">→</span>
+          <span class="change-new">${c.newValue}</span>
+        </div>`
     )
     .join("");
 
   const content = `
-    <h2>Änderung an deiner Aktion</h2>
+    <span class="badge-geaendert">Geändert</span>
+    <h2 style="margin-top: 12px;">Änderung an deiner Aktion</h2>
     <p>Eine Aktion, für die Du Dich angemeldet hast, wurde geändert:</p>
-    <h3>${aktion.titel}</h3>
     ${changesList}
-    <h3>Aktualisierte Details:</h3>
+    <hr class="section-divider" />
+    <h3>Aktualisierte Details</h3>
     ${formatAktionCard(aktion)}
-    <p>Bei Fragen wende Dich bitte an die Ansprechperson.</p>
+    <p>Bei Fragen wende Dich bitte an die Ansprechperson der Aktion.</p>
   `;
 
-  return { subject, html: baseLayout(content) };
+  return { subject, html: baseLayout(content, "#FFF17A") };
 }
 
 export function absageEmail(aktion: AktionInfo): { subject: string; html: string } {
@@ -127,13 +168,15 @@ export function absageEmail(aktion: AktionInfo): { subject: string; html: string
   const subject = `Absage: ${aktion.titel} am ${datumStr}`;
 
   const content = `
-    <h2>Aktion abgesagt</h2>
-    <p>Leider wurde die folgende Aktion absagt:</p>
+    <span class="badge-absage">Abgesagt</span>
+    <h2 style="margin-top: 12px;">Aktion abgesagt</h2>
+    <p>Leider wurde die folgende Aktion abgesagt:</p>
     ${formatAktionCard(aktion)}
+    <hr class="section-divider" />
     <p>Wir bedauern die Unannehmlichkeiten. Schau gerne auf <a href="${baseUrl}">unserer Seite</a> nach weiteren Aktionen, bei denen Du mitmachen kannst!</p>
   `;
 
-  return { subject, html: baseLayout(content) };
+  return { subject, html: baseLayout(content, "#E6007E") };
 }
 
 interface TagesAnmeldung {
@@ -192,10 +235,10 @@ export function tagesUebersichtEmail(
           : `<p><em>Noch keine Anmeldungen.</em></p>`;
         return `
           <div class="aktion-card">
-            <h3>${a.titel}</h3>
+            <div class="aktion-card-title">${a.titel}</div>
             <p>📅 ${aktionDatum}, ${a.startzeit}–${a.endzeit} Uhr</p>
             <p>📍 ${a.adresse}</p>
-            <p><strong>${a.anmeldungen.length} Anmeldung${a.anmeldungen.length !== 1 ? "en" : ""}:</strong></p>
+            <p><span class="count-badge">${a.anmeldungen.length} Anmeldung${a.anmeldungen.length !== 1 ? "en" : ""}</span></p>
             ${anmeldungenList}
           </div>
         `;
@@ -217,8 +260,12 @@ export function tagesUebersichtEmail(
           .join("");
         const aktionDatum = format(a.datum, "d. MMMM", { locale: de });
         return `
-          <h3>${a.titel} (${aktionDatum}, ${a.startzeit} Uhr)</h3>
-          <ul>${anmeldungenList}</ul>
+          <div class="aktion-card">
+            <div class="aktion-card-title">${a.titel}</div>
+            <p>📅 ${aktionDatum}, ${a.startzeit} Uhr</p>
+            <p><span class="count-badge">${a.anmeldungen.length} neu</span></p>
+            <ul>${anmeldungenList}</ul>
+          </div>
         `;
       }).join("")}
     `
@@ -237,11 +284,15 @@ export function tagesUebersichtEmail(
     : "";
 
   const content = `
-    <h2>Hallo ${expertName}!</h2>
+    <p class="greeting">Hallo ${expertName}!</p>
+    <p>Tagesübersicht für <strong>${datumStr}</strong>.</p>
     ${morgenHtml}
+    ${morgenHtml && (neueAnmeldungenHtml || abmeldungenHtml) ? '<hr class="section-divider" />' : ""}
     ${neueAnmeldungenHtml}
+    ${neueAnmeldungenHtml && abmeldungenHtml ? '<hr class="section-divider" />' : ""}
     ${abmeldungenHtml}
-    <p><a href="${baseUrl}/dashboard">Zum Dashboard →</a></p>
+    <hr class="section-divider" />
+    <p><a href="${baseUrl}/dashboard" class="cta-button">Zum Dashboard →</a></p>
   `;
 
   return { subject, html: baseLayout(content) };

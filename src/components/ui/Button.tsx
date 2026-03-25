@@ -13,15 +13,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-tanne text-white hover:bg-tanne-light focus:ring-tanne",
+    "bg-tanne text-white border-2 border-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]",
   secondary:
-    "bg-klee text-white hover:bg-klee/90 focus:ring-klee",
+    "bg-white text-black border-2 border-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]",
   danger:
-    "bg-red-600 text-white hover:bg-red-600/90 focus:ring-red-500",
+    "bg-signal text-white border-2 border-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]",
   ghost:
-    "bg-transparent text-tanne hover:bg-tanne/10 focus:ring-tanne",
+    "bg-transparent text-tanne border-2 border-transparent hover:border-black hover:shadow-[4px_4px_0_#000]",
   outline:
-    "border-2 border-tanne text-tanne hover:bg-tanne hover:text-white focus:ring-tanne",
+    "bg-white text-tanne border-2 border-tanne shadow-[4px_4px_0_#005538] hover:shadow-[2px_2px_0_#005538] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[4px] active:translate-y-[4px]",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -35,7 +35,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={`inline-flex items-center justify-center font-bold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+        className={`inline-flex items-center justify-center font-bold uppercase tracking-wide transition-all focus:outline-none focus-visible:outline-[3px] focus-visible:outline-black disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
         disabled={disabled || loading}
         {...props}
       >

@@ -66,11 +66,11 @@ function AnmeldenPageContent() {
   if (success) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-8">
-          <p className="font-headline font-bold text-green-700 text-2xl uppercase mb-2">
+        <div className="bg-white border-2 border-black p-8 shadow-[6px_6px_0_#005538]">
+          <p className="font-headline font-bold text-tanne text-2xl uppercase mb-2">
             Anmeldung erfolgreich!
           </p>
-          <p className="text-green-600 mt-2">
+          <p className="text-black mt-2">
             Du erhältst in Kürze eine Bestätigungs-E-Mail.
           </p>
           <Link
@@ -99,8 +99,8 @@ function AnmeldenPageContent() {
       </h1>
 
       {/* Selected actions summary */}
-      <div className="bg-klee/5 border border-klee/20 rounded-xl p-4 mb-6">
-        <p className="text-sm font-bold text-tanne mb-3">
+      <div className="border-2 border-black p-4 mb-6 shadow-[4px_4px_0_#000]">
+        <p className="text-sm font-bold uppercase tracking-wide text-black mb-3">
           {selectedIds.length === 1
             ? "Du hast 1 Aktion ausgewählt:"
             : `Du hast ${selectedIds.length} Aktionen ausgewählt:`}
@@ -112,13 +112,13 @@ function AnmeldenPageContent() {
             {selectedIds.map((id) => (
               <span
                 key={id}
-                className="inline-flex items-center gap-1 text-xs bg-klee/10 text-klee px-2.5 py-1 rounded-full font-medium"
+                className="inline-flex items-center gap-1 text-xs bg-tanne text-white px-2.5 py-1 border border-black font-bold uppercase tracking-wide"
               >
                 {aktionTitles.get(id) || id}
                 <button
                   type="button"
                   onClick={() => removeAktion(id)}
-                  className="ml-0.5 text-klee/60 hover:text-klee transition-colors focus:outline-none"
+                  className="ml-0.5 text-white/70 hover:text-white transition-colors focus:outline-none focus-visible:outline-[3px] focus-visible:outline-black"
                   aria-label={`${aktionTitles.get(id) || id} entfernen`}
                 >
                   ×

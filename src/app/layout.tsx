@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Wahlkampfaktionen – GRÜNE Berlin-Mitte",
   description:
     "Koordination von Wahlkampfaktionen für BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -16,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="de">
       <head />
-      <body className="font-sans antialiased bg-sand text-gray-900">
+      <body className="font-sans antialiased bg-white text-black">
         <Providers>{children}</Providers>
       </body>
     </html>

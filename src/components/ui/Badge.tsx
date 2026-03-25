@@ -9,17 +9,17 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: "bg-gray-100 text-gray-700",
-  success: "bg-green-100 text-green-600",
-  warning: "bg-sonne text-gray-800",
-  danger: "bg-red-100 text-red-600",
-  info: "bg-himmel/10 text-himmel",
+  default: "bg-gray-100 text-black border border-black",
+  success: "bg-tanne text-white border border-black",
+  warning: "bg-sonne text-black border border-black",
+  danger: "bg-signal text-white border border-black",
+  info: "bg-himmel text-white border border-black",
 };
 
 export default function Badge({ children, variant = "default", className = "" }: BadgeProps) {
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${variantStyles[variant]} ${className}`}
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-bold uppercase tracking-wide ${variantStyles[variant]} ${className}`}
     >
       {children}
     </span>
