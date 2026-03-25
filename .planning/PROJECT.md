@@ -25,16 +25,20 @@ Freiwillige können sich einfach und sicher für Wahlkampf-Aktionen anmelden —
 - ✓ Rate Limiting auf Public-Anmelde-Endpoint + Honeypot-Spam-Schutz — existing
 - ✓ Basis-Sicherheits-Header (X-Frame-Options, CSP-Basis, etc.) — existing
 
+### Validated
+
+- ✓ SEC-01: Team-Isolation-Lücke in `/api/export-aktionen` geschlossen — Validated in Phase 01: kritische-sicherheitslücken
+- ✓ SEC-02: Kontaktpersonen-PII aus öffentlichem `GET /api/aktionen/[id]` entfernt — Validated in Phase 01: kritische-sicherheitslücken
+- ✓ SEC-06: Admin-User-Update Zod-Validierung ergänzt — Validated in Phase 01: kritische-sicherheitslücken
+- ✓ DSGVO-01: Datenschutzerklärung + Impressum mit vollständigen Pflichtangaben — Validated in Phase 02: dsgvo-konformität-jwt-härtung
+- ✓ DSGVO-02: Datenschutzerklärung nennt konkrete Aufbewahrungsfrist (31.10.2026) — Validated in Phase 02: dsgvo-konformität-jwt-härtung
+- ✓ DSGVO-03: Freiwillige können sich tokenbasiert selbst abmelden (cancelToken + /abmelden route) — Validated in Phase 02: dsgvo-konformität-jwt-härtung
+- ✓ SEC-04: Deaktivierter Nutzer verliert Zugang innerhalb 5 Minuten (JWT + DB-Check) — Validated in Phase 02: dsgvo-konformität-jwt-härtung
+- ✓ SEC-05: Rate Limiting auf GET /api/aktionen und GET /api/aktionen/[id] (60/30 req/min) — Validated in Phase 02: dsgvo-konformität-jwt-härtung
+
 ### Active
 
-- [ ] SEC-01: Team-Isolation-Lücke in `/api/export-aktionen` schließen (High-Severity)
-- [ ] SEC-02: Kontaktpersonen-PII aus öffentlichem `GET /api/aktionen/[id]` entfernen
 - [ ] SEC-03: Content-Security-Policy Header hinzufügen
-- [ ] SEC-04: JWT-Invalidierung bei User-Deaktivierung verbessern
-- [ ] SEC-05: Rate Limiting auf alle öffentlichen GET-Endpunkte ausweiten
-- [ ] SEC-06: Admin-User-Update Zod-Validierung ergänzen
-- [ ] DSGVO-01: Datenschutzerklärung + Impressum vervollständigen (Pflichtangaben)
-- [ ] DSGVO-02: Freiwillige-Abmelde-Link / Token-basierte Selbstabmeldung
 - [ ] UI-01: Aktionsübersicht (öffentlich) — Design und Usability für ältere Nutzer verbessern
 - [ ] UI-02: Anmeldeformular — klarer, einfacher, vertrauenswürdiger gestalten
 - [ ] UI-03: Feedback-Zustände (Ladeanimation, Erfolg, Fehler) konsistent überarbeiten
@@ -87,4 +91,4 @@ Dieses Dokument entwickelt sich bei Phasenübergängen und Milestone-Abschlüsse
 3. Out of Scope überprüfen — Gründe noch gültig?
 
 ---
-*Last updated: 2026-03-24 after initialization*
+*Last updated: 2026-03-25 after Phase 02 completion — DSGVO-Konformität + JWT-Härtung abgeschlossen (DSGVO-01, DSGVO-02, DSGVO-03, SEC-04, SEC-05)*
