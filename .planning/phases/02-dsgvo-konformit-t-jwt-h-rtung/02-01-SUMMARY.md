@@ -29,7 +29,7 @@ key-decisions:
 
 patterns-established: []
 
-requirements-completed: [DSGVO-01]
+requirements-completed: [DSGVO-01, DSGVO-02]
 
 # Metrics
 duration: 5min
