@@ -53,7 +53,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
         {/* Mobile toggle */}
         <button
           onClick={() => setExpanded(!expanded)}
-          className="md:hidden w-full py-3 flex items-center justify-between text-base font-bold text-tanne min-h-[44px]"
+          className="md:hidden w-full py-3 flex items-center justify-between text-sm font-bold text-tanne"
         >
           <span>
             Filter {activeFilterCount > 0 ? `(${activeFilterCount})` : ""}
@@ -69,25 +69,25 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
         >
           {/* Datum */}
           <div className="flex items-center gap-2 mb-3 md:mb-0">
-            <label className="text-base font-bold text-gray-600 shrink-0">Datum:</label>
+            <label className="text-sm font-bold text-gray-600 shrink-0">Datum:</label>
             <input
               type="date"
               value={filters.datum}
               onChange={(e) => onFilterChange({ ...filters, datum: e.target.value })}
-              className="text-base border border-gray-300 rounded px-3 py-2 min-h-[44px]"
+              className="text-sm border border-gray-300 rounded px-2 py-1"
             />
             <span className="text-gray-600">–</span>
             <input
               type="date"
               value={filters.datumBis}
               onChange={(e) => onFilterChange({ ...filters, datumBis: e.target.value })}
-              className="text-base border border-gray-300 rounded px-3 py-2 min-h-[44px]"
+              className="text-sm border border-gray-300 rounded px-2 py-1"
             />
           </div>
 
           {/* Tageszeit */}
           <div className="flex items-center gap-2 mb-3 md:mb-0">
-            <label className="text-base font-bold text-gray-600 shrink-0">Tageszeit:</label>
+            <label className="text-sm font-bold text-gray-600 shrink-0">Tageszeit:</label>
             <div className="flex gap-1">
               {TAGESZEITEN.map((tz) => (
                 <button
@@ -95,7 +95,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                   onClick={() =>
                     onFilterChange({ ...filters, tageszeit: tz.value })
                   }
-                  className={`text-base px-4 py-2 min-h-[44px] rounded-full font-medium transition-colors ${
+                  className={`text-xs px-2 py-1 rounded-full font-medium transition-colors ${
                     filters.tageszeit === tz.value
                       ? "bg-tanne text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -109,14 +109,14 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
 
           {/* Wahlkreise */}
           <div className="flex items-center gap-2">
-            <label className="text-base font-bold text-gray-600 shrink-0">WK:</label>
+            <label className="text-sm font-bold text-gray-600 shrink-0">WK:</label>
             <div className="flex gap-1 flex-wrap">
               {WAHLKREISE.map((wk) => (
                 <button
                   key={wk.nummer}
                   onClick={() => toggleWahlkreis(wk.nummer)}
                   title={wk.name}
-                  className={`w-11 h-11 text-base font-bold rounded-full transition-colors ${
+                  className={`w-7 h-7 text-xs font-bold rounded-full transition-colors ${
                     filters.wahlkreise.includes(wk.nummer)
                       ? "bg-klee text-white"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -139,7 +139,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                   wahlkreise: [],
                 })
               }
-              className="text-base text-gray-600 hover:text-tanne underline ml-auto min-h-[44px] flex items-center"
+              className="text-xs text-gray-500 hover:text-tanne underline ml-auto"
             >
               Filter zurücksetzen
             </button>

@@ -67,7 +67,7 @@ export default function AktionCard({ aktion, selected, onToggle }: AktionCardPro
           </p>
           <p>📍 {aktion.adresse}</p>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-base bg-sand rounded-full px-3 py-1 font-medium">
+            <span className="text-xs bg-sand rounded-full px-2 py-0.5 font-medium">
               WK {aktion.wahlkreis.nummer}: {aktion.wahlkreis.name}
             </span>
             <span className="text-base">
