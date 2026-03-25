@@ -31,7 +31,6 @@ export default function NewAktionPage() {
 
   const [form, setForm] = useState({
     titel: "",
-    beschreibung: "",
     datum: "",
     startzeit: "",
     endzeit: "",
@@ -139,18 +138,6 @@ export default function NewAktionPage() {
               required
               placeholder="z.B. Infostand Alexanderplatz"
             />
-
-            <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">
-                Beschreibung (optional)
-              </label>
-              <textarea
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tanne"
-                value={form.beschreibung}
-                onChange={(e) => updateForm("beschreibung", e.target.value)}
-                rows={3}
-              />
-            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Input
