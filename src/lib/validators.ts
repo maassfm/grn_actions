@@ -50,7 +50,14 @@ export const anmeldungSchema = z.object({
   vorname: z.string().min(2, "Vorname muss mindestens 2 Zeichen lang sein"),
   nachname: z.string().min(2, "Nachname muss mindestens 2 Zeichen lang sein"),
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein"),
-  telefon: z.string().optional().nullable(),
+  telefon: z
+    .string()
+    .refine(
+      (val) => !val || /^[\d\s+\-()\/]{6,20}$/.test(val),
+      { message: "Bitte gib eine gültige Telefonnummer ein" }
+    )
+    .optional()
+    .nullable(),
   signalName: z
     .string()
     .refine(

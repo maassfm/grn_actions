@@ -23,9 +23,6 @@ export default async function PublicLayout({ children }: { children: ReactNode }
             </div>
           </Link>
           <nav className="flex items-center gap-4 text-sm">
-            <Link href="/" className="hover:text-sonne transition-colors font-bold uppercase tracking-wide">
-              Aktionen
-            </Link>
             <NavAuthSection session={session} />
           </nav>
         </div>
@@ -37,6 +34,11 @@ export default async function PublicLayout({ children }: { children: ReactNode }
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="font-bold uppercase tracking-wide">BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
           <div className="flex gap-4">
+            {!session && (
+              <Link href="/login" className="hover:text-white transition-colors uppercase tracking-wide font-bold">
+                Login
+              </Link>
+            )}
             <Link href="/datenschutz" className="hover:text-white transition-colors uppercase tracking-wide font-bold">
               Datenschutz
             </Link>

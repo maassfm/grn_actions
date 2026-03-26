@@ -31,14 +31,24 @@ export default function AnmeldeFormular({
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [vornameError, setVornameError] = useState("");
+  const [nachnameError, setNachnameError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [contactError, setContactError] = useState("");
   const [signalError, setSignalError] = useState("");
+  const [datenschutzError, setDatenschutzError] = useState("");
+
+  const TELEFON_REGEX = /^[\d\s+\-()\/]{6,20}$/;
   const [isExpanded, setIsExpanded] = useState(false);
   const touchStartY = useRef<number | null>(null);
   const touchStartTime = useRef<number>(0);
 
   function updateForm(field: string, value: string | boolean) {
     setForm({ ...form, [field]: value });
+    if (field === "vorname") setVornameError("");
+    if (field === "nachname") setNachnameError("");
+    if (field === "email") setEmailError("");
+    if (field === "datenschutz") setDatenschutzError("");
     if (field === "telefon" || field === "signalName") {
       setContactError("");
     }
@@ -64,17 +74,43 @@ export default function AnmeldeFormular({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setVornameError("");
+    setNachnameError("");
+    setEmailError("");
     setContactError("");
+    setSignalError("");
+    setDatenschutzError("");
 
+    let hasError = false;
+
+    if (!form.vorname || form.vorname.trim().length < 2) {
+      setVornameError("Vorname muss mindestens 2 Zeichen lang sein");
+      hasError = true;
+    }
+    if (!form.nachname || form.nachname.trim().length < 2) {
+      setNachnameError("Nachname muss mindestens 2 Zeichen lang sein");
+      hasError = true;
+    }
+    if (!form.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setEmailError("Bitte gib eine gültige E-Mail-Adresse ein");
+      hasError = true;
+    }
     if (!form.telefon && !form.signalName) {
       setContactError("Bitte gib eine Telefonnummer oder einen Signal-Nutzernamen an");
-      return;
+      hasError = true;
+    } else if (form.telefon && !TELEFON_REGEX.test(form.telefon)) {
+      setContactError("Bitte gib eine gültige Telefonnummer ein");
+      hasError = true;
+    } else if (form.signalName && !/^[a-zA-Z0-9_]{2,32}\.\d+$/.test(form.signalName)) {
+      setSignalError("Bitte gib deinen Signal-Nutzernamen ein (Format: name.123)");
+      hasError = true;
+    }
+    if (!form.datenschutz) {
+      setDatenschutzError("Du musst der Datenschutzerklärung zustimmen");
+      hasError = true;
     }
 
-    if (form.signalName && !/^[a-zA-Z0-9_]{2,32}\.\d+$/.test(form.signalName)) {
-      setSignalError("Bitte gib deinen Signal-Nutzernamen ein (Format: name.123)");
-      return;
-    }
+    if (hasError) return;
 
     setLoading(true);
 
@@ -128,13 +164,13 @@ export default function AnmeldeFormular({
               label="Vorname"
               value={form.vorname}
               onChange={(e) => updateForm("vorname", e.target.value)}
-              required
+              error={vornameError}
             />
             <Input
               label="Nachname"
               value={form.nachname}
               onChange={(e) => updateForm("nachname", e.target.value)}
-              required
+              error={nachnameError}
             />
           </div>
 
@@ -143,7 +179,7 @@ export default function AnmeldeFormular({
             type="email"
             value={form.email}
             onChange={(e) => updateForm("email", e.target.value)}
-            required
+            error={emailError}
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -178,7 +214,6 @@ export default function AnmeldeFormular({
                 id="datenschutz-page"
                 checked={form.datenschutz}
                 onChange={(e) => updateForm("datenschutz", e.target.checked)}
-                required
                 className="sr-only"
               />
               <label
@@ -194,17 +229,20 @@ export default function AnmeldeFormular({
                 )}
               </label>
             </div>
-            <label htmlFor="datenschutz-page" className="text-sm text-gray-700 cursor-pointer">
-              Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
-              von Wahlkampfaktionen zu.{" "}
-              <Link
-                href="/datenschutz"
-                target="_blank"
-                className="text-tanne font-bold hover:underline"
-              >
-                Datenschutzerklärung
-              </Link>
-            </label>
+            <div>
+              <label htmlFor="datenschutz-page" className="text-sm text-gray-700 cursor-pointer">
+                Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
+                von Wahlkampfaktionen zu.{" "}
+                <Link
+                  href="/datenschutz"
+                  target="_blank"
+                  className="text-tanne font-bold hover:underline"
+                >
+                  Datenschutzerklärung
+                </Link>
+              </label>
+              {datenschutzError && <p className="mt-1 text-sm font-bold text-signal">{datenschutzError}</p>}
+            </div>
           </div>
 
           {error && (
@@ -301,13 +339,13 @@ export default function AnmeldeFormular({
                 label="Vorname"
                 value={form.vorname}
                 onChange={(e) => updateForm("vorname", e.target.value)}
-                required
+                error={vornameError}
               />
               <Input
                 label="Nachname"
                 value={form.nachname}
                 onChange={(e) => updateForm("nachname", e.target.value)}
-                required
+                error={nachnameError}
               />
             </div>
 
@@ -316,7 +354,7 @@ export default function AnmeldeFormular({
               type="email"
               value={form.email}
               onChange={(e) => updateForm("email", e.target.value)}
-              required
+              error={emailError}
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -351,7 +389,6 @@ export default function AnmeldeFormular({
                   id="datenschutz"
                   checked={form.datenschutz}
                   onChange={(e) => updateForm("datenschutz", e.target.checked)}
-                  required
                   className="sr-only"
                 />
                 <label
@@ -367,17 +404,20 @@ export default function AnmeldeFormular({
                   )}
                 </label>
               </div>
-              <label htmlFor="datenschutz" className="text-sm text-gray-700 cursor-pointer">
-                Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
-                von Wahlkampfaktionen zu.{" "}
-                <Link
-                  href="/datenschutz"
-                  target="_blank"
-                  className="text-tanne font-bold hover:underline"
-                >
-                  Datenschutzerklärung
-                </Link>
-              </label>
+              <div>
+                <label htmlFor="datenschutz" className="text-sm text-gray-700 cursor-pointer">
+                  Ich stimme der Verarbeitung meiner Daten zum Zweck der Koordination
+                  von Wahlkampfaktionen zu.{" "}
+                  <Link
+                    href="/datenschutz"
+                    target="_blank"
+                    className="text-tanne font-bold hover:underline"
+                  >
+                    Datenschutzerklärung
+                  </Link>
+                </label>
+                {datenschutzError && <p className="mt-1 text-sm font-bold text-signal">{datenschutzError}</p>}
+              </div>
             </div>
 
             {error && (

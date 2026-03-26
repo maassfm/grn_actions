@@ -36,7 +36,7 @@
 @font-face {
   font-family: "GrueneType Neue";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   font-display: swap;
   src: url("/fonts/GrueneTypeNeue-Regular.woff2") format("woff2"),
        url("/fonts/GrueneTypeNeue-Regular.woff") format("woff");

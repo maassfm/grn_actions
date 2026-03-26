@@ -32,17 +32,20 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
               <Image src="/logo_white.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
-              <span className="font-headline font-bold text-lg uppercase tracking-wide">
+              <span className="md:hidden font-headline font-bold text-lg uppercase tracking-wide">
                 B90/GRÜNE Berlin-Mitte
               </span>
             </Link>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             {session && (
-              <span className="text-white/70 text-xs hidden sm:inline">
+              <span className="text-white/70 text-xs">
                 {session.user.name} &middot; {isAdmin ? "Admin" : "Expert*in"}
               </span>
             )}
+            <Link href="/dashboard" className="text-sm hover:text-sonne transition-colors font-medium">
+              Dashboard
+            </Link>
             {isAdmin && (
               <Link href="/admin" className="text-sm text-sonne hover:text-white transition-colors font-medium">
                 Admin Panel
@@ -52,7 +55,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Zur Übersicht
             </Link>
             <button
-              onClick={() => signOut({ callbackUrl: "/login" })}
+              onClick={() => signOut({ callbackUrl: "/" })}
               className="text-sm text-white/70 hover:text-white transition-colors"
             >
               Abmelden
@@ -84,6 +87,31 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 {item.label}
               </Link>
             ))}
+            {/* Mobile-only links */}
+            <div className="md:hidden pt-2 border-t-2 border-black mt-2 space-y-1">
+              {isAdmin && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2 text-sm font-bold uppercase tracking-wide border-2 border-transparent hover:border-black hover:shadow-[2px_2px_0_#000] transition-colors text-black"
+                >
+                  <span>⚙️</span> Admin Panel
+                </Link>
+              )}
+              <Link
+                href="/"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3 px-3 py-2 text-sm font-bold uppercase tracking-wide border-2 border-transparent hover:border-black hover:shadow-[2px_2px_0_#000] transition-colors text-black"
+              >
+                <span>🌐</span> Zur Übersicht
+              </Link>
+              <button
+                onClick={() => { setMenuOpen(false); signOut({ callbackUrl: "/" }); }}
+                className="flex items-center gap-3 px-3 py-2 text-sm font-bold uppercase tracking-wide border-2 border-transparent hover:border-black hover:shadow-[2px_2px_0_#000] transition-colors text-black w-full text-left"
+              >
+                <span>🚪</span> Abmelden
+              </button>
+            </div>
           </nav>
         </aside>
 

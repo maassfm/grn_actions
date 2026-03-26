@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Card, { CardHeader, CardTitle } from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
 
 interface Stats {
   totalAktionen: number;
@@ -41,18 +42,8 @@ export default function AdminPage() {
           Gesamtübersicht
         </h1>
         <div className="flex gap-2">
-          <button
-            onClick={() => handleExport("xlsx")}
-            className="px-4 py-2 bg-tanne text-white text-sm font-medium rounded-lg hover:bg-tanne/90 transition-colors"
-          >
-            Excel exportieren
-          </button>
-          <button
-            onClick={() => handleExport("txt")}
-            className="px-4 py-2 border border-tanne text-tanne text-sm font-medium rounded-lg hover:bg-tanne/10 transition-colors"
-          >
-            TXT exportieren
-          </button>
+          <Button onClick={() => handleExport("xlsx")}>Excel exportieren</Button>
+          <Button variant="outline" onClick={() => handleExport("txt")}>TXT exportieren</Button>
         </div>
       </div>
 

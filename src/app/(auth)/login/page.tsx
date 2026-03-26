@@ -4,6 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 
@@ -89,6 +90,11 @@ export default function LoginPage() {
         <p className="text-center text-sm text-gray-500 mt-6">
           Nur für Wahlkampfexpert*innen und Administrator*innen.
         </p>
+        <div className="text-center mt-3">
+          <Link href="/" className="text-sm text-gray-500 hover:text-tanne transition-colors">
+            ← Zurück zur Übersicht
+          </Link>
+        </div>
       </div>
     </div>
   );
