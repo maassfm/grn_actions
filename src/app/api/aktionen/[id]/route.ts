@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { ZodError } from "zod";
 import { aktionSchema } from "@/lib/validators";
 import { geocodeAddress } from "@/lib/geocoding";
 import { sendEmail } from "@/lib/email";
@@ -176,8 +177,9 @@ export async function PUT(
 
     return NextResponse.json(aktion);
   } catch (error) {
-    if (error instanceof Error && error.name === "ZodError") {
-      return NextResponse.json({ error: "Validierungsfehler", details: error }, { status: 400 });
+    if (error instanceof ZodError) {
+      const firstMessage = error.issues[0]?.message ?? "Validierungsfehler";
+      return NextResponse.json({ error: firstMessage, details: error }, { status: 400 });
     }
     return NextResponse.json({ error: "Serverfehler" }, { status: 500 });
   }

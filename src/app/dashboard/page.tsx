@@ -54,9 +54,21 @@ export default function DashboardPage() {
         <h1 className="font-headline text-2xl font-bold text-tanne uppercase">
           Meine Aktionen
         </h1>
-        <Link href="/dashboard/aktionen/neu">
-          <Button>Neue Aktion</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          {aktionen.length > 0 && (
+            <>
+              <a href="/api/export-aktionen?format=xlsx">
+                <Button variant="outline" size="sm">Excel exportieren</Button>
+              </a>
+              <a href="/api/export-aktionen?format=txt">
+                <Button variant="outline" size="sm">Signal-Text</Button>
+              </a>
+            </>
+          )}
+          <Link href="/dashboard/aktionen/neu">
+            <Button>Neue Aktion</Button>
+          </Link>
+        </div>
       </div>
 
       {aktionen.length === 0 ? (

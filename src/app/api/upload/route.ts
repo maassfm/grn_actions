@@ -33,18 +33,36 @@ export async function POST(req: NextRequest) {
       };
     });
 
-    // Check for past dates
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Check for past/today dates — only future dates (from tomorrow) are allowed
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
 
     for (const result of results) {
       if (result.valid) {
         const isoDate = convertDatumToISO(result.row.datum);
         const date = new Date(isoDate);
-        if (date < today) {
+        if (date < tomorrow) {
           result.valid = false;
-          result.errors.push("Datum liegt in der Vergangenheit");
+          result.errors.push("Datum muss in der Zukunft liegen (ab morgen)");
         }
+      }
+    }
+
+    // Check for duplicates against existing Aktionen
+    for (const result of results) {
+      if (!result.valid) continue;
+      const isoDate = convertDatumToISO(result.row.datum);
+      const existing = await prisma.aktion.findFirst({
+        where: {
+          titel: result.row.titel,
+          datum: new Date(isoDate),
+          startzeit: result.row.startzeit,
+        },
+      });
+      if (existing) {
+        result.valid = false;
+        result.errors.push("Duplikat: Eine Aktion mit diesem Titel, Datum und Startzeit existiert bereits");
       }
     }
 

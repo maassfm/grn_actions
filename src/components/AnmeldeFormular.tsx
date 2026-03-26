@@ -8,7 +8,7 @@ import Link from "next/link";
 interface AnmeldeFormularProps {
   selectedIds: string[];
   aktionTitles: Map<string, string>;
-  onSuccess: () => void;
+  onSuccess: (bereitsAngemeldetIds?: string[]) => void;
   onClear: () => void;
   variant?: "bottomsheet" | "page";
 }
@@ -131,7 +131,11 @@ export default function AnmeldeFormular({
       });
 
       if (res.ok) {
-        onSuccess();
+        const data = await res.json();
+        const bereitsAngemeldetIds = (data.results ?? [])
+          .filter((r: { error?: string }) => r.error === "Bereits angemeldet")
+          .map((r: { aktionId: string }) => r.aktionId);
+        onSuccess(bereitsAngemeldetIds.length > 0 ? bereitsAngemeldetIds : undefined);
       } else {
         const data = await res.json();
         setError(data.error || "Fehler bei der Anmeldung");

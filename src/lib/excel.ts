@@ -97,7 +97,22 @@ export async function parseExcelFile(buffer: ArrayBuffer): Promise<ExcelRow[]> {
         const num = parseInt(String(value ?? ""), 10);
         partial.maxTeilnehmer = isNaN(num) ? null : num;
       } else {
-        (partial as Record<string, unknown>)[key] = String(value ?? "").trim();
+        let strVal: string;
+        if (
+          value !== null &&
+          typeof value === "object" &&
+          "text" in value &&
+          "hyperlink" in value
+        ) {
+          // ExcelJS CellHyperlinkValue: Excel erstellt mailto-Links für E-Mail-Adressen
+          const hyperlink = String((value as { hyperlink: string }).hyperlink);
+          strVal = hyperlink.startsWith("mailto:")
+            ? hyperlink.slice("mailto:".length)
+            : String((value as { text: string }).text);
+        } else {
+          strVal = String(value ?? "");
+        }
+        (partial as Record<string, unknown>)[key] = strVal.trim();
       }
     });
 

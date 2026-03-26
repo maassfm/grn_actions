@@ -43,7 +43,18 @@ export const aktionSchema = z.object({
   ansprechpersonEmail: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein"),
   ansprechpersonTelefon: z.string().min(5, "Telefonnummer erforderlich"),
   maxTeilnehmer: z.number().int().positive().optional().nullable(),
-});
+}).refine(
+  (data) => data.startzeit < data.endzeit,
+  { message: "Endzeit muss nach der Startzeit liegen", path: ["endzeit"] }
+).refine(
+  (data) => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowISO = tomorrow.toISOString().split("T")[0];
+    return data.datum >= tomorrowISO;
+  },
+  { message: "Datum muss in der Zukunft liegen (ab morgen)", path: ["datum"] }
+);
 
 export const anmeldungSchema = z.object({
   aktionIds: z.array(z.string()).min(1, "Bitte wähle mindestens eine Aktion"),
@@ -86,7 +97,10 @@ export const excelRowSchema = z.object({
   ansprechpersonEmail: z.string().email("Ungültige E-Mail der Ansprechperson"),
   ansprechpersonTelefon: z.string().min(1, "Telefon der Ansprechperson fehlt"),
   maxTeilnehmer: z.number().int().positive().optional().nullable(),
-});
+}).refine(
+  (data) => data.startzeit < data.endzeit,
+  { message: "Endzeit muss nach der Startzeit liegen", path: ["endzeit"] }
+);
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UserInput = z.infer<typeof userSchema>;

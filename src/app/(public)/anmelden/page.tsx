@@ -28,6 +28,7 @@ function AnmeldenPageContent() {
   const [aktionen, setAktionen] = useState<Aktion[]>([]);
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
+  const [bereitsAngemeldet, setBereitsAngemeldet] = useState<string[]>([]);
 
   const initialIds = useMemo(() => {
     const param = searchParams.get("aktionen");
@@ -59,7 +60,8 @@ function AnmeldenPageContent() {
     }
   }
 
-  function handleSuccess() {
+  function handleSuccess(ids?: string[]) {
+    setBereitsAngemeldet(ids ?? []);
     setSuccess(true);
   }
 
@@ -73,6 +75,23 @@ function AnmeldenPageContent() {
           <p className="text-black mt-2">
             Du erhältst in Kürze eine Bestätigungs-E-Mail.
           </p>
+          {bereitsAngemeldet.length > 0 && (
+            <div className="mt-4 bg-white border-2 border-yellow-500 p-4 text-left shadow-[3px_3px_0_#ca8a04]">
+              <p className="font-bold text-sm text-black mb-2">
+                Hinweis: Für folgende Aktionen warst Du bereits angemeldet:
+              </p>
+              <ul className="list-disc list-inside space-y-1">
+                {bereitsAngemeldet.map((id) => (
+                  <li key={id} className="text-sm text-black">
+                    {aktionTitles.get(id) || id}
+                  </li>
+                ))}
+              </ul>
+              <p className="font-bold text-sm text-black mb-2">
+                Du erhältst für diese Aktionen keine Bestätigungs-E-Mail.
+              </p>
+            </div>
+          )}
           <Link
             href="/"
             className="mt-6 inline-block text-tanne hover:underline font-bold"
