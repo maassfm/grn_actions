@@ -5,7 +5,7 @@ import { useState } from "react";
 interface FilterState {
   datum: string;
   datumBis: string;
-  tageszeit: string;
+  tageszeit: string[];
   wahlkreise: number[];
 }
 
@@ -42,9 +42,17 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
     onFilterChange({ ...filters, wahlkreise: next });
   }
 
+  function toggleTageszeit(value: string) {
+    const current = filters.tageszeit;
+    const next = current.includes(value)
+      ? current.filter((t) => t !== value)
+      : [...current, value];
+    onFilterChange({ ...filters, tageszeit: next });
+  }
+
   const activeFilterCount =
     (filters.datum ? 1 : 0) +
-    (filters.tageszeit ? 1 : 0) +
+    (filters.tageszeit.length > 0 ? 1 : 0) +
     (filters.wahlkreise.length > 0 ? 1 : 0);
 
   return (
@@ -95,10 +103,13 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                   <button
                     key={tz.value}
                     onClick={() =>
-                      onFilterChange({ ...filters, tageszeit: tz.value })
+                      tz.value === ""
+                        ? onFilterChange({ ...filters, tageszeit: [] })
+                        : toggleTageszeit(tz.value)
                     }
                     className={`text-xs px-2 py-1 font-bold uppercase tracking-wide border-2 transition-colors focus:outline-none focus-visible:outline-[3px] focus-visible:outline-black ${
-                      filters.tageszeit === tz.value
+                      (tz.value === "" && filters.tageszeit.length === 0) ||
+                      (tz.value !== "" && filters.tageszeit.includes(tz.value))
                         ? "bg-tanne text-white border-black"
                         : "bg-white text-black border-black hover:bg-black hover:text-white"
                     }`}
@@ -110,13 +121,13 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
             </div>
 
             {/* Clear (shown inline on lg+, only when row 1 has active filters) */}
-            {activeFilterCount > 0 && (filters.datum || filters.tageszeit) && (
+            {activeFilterCount > 0 && (filters.datum || filters.tageszeit.length > 0) && (
               <button
                 onClick={() =>
                   onFilterChange({
                     datum: "",
                     datumBis: "",
-                    tageszeit: "",
+                    tageszeit: [],
                     wahlkreise: [],
                   })
                 }
@@ -154,7 +165,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                   onFilterChange({
                     datum: "",
                     datumBis: "",
-                    tageszeit: "",
+                    tageszeit: [],
                     wahlkreise: [],
                   })
                 }

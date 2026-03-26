@@ -39,7 +39,7 @@ export default function AktionenPage() {
   const [filters, setFilters] = useState<FilterState>({
     datum: "",
     datumBis: "",
-    tageszeit: "",
+    tageszeit: [],
     wahlkreise: [],
   });
 
@@ -47,7 +47,7 @@ export default function AktionenPage() {
     const params = new URLSearchParams();
     if (filters.datum) params.set("datum", filters.datum);
     if (filters.datumBis) params.set("datumBis", filters.datumBis);
-    if (filters.tageszeit) params.set("tageszeit", filters.tageszeit);
+    if (filters.tageszeit.length > 0) params.set("tageszeit", filters.tageszeit.join(","));
     if (filters.wahlkreise.length > 0) {
       params.set("wahlkreis", filters.wahlkreise.join(","));
     }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { ZodError } from "zod";
 import { aktionSchema } from "@/lib/validators";
 import { geocodeAddress } from "@/lib/geocoding";
 
@@ -82,15 +83,18 @@ export async function GET(req: NextRequest) {
     orderBy: { datum: "asc" },
   });
 
-  // Filter by tageszeit client-side (based on startzeit)
+  // Filter by tageszeit client-side (based on startzeit); supports multiple values (comma-separated)
   let filtered = aktionen;
   if (tageszeit) {
+    const tagszeiten = tageszeit.split(",");
     filtered = aktionen.filter((a) => {
       const hour = parseInt(a.startzeit.split(":")[0], 10);
-      if (tageszeit === "vormittags") return hour < 12;
-      if (tageszeit === "tagsueber") return hour >= 12 && hour < 16;
-      if (tageszeit === "abends") return hour >= 16;
-      return true;
+      return tagszeiten.some((tz) => {
+        if (tz === "vormittags") return hour < 12;
+        if (tz === "tagsueber") return hour >= 12 && hour < 16;
+        if (tz === "abends") return hour >= 16;
+        return false;
+      });
     });
   }
 
@@ -150,8 +154,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(aktion, { status: 201 });
   } catch (error) {
-    if (error instanceof Error && error.name === "ZodError") {
-      return NextResponse.json({ error: "Validierungsfehler", details: error }, { status: 400 });
+    if (error instanceof ZodError) {
+      const firstMessage = error.issues[0]?.message ?? "Validierungsfehler";
+      return NextResponse.json({ error: firstMessage, details: error }, { status: 400 });
     }
     return NextResponse.json({ error: "Serverfehler" }, { status: 500 });
   }
