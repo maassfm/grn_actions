@@ -176,6 +176,7 @@ DATABASE_URL=postgresql://gruene:HIER_SICHERES_PASSWORT_EINSETZEN@localhost:5432
 # NextAuth
 NEXTAUTH_SECRET=HIER_NEXTAUTH_SECRET_EINSETZEN
 NEXTAUTH_URL=https://aktionen.gruene-mitte.de
+AUTH_TRUST_HOST=true
 
 # SMTP E-Mail
 SMTP_HOST=smtp.example.com
@@ -375,19 +376,21 @@ ufw status
 
 ## 13. Cron-Jobs einrichten
 
-### Tägliche Übersichts-E-Mail (21:00 Uhr)
-
-Der Cron-Job ruft den API-Endpunkt auf, der eine tägliche Zusammenfassung an alle Expert-Accounts sendet.
+Zwei Cron-Jobs sind erforderlich. Beide rufen gesicherte API-Endpunkte mit dem `CRON_SECRET` auf.
 
 ```bash
 # Als root
 crontab -e
 ```
 
-Folgende Zeile hinzufügen — **CRON_SECRET aus der `.env`-Datei eintragen!**
+Folgende Zeilen hinzufügen — **CRON_SECRET aus der `.env`-Datei eintragen!**
 
 ```cron
-0 21 * * * curl -s -H "Authorization: Bearer HIER_CRON_SECRET_EINSETZEN" http://127.0.0.1:3000/api/cron/daily-summary > /dev/null 2>&1
+# Tägliche Übersichts-E-Mail (21:00 Uhr)
+0 21 * * * curl -s -X POST -H "Authorization: Bearer HIER_CRON_SECRET_EINSETZEN" http://127.0.0.1:3000/api/cron/daily-summary > /dev/null 2>&1
+
+# Anmeldedaten-Löschung 72h nach Aktionsende (stündlich)
+0 * * * * curl -s -X POST -H "Authorization: Bearer HIER_CRON_SECRET_EINSETZEN" http://127.0.0.1:3000/api/cron/cleanup-anmeldungen > /dev/null 2>&1
 ```
 
 ---
@@ -659,6 +662,7 @@ journalctl -u gruene-aktionen | grep -i "email\|smtp\|mail"
 | `DATABASE_URL` | PostgreSQL-Verbindungsstring | `postgresql://gruene:pass@localhost:5432/gruene_aktionen` |
 | `NEXTAUTH_SECRET` | Geheimer Schlüssel für JWT-Signierung (min. 32 Zeichen) | `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | Öffentliche URL der App (mit https://) | `https://aktionen.gruene-mitte.de` |
+| `AUTH_TRUST_HOST` | Muss auf `true` gesetzt werden, da die App hinter Nginx läuft | `true` |
 | `SMTP_HOST` | SMTP-Server-Hostname | `smtp.example.com` |
 | `SMTP_PORT` | SMTP-Port | `587` |
 | `SMTP_SECURE` | TLS direkt ab Verbindungsaufbau (Port 465) | `false` |
