@@ -72,9 +72,9 @@ export default function DashboardPage() {
       </div>
 
       {aktionen.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center text-gray-500">
+        <div className="bg-white border-2 border-black shadow-[4px_4px_0_#000] p-8 text-center text-gray-500">
           <p>Noch keine Aktionen vorhanden.</p>
-          <Link href="/dashboard/aktionen/neu" className="text-tanne hover:underline mt-2 inline-block">
+          <Link href="/dashboard/aktionen/neu" className="text-tanne font-bold hover:underline mt-2 inline-block">
             Erste Aktion anlegen
           </Link>
         </div>
@@ -83,35 +83,41 @@ export default function DashboardPage() {
           {aktionen.map((aktion) => (
             <div
               key={aktion.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-4"
+              className="bg-white border-2 border-black shadow-[4px_4px_0_#000] p-4"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-bold text-tanne">{aktion.titel}</h3>
+                    <h3 className="font-headline font-bold text-tanne uppercase tracking-wide">{aktion.titel}</h3>
                     <StatusBadge status={aktion.status} />
                   </div>
-                  <div className="text-sm text-gray-600 space-y-0.5">
+                  <div className="text-sm text-black space-y-0.5">
                     <p>
                       📅 {format(new Date(aktion.datum), "EEEE, d. MMMM yyyy", { locale: de })} · {aktion.startzeit} – {aktion.endzeit}
                     </p>
                     <p>📍 {aktion.adresse}</p>
-                    {aktion.team && <p>🏷️ {aktion.team.name}</p>}
-                    <p>
+                    {aktion.team && (
+                      <p>
+                        <span className="text-xs font-bold uppercase tracking-wide bg-black text-white px-2 py-0.5 inline-block mt-1">
+                          {aktion.team.name}
+                        </span>
+                      </p>
+                    )}
+                    <p className="pt-1">
                       👥 {aktion._count.anmeldungen} Anmeldungen
                       {aktion.maxTeilnehmer ? ` / ${aktion.maxTeilnehmer} Plätze` : ""}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex gap-2 shrink-0">
+                <div className="flex flex-wrap gap-2 shrink-0">
                   <Link href={`/dashboard/aktionen/${aktion.id}/anmeldungen`}>
                     <Button variant="outline" size="sm">
                       Anmeldungen
                     </Button>
                   </Link>
                   <Link href={`/dashboard/aktionen/${aktion.id}`}>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="secondary" size="sm">
                       Bearbeiten
                     </Button>
                   </Link>

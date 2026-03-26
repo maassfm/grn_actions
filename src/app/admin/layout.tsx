@@ -43,10 +43,20 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 {session.user.name} &middot; Admin
               </span>
             )}
-            <Link href="/dashboard" className="text-sm text-white/70 hover:text-white transition-colors">
+            <Link
+              href="/dashboard"
+              className={`text-sm transition-colors font-medium ${
+                pathname.startsWith("/dashboard") ? "text-sonne" : "text-white/70 hover:text-white"
+              }`}
+            >
               Dashboard
             </Link>
-            <Link href="/admin" className="text-sm text-sonne hover:text-white transition-colors font-medium">
+            <Link
+              href="/admin"
+              className={`text-sm transition-colors font-medium ${
+                pathname.startsWith("/admin") ? "text-sonne" : "text-white/70 hover:text-white"
+              }`}
+            >
               Admin Panel
             </Link>
             <Link href="/" className="text-sm text-white/70 hover:text-white transition-colors">

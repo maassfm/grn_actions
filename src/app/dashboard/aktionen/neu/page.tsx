@@ -108,16 +108,20 @@ export default function NewAktionPage() {
       <div className="flex gap-2 mb-6">
         <button
           onClick={() => setTab("manual")}
-          className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
-            tab === "manual" ? "bg-tanne text-white" : "bg-white text-tanne border border-tanne"
+          className={`px-4 py-2 font-bold text-sm uppercase tracking-wide border-2 border-black transition-all ${
+            tab === "manual"
+              ? "bg-tanne text-white shadow-[2px_2px_0_#000]"
+              : "bg-white text-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px]"
           }`}
         >
           Manuell anlegen
         </button>
         <button
           onClick={() => setTab("excel")}
-          className={`px-4 py-2 rounded-lg font-bold text-sm transition-colors ${
-            tab === "excel" ? "bg-tanne text-white" : "bg-white text-tanne border border-tanne"
+          className={`px-4 py-2 font-bold text-sm uppercase tracking-wide border-2 border-black transition-all ${
+            tab === "excel"
+              ? "bg-tanne text-white shadow-[2px_2px_0_#000]"
+              : "bg-white text-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px]"
           }`}
         >
           Excel-Import
@@ -192,8 +196,8 @@ export default function NewAktionPage() {
               />
             )}
 
-            <div className="border-t border-gray-200 pt-4 mt-4">
-              <h3 className="font-bold text-gray-700 mb-3">Ansprechperson</h3>
+            <div className="border-t-2 border-black pt-4 mt-4">
+              <h3 className="font-headline font-bold uppercase tracking-wide text-black mb-3">Ansprechperson</h3>
               <div className="space-y-4">
                 <Input
                   label="Name"
@@ -230,7 +234,7 @@ export default function NewAktionPage() {
             />
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg p-3 text-sm">
+              <div className="border-2 border-black bg-red-50 text-red-600 p-3 text-sm shadow-[2px_2px_0_#000]">
                 {error}
               </div>
             )}

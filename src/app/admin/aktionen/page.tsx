@@ -64,58 +64,58 @@ export default function AdminAktionenPage() {
         <div className="flex gap-2">
           <a
             href="/api/export-aktionen?format=xlsx"
-            className="px-4 py-2 bg-tanne text-white text-sm font-medium rounded-lg hover:bg-tanne/90 transition-colors"
+            className="px-4 py-2 bg-tanne text-white text-sm font-bold uppercase tracking-wide border-2 border-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
           >
             Alle exportieren (Excel)
           </a>
           <a
             href="/api/export-aktionen?format=txt"
-            className="px-4 py-2 border border-tanne text-tanne text-sm font-medium rounded-lg hover:bg-tanne/10 transition-colors"
+            className="px-4 py-2 bg-white text-black text-sm font-bold uppercase tracking-wide border-2 border-black shadow-[4px_4px_0_#000] hover:shadow-[2px_2px_0_#000] hover:translate-x-[2px] hover:translate-y-[2px] transition-all"
           >
             Alle exportieren (TXT)
           </a>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
+      <div className="border-2 border-black overflow-x-auto shadow-[4px_4px_0_#000]">
         <table className="w-full min-w-[800px]">
-          <thead className="bg-sand">
+          <thead className="bg-sand border-b-2 border-black">
             <tr>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Titel</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Datum</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Wahlkreis</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Team</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Status</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Anmeldungen</th>
-              <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Details</th>
-              <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Export</th>
-              <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Löschen</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Titel</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Datum</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Wahlkreis</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Team</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Status</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Anmeldungen</th>
+              <th className="text-right px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Details</th>
+              <th className="text-right px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Export</th>
+              <th className="text-right px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Löschen</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y-2 divide-black">
             {aktionen.map((aktion) => (
-              <tr key={aktion.id} className="hover:bg-gray-50">
+              <tr key={aktion.id} className="hover:bg-sand/50 bg-white">
                 <td className="px-4 py-3 font-medium">{aktion.titel}</td>
-                <td className="px-4 py-3 text-gray-600">
+                <td className="px-4 py-3 text-gray-700">
                   {format(new Date(aktion.datum), "dd.MM.yyyy", { locale: de })}
                   <br />
                   <span className="text-xs">{aktion.startzeit} – {aktion.endzeit}</span>
                 </td>
-                <td className="px-4 py-3 text-gray-600">
+                <td className="px-4 py-3 text-gray-700">
                   WK {aktion.wahlkreis.nummer}
                 </td>
-                <td className="px-4 py-3 text-gray-600">{aktion.team.name}</td>
+                <td className="px-4 py-3 text-gray-700">{aktion.team.name}</td>
                 <td className="px-4 py-3">
                   <StatusBadge status={aktion.status} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 font-medium">
                   {aktion._count.anmeldungen}
                   {aktion.maxTeilnehmer ? ` / ${aktion.maxTeilnehmer}` : ""}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Link
                     href={`/dashboard/aktionen/${aktion.id}`}
-                    className="text-sm text-tanne hover:underline"
+                    className="text-sm text-tanne font-bold hover:underline"
                   >
                     Bearbeiten
                   </Link>
@@ -123,14 +123,14 @@ export default function AdminAktionenPage() {
                 <td className="px-4 py-3 text-right">
                   <a
                     href={`/api/export?format=xlsx&aktionId=${aktion.id}`}
-                    className="text-sm text-tanne hover:underline"
+                    className="text-sm text-tanne font-bold hover:underline"
                   >
                     xlsx
                   </a>
                   {" · "}
                   <a
                     href={`/api/export?format=txt&aktionId=${aktion.id}`}
-                    className="text-sm text-tanne hover:underline"
+                    className="text-sm text-tanne font-bold hover:underline"
                   >
                     txt
                   </a>
@@ -138,7 +138,7 @@ export default function AdminAktionenPage() {
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => handleDelete(aktion)}
-                    className="text-sm text-red-600 hover:underline"
+                    className="text-sm text-signal font-bold hover:underline"
                   >
                     Löschen
                   </button>

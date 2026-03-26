@@ -52,12 +52,12 @@ export default function TeamsPage() {
         {teams.map((team) => (
           <div
             key={team.id}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-4"
+            className="bg-white border-2 border-black p-4 shadow-[4px_4px_0_#000]"
           >
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-bold text-tanne text-lg">{team.name}</h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <h3 className="font-headline font-bold text-tanne text-lg uppercase tracking-wide">{team.name}</h3>
+                <p className="text-sm text-gray-600 mt-1">
                   {team.wahlkreis
                     ? `Wahlkreis ${team.wahlkreis.nummer}: ${team.wahlkreis.name}`
                     : "Bezirksweit"}
@@ -66,19 +66,19 @@ export default function TeamsPage() {
               <div className="flex gap-3">
                 <Link
                   href={`/admin/teams/${team.id}`}
-                  className="text-sm text-tanne hover:underline"
+                  className="text-sm text-tanne font-bold hover:underline"
                 >
                   Bearbeiten
                 </Link>
                 <button
                   onClick={() => handleDelete(team.id)}
-                  className="text-sm text-red-500 hover:underline"
+                  className="text-sm text-signal font-bold hover:underline"
                 >
                   Löschen
                 </button>
               </div>
             </div>
-            <div className="flex gap-4 mt-3 text-sm text-gray-600">
+            <div className="flex gap-4 mt-3 text-sm text-gray-700 border-t-2 border-black pt-3">
               <span>👤 {team._count.members} Mitglieder</span>
               <span>📋 {team._count.aktionen} Aktionen</span>
             </div>

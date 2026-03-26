@@ -56,29 +56,29 @@ export default function UsersPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="border-2 border-black overflow-hidden shadow-[4px_4px_0_#000]">
         <table className="w-full">
-          <thead className="bg-sand">
+          <thead className="bg-sand border-b-2 border-black">
             <tr>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Name</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">E-Mail</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Rolle</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Teams</th>
-              <th className="text-left px-4 py-3 text-sm font-bold text-gray-600 uppercase">Status</th>
-              <th className="text-right px-4 py-3 text-sm font-bold text-gray-600 uppercase">Aktionen</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Name</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">E-Mail</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Rolle</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Teams</th>
+              <th className="text-left px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Status</th>
+              <th className="text-right px-4 py-3 text-sm font-bold text-black uppercase tracking-wide">Aktionen</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y-2 divide-black">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
+              <tr key={user.id} className="hover:bg-sand/50 bg-white">
                 <td className="px-4 py-3 font-medium">{user.name}</td>
-                <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                <td className="px-4 py-3 text-gray-700">{user.email}</td>
                 <td className="px-4 py-3">
                   <Badge variant={user.role === "ADMIN" ? "info" : "default"}>
                     {user.role === "ADMIN" ? "Admin" : "Expert*in"}
                   </Badge>
                 </td>
-                <td className="px-4 py-3 text-gray-600 text-sm">
+                <td className="px-4 py-3 text-gray-700 text-sm">
                   {user.teams.length > 0 ? user.teams.map((t) => t.name).join(", ") : "–"}
                 </td>
                 <td className="px-4 py-3">
@@ -89,13 +89,13 @@ export default function UsersPage() {
                 <td className="px-4 py-3 text-right flex gap-3 justify-end">
                   <Link
                     href={`/admin/users/${user.id}`}
-                    className="text-sm text-tanne hover:underline"
+                    className="text-sm text-tanne font-bold hover:underline"
                   >
                     Bearbeiten
                   </Link>
                   <button
                     onClick={() => toggleActive(user)}
-                    className="text-sm text-gray-500 hover:underline"
+                    className="text-sm text-gray-500 font-bold hover:underline"
                   >
                     {user.active ? "Deaktivieren" : "Aktivieren"}
                   </button>

@@ -43,11 +43,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 {session.user.name} &middot; {isAdmin ? "Admin" : "Expert*in"}
               </span>
             )}
-            <Link href="/dashboard" className="text-sm hover:text-sonne transition-colors font-medium">
+            <Link
+              href="/dashboard"
+              className={`text-sm transition-colors font-medium ${
+                pathname.startsWith("/dashboard") ? "text-sonne" : "text-white/70 hover:text-white"
+              }`}
+            >
               Dashboard
             </Link>
             {isAdmin && (
-              <Link href="/admin" className="text-sm text-sonne hover:text-white transition-colors font-medium">
+              <Link
+                href="/admin"
+                className={`text-sm transition-colors font-medium ${
+                  pathname.startsWith("/admin") ? "text-sonne" : "text-white/70 hover:text-white"
+                }`}
+              >
                 Admin Panel
               </Link>
             )}
