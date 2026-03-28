@@ -121,7 +121,7 @@ export function anmeldebestaetigungEmail(
     <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
     Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
     <hr class="section-divider" />
-    <p>Du kannst Dir jederzeit eine Übersicht aller Aktionen, für die Du angemeldet bist, per E-Mail zusenden lassen: <a href="${baseUrl}/api/anmeldungen/meine-aktionen?email=${encodeURIComponent(email)}">Meine Anmeldungen per E-Mail anfordern →</a></p>
+    <p>Du kannst Dir jederzeit eine Übersicht aller Aktionen, für die Du angemeldet bist, per E-Mail zusenden lassen: <a href="${baseUrl}/meine-aktionen-bestaetigen?email=${encodeURIComponent(email)}">Meine Anmeldungen per E-Mail anfordern →</a></p>
     <p>Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
     ${aktionen.map((a, i) => {
       const cancelLink = cancelTokens?.[i]
