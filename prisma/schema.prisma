@@ -24,6 +24,7 @@ enum EmailTyp {
   ABSAGE
   TAEGLICHE_UEBERSICHT
   ABMELDUNG
+  ERINNERUNG
 }
 
 model User {

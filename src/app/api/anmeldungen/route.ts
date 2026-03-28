@@ -110,6 +110,7 @@ export async function POST(req: NextRequest) {
     if (successfulAktionen.length > 0) {
       const emailData = anmeldebestaetigungEmail(
         validated.vorname,
+        validated.email,
         successfulAktionen.map((s) => ({
           titel: s.aktion.titel,
           datum: s.aktion.datum,

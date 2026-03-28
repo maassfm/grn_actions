@@ -24,7 +24,7 @@ Wahlkampf-Koordinationsplattform für den Kreisverband Berlin-Mitte. Ermöglicht
 - **Admin-Bereich** für Benutzer-, Team- und Wahlkreis-Verwaltung mit Statistik-Dashboard
 - **E-Mail-System** via SMTP (Bestätigung, Änderung, Absage, tägliche Übersicht)
 - **Export** als Excel oder Signal-Textformat
-- **Cron-Jobs:** Tägliche Übersichts-E-Mail und automatische Löschung von Anmeldedaten nach 72 Stunden
+- **Cron-Jobs:** Tägliche Übersichts-E-Mail, Erinnerungs-E-Mails an Angemeldete (Abend vor der Aktion) und automatische Löschung von Anmeldedaten nach 72 Stunden
 
 ---
 
@@ -219,7 +219,7 @@ Die ausführliche Deployment-Anleitung (Hetzner Cloud, Nginx, SSL, Cron-Jobs, Ba
 │   │       ├── admin/           #   Admin-Endpunkte (stats, teams, users, aktionen)
 │   │       ├── aktionen/        #   Aktionen-CRUD + Anmeldungen pro Aktion
 │   │       ├── anmeldungen/     #   Registrierung + Abmeldung
-│   │       ├── cron/            #   daily-summary, cleanup-anmeldungen
+│   │       ├── cron/            #   daily-summary, cleanup-anmeldungen, send-erinnerungen
 │   │       ├── export/          #   Excel-/Signal-Export (Anmeldungen)
 │   │       ├── export-aktionen/ #   Aktionen-Export
 │   │       ├── upload/          #   Excel-Upload

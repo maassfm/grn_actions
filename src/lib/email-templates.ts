@@ -106,6 +106,7 @@ function formatAktionCard(aktion: AktionInfo, cancelLink?: string): string {
 
 export function anmeldebestaetigungEmail(
   vorname: string,
+  email: string,
   aktionen: AktionInfo[],
   cancelTokens?: string[]
 ): { subject: string; html: string } {
@@ -118,8 +119,9 @@ export function anmeldebestaetigungEmail(
     <p>Wir freuen uns auf Dich! 💚</p>
     <p>Viele Grüße<br>
     <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
-    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p> 
+    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
     <hr class="section-divider" />
+    <p>Du kannst Dir jederzeit eine Übersicht aller Aktionen, für die Du angemeldet bist, per E-Mail zusenden lassen: <a href="${baseUrl}/api/anmeldungen/meine-aktionen?email=${encodeURIComponent(email)}">Meine Anmeldungen per E-Mail anfordern →</a></p>
     <p>Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
     ${aktionen.map((a, i) => {
       const cancelLink = cancelTokens?.[i]
@@ -178,6 +180,63 @@ export function absageEmail(aktion: AktionInfo): { subject: string; html: string
   `;
 
   return { subject, html: baseLayout(content, "#E6007E") };
+}
+
+interface AktionInfoWithToken extends AktionInfo {
+  cancelToken?: string;
+}
+
+export function meineAktionenEmail(
+  aktionen: AktionInfoWithToken[]
+): { subject: string; html: string } {
+  const subject = "Deine Anmeldungen bei B90/GRÜNE Berlin-Mitte";
+
+  const aktionenHtml = aktionen.length > 0
+    ? `
+      <p>Du bist aktuell für folgende ${aktionen.length > 1 ? "Aktionen" : "Aktion"} angemeldet:</p>
+      ${aktionen.map((a) => {
+        const cancelLink = a.cancelToken
+          ? `${baseUrl}/api/anmeldungen/abmelden?token=${a.cancelToken}`
+          : undefined;
+        return formatAktionCard(a, cancelLink);
+      }).join("")}
+    `
+    : `<p>Du hast aktuell keine offenen Anmeldungen.</p>`;
+
+  const content = `
+    <h2>Deine Anmeldungen</h2>
+    <p>Du hast eine Übersicht Deiner Anmeldungen angefordert.</p>
+    ${aktionenHtml}
+    <hr class="section-divider" />
+    <p>Bei Fragen wende Dich gerne an uns.</p>
+  `;
+
+  return { subject, html: baseLayout(content) };
+}
+
+export function erinnerungsEmail(
+  vorname: string,
+  aktionen: (AktionInfo & { cancelToken?: string | null })[],
+): { subject: string; html: string } {
+  const subject = `Erinnerung: Deine Aktionen morgen – B90/GRÜNE Berlin-Mitte`;
+
+  const content = `
+    <p class="greeting">Hallo ${vorname},</p>
+    <p>morgen ist es soweit! Wir freuen uns, Dich bei ${aktionen.length > 1 ? "folgenden Aktionen" : "folgender Aktion"} zu sehen:</p>
+    ${aktionen.map((a) => {
+      const cancelLink = a.cancelToken
+        ? `${baseUrl}/api/anmeldungen/abmelden?token=${a.cancelToken}`
+        : undefined;
+      return formatAktionCard(a, cancelLink);
+    }).join("")}
+    <hr class="section-divider" />
+    <p>Falls Du doch nicht kommen kannst, melde Dich bitte rechtzeitig über den Abmelde-Link in der jeweiligen Aktion ab und schreibe der Ansprechpartner*in eine kurze Nachricht.</p>
+    <p>Viele Grüße<br>
+    <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
+    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+  `;
+
+  return { subject, html: baseLayout(content) };
 }
 
 interface TagesAnmeldung {

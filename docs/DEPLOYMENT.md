@@ -376,7 +376,7 @@ ufw status
 
 ## 13. Cron-Jobs einrichten
 
-Zwei Cron-Jobs sind erforderlich. Beide rufen gesicherte API-Endpunkte mit dem `CRON_SECRET` auf.
+Drei Cron-Jobs sind erforderlich. Alle rufen gesicherte API-Endpunkte mit dem `CRON_SECRET` auf.
 
 ```bash
 # Als root
@@ -391,6 +391,9 @@ Folgende Zeilen hinzufügen — **CRON_SECRET aus der `.env`-Datei eintragen!**
 
 # Anmeldedaten-Löschung 72h nach Aktionsende (stündlich)
 0 * * * * curl -s -X POST -H "Authorization: Bearer HIER_CRON_SECRET_EINSETZEN" http://127.0.0.1:3000/api/cron/cleanup-anmeldungen > /dev/null 2>&1
+
+# Erinnerungs-E-Mails an Angemeldete – Abend vor der Aktion (17:00 UTC = 19:00 CEST / 18:00 CET)
+0 17 * * * curl -s -X POST -H "Authorization: Bearer HIER_CRON_SECRET_EINSETZEN" http://127.0.0.1:3000/api/cron/send-erinnerungen > /dev/null 2>&1
 ```
 
 ---
@@ -453,6 +456,7 @@ gunzip -c /home/gruene/backups/gruene_aktionen_YYYYMMDD_HHMMSS.sql.gz | psql -U 
 - [ ] E-Mail-Versand getestet (Testregistrierung durchführen)
 - [ ] Backup-Script getestet
 - [ ] Cron-Job für tägliche E-Mails aktiv
+- [ ] Cron-Job für Erinnerungs-E-Mails aktiv (0 17 * * *)
 
 ### Passwörter ändern
 
