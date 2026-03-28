@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
+import Dialog from "@/components/ui/Dialog";
 import { format, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { de } from "date-fns/locale";
 
@@ -24,6 +25,7 @@ interface Aktion {
 export default function DashboardPage() {
   const [aktionen, setAktionen] = useState<Aktion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cancelId, setCancelId] = useState<string | null>(null);
 
   // Filter States
   const [dateFilter, setDateFilter] = useState<"alle" | "heute" | "morgen" | "woche">("alle");
@@ -38,13 +40,17 @@ export default function DashboardPage() {
       });
   }, []);
 
-  async function handleCancel(id: string) {
-    if (!confirm("Aktion wirklich absagen? Alle Angemeldeten werden benachrichtigt.")) return;
+  function handleCancel(id: string) {
+    setCancelId(id);
+  }
+
+  async function confirmCancel() {
+    if (!cancelId) return;
+    const id = cancelId;
+    setCancelId(null);
     const res = await fetch(`/api/aktionen/${id}`, { method: "DELETE" });
     if (res.ok) {
-      setAktionen(
-        aktionen.map((a) => (a.id === id ? { ...a, status: "ABGESAGT" } : a))
-      );
+      setAktionen(aktionen.map((a) => (a.id === id ? { ...a, status: "ABGESAGT" } : a)));
     }
   }
 
@@ -212,6 +218,23 @@ export default function DashboardPage() {
           ))}
         </div>
       )}
+      <Dialog
+        open={cancelId !== null}
+        onClose={() => setCancelId(null)}
+        title="Aktion absagen"
+      >
+        <p className="mb-6 text-gray-700">
+          Aktion wirklich absagen? Alle Angemeldeten werden benachrichtigt.
+        </p>
+        <div className="flex gap-3 justify-end">
+          <Button variant="secondary" onClick={() => setCancelId(null)}>
+            Abbrechen
+          </Button>
+          <Button variant="danger" onClick={confirmCancel}>
+            Absagen
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
 }
