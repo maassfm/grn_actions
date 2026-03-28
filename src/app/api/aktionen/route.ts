@@ -85,13 +85,45 @@ export async function GET(req: NextRequest) {
 
   // Filter by tageszeit client-side (based on startzeit); supports multiple values (comma-separated)
   let filtered = aktionen;
+
+  // NEU: Aktionen ausblenden, deren Startzeit bereits erreicht wurde (nur für öffentliche Ansicht)
+  if (!session || isPublic) {
+    const now = new Date();
+    // Nutzt die deutsche Zeitzone, um Server-Zeitverschiebungen (UTC) auszugleichen
+    const currentTime = now.toLocaleTimeString("de-DE", { 
+      timeZone: "Europe/Berlin", 
+      hour: "2-digit", 
+      minute: "2-digit" 
+    });
+    const currentDate = now.toLocaleDateString("sv-SE", { 
+      timeZone: "Europe/Berlin" 
+    }); // Format: YYYY-MM-DD
+
+    filtered = filtered.filter((a) => {
+      const aktionDate = new Date(a.datum).toLocaleDateString("sv-SE", { 
+        timeZone: "Europe/Berlin" 
+      });
+
+      // Zukünftige Tage immer anzeigen
+      if (aktionDate > currentDate) return true;
+      
+      // Am selben Tag nur anzeigen, wenn die Startzeit noch in der Zukunft liegt
+      if (aktionDate === currentDate) {
+        return a.startzeit > currentTime; 
+      }
+      
+      // Vergangene Tage ausblenden
+      return false;
+    });
+  }
+
   if (tageszeit) {
     const tagszeiten = tageszeit.split(",");
-    filtered = aktionen.filter((a) => {
+    filtered = filtered.filter((a) => {
       const hour = parseInt(a.startzeit.split(":")[0], 10);
       return tagszeiten.some((tz) => {
-        if (tz === "vormittags") return hour < 12;
-        if (tz === "tagsueber") return hour >= 12 && hour < 16;
+        if (tz === "vormittags") return hour < 10;
+        if (tz === "tagsueber") return hour >= 10 && hour < 16;
         if (tz === "abends") return hour >= 16;
         return false;
       });

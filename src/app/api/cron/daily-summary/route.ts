@@ -10,21 +10,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
   }
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
-  const dayAfterTomorrow = new Date(tomorrow);
-  dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+  const now = new Date();
+  const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const tomorrowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+  const dayAfterTomorrowUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 2));
 
   // Find all registrations from today
   const todaysAnmeldungen = await prisma.anmeldung.findMany({
     where: {
       createdAt: {
-        gte: today,
-        lt: tomorrow,
+        gte: todayUTC,
+        lt: tomorrowUTC,
       },
     },
     include: {
@@ -35,7 +31,7 @@ export async function POST(req: NextRequest) {
   // Find all active actions happening tomorrow
   const aktionenMorgen = await prisma.aktion.findMany({
     where: {
-      datum: { gte: tomorrow, lt: dayAfterTomorrow },
+      datum: { gte: tomorrowUTC, lt: dayAfterTomorrowUTC },
       status: { in: ["AKTIV", "GEAENDERT"] },
     },
     include: { anmeldungen: true },
@@ -46,8 +42,8 @@ export async function POST(req: NextRequest) {
     where: {
       typ: "ABMELDUNG",
       gesendetAm: {
-        gte: today,
-        lt: tomorrow,
+        gte: todayUTC,
+        lt: tomorrowUTC,
       },
     },
     include: {
@@ -154,7 +150,7 @@ export async function POST(req: NextRequest) {
       })),
     }));
 
-    const emailData = tagesUebersichtEmail(name, today, aktionenList, morgenList, abmeldungen);
+    const emailData = tagesUebersichtEmail(name, todayUTC, aktionenList, morgenList, abmeldungen);
     await sendEmail({
       to: email,
       subject: emailData.subject,

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import { format } from "date-fns";
+import { format, isToday, isTomorrow, isThisWeek } from "date-fns";
 import { de } from "date-fns/locale";
 
 interface Aktion {
@@ -25,6 +25,10 @@ export default function DashboardPage() {
   const [aktionen, setAktionen] = useState<Aktion[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Filter States
+  const [dateFilter, setDateFilter] = useState<"alle" | "heute" | "morgen" | "woche">("alle");
+  const [activeOnly, setActiveOnly] = useState(false);
+
   useEffect(() => {
     fetch("/api/aktionen")
       .then((r) => r.json())
@@ -44,23 +48,44 @@ export default function DashboardPage() {
     }
   }
 
+  // Aktionen filtern
+  const filteredAktionen = aktionen.filter((a) => {
+    // Status Filter
+    if (activeOnly && a.status === "ABGESAGT") return false;
+
+    // Datums Filter
+    const date = new Date(a.datum);
+    if (dateFilter === "heute" && !isToday(date)) return false;
+    if (dateFilter === "morgen" && !isTomorrow(date)) return false;
+    // weekStartsOn: 1 setzt Montag als ersten Tag der Woche
+    if (dateFilter === "woche" && !isThisWeek(date, { weekStartsOn: 1 })) return false;
+
+    return true;
+  });
+
+  // Export-URL Parameter aufbauen
+  const exportParams = new URLSearchParams();
+  if (dateFilter !== "alle") exportParams.set("dateFilter", dateFilter);
+  if (activeOnly) exportParams.set("activeOnly", "true");
+  const exportQuery = exportParams.toString() ? `&${exportParams.toString()}` : "";
+
   if (loading) {
     return <div className="text-gray-500 p-8">Lade Aktionen...</div>;
   }
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="font-headline text-2xl font-bold text-tanne uppercase">
           Meine Aktionen
         </h1>
-        <div className="flex items-center gap-2">
-          {aktionen.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {filteredAktionen.length > 0 && (
             <>
-              <a href="/api/export-aktionen?format=xlsx">
+              <a href={`/api/export-aktionen?format=xlsx${exportQuery}`}>
                 <Button variant="outline" size="sm">Excel exportieren</Button>
               </a>
-              <a href="/api/export-aktionen?format=txt">
+              <a href={`/api/export-aktionen?format=txt${exportQuery}`}>
                 <Button variant="outline" size="sm">Signal-Text</Button>
               </a>
             </>
@@ -71,21 +96,69 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {aktionen.length === 0 ? (
+      {/* Filter Bar */}
+      <div className="flex flex-wrap items-center gap-6 mb-8 bg-white border-2 border-black p-4 shadow-[4px_4px_0_#000]">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-bold uppercase">Zeitraum:</span>
+          <Button
+            variant={dateFilter === "alle" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setDateFilter("alle")}
+          >
+            Alle
+          </Button>
+          <Button
+            variant={dateFilter === "heute" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setDateFilter("heute")}
+          >
+            Heute
+          </Button>
+          <Button
+            variant={dateFilter === "morgen" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setDateFilter("morgen")}
+          >
+            Morgen
+          </Button>
+          <Button
+            variant={dateFilter === "woche" ? "primary" : "outline"}
+            size="sm"
+            onClick={() => setDateFilter("woche")}
+          >
+            Diese Woche
+          </Button>
+        </div>
+        <div className="flex items-center border-l-2 border-gray-300 pl-6">
+          <label className="flex items-center gap-2 text-sm font-bold uppercase cursor-pointer">
+            <input
+              type="checkbox"
+              checked={activeOnly}
+              onChange={(e) => setActiveOnly(e.target.checked)}
+              className="w-4 h-4 accent-tanne cursor-pointer"
+            />
+            Nur Aktive (Aktiv/Geändert)
+          </label>
+        </div>
+      </div>
+
+      {filteredAktionen.length === 0 ? (
         <div className="bg-white border-2 border-black shadow-[4px_4px_0_#000] p-8 text-center text-gray-500">
-          <p>Noch keine Aktionen vorhanden.</p>
-          <Link href="/dashboard/aktionen/neu" className="text-tanne font-bold hover:underline mt-2 inline-block">
-            Erste Aktion anlegen
-          </Link>
+          <p>Keine Aktionen für diese Filter gefunden.</p>
+          {aktionen.length === 0 && (
+            <Link href="/dashboard/aktionen/neu" className="text-tanne font-bold hover:underline mt-2 inline-block">
+              Erste Aktion anlegen
+            </Link>
+          )}
         </div>
       ) : (
         <div className="space-y-3">
-          {aktionen.map((aktion) => (
+          {filteredAktionen.map((aktion) => (
             <div
               key={aktion.id}
               className="bg-white border-2 border-black shadow-[4px_4px_0_#000] p-4"
             >
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-headline font-bold text-tanne uppercase tracking-wide">{aktion.titel}</h3>
@@ -110,26 +183,29 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2 shrink-0">
-                  <Link href={`/dashboard/aktionen/${aktion.id}/anmeldungen`}>
-                    <Button variant="outline" size="sm">
+                <div className="flex flex-col gap-2 shrink-0 sm:flex-row sm:flex-wrap items-start">
+                  <Link href={`/dashboard/aktionen/${aktion.id}/anmeldungen`} className="sm:w-auto self-start">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       Anmeldungen
                     </Button>
                   </Link>
-                  <Link href={`/dashboard/aktionen/${aktion.id}`}>
-                    <Button variant="secondary" size="sm">
-                      Bearbeiten
-                    </Button>
-                  </Link>
-                  {aktion.status !== "ABGESAGT" && (
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => handleCancel(aktion.id)}
-                    >
-                      Absagen
-                    </Button>
-                  )}
+                  <div className="flex gap-2 w-full sm:w-auto self-start items-center">
+                    <Link href={`/dashboard/aktionen/${aktion.id}`} className="flex-1 sm:flex-none self-start">
+                      <Button variant="secondary" size="sm" className="w-full sm:w-auto">
+                        Bearbeiten
+                      </Button>
+                    </Link>
+                    {aktion.status !== "ABGESAGT" && (
+                      <Button
+                        variant="danger"
+                        size="sm"
+                        className="flex-none self-start"
+                        onClick={() => handleCancel(aktion.id)}
+                      >
+                        Absagen
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

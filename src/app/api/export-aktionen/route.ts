@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createAktionenExcel, createAktionenTxt } from "@/lib/excel";
-import { format } from "date-fns";
+import { format, startOfDay, endOfDay, addDays, startOfWeek, endOfWeek } from "date-fns";
 import { de } from "date-fns/locale";
 
 export async function GET(req: NextRequest) {
@@ -14,6 +14,8 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const exportFormat = searchParams.get("format") || "xlsx";
   const teamId = searchParams.get("teamId");
+  const dateFilter = searchParams.get("dateFilter");
+  const activeOnly = searchParams.get("activeOnly") === "true";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
@@ -22,6 +24,32 @@ export async function GET(req: NextRequest) {
     where.teamId = { in: session.user.teamIds };
   } else if (teamId) {
     where.teamId = teamId;
+  }
+
+  // Datums-Filter auf Prisma anwenden
+  const now = new Date();
+  if (dateFilter === "heute") {
+    where.datum = {
+      gte: startOfDay(now),
+      lte: endOfDay(now),
+    };
+  } else if (dateFilter === "morgen") {
+    const tomorrow = addDays(now, 1);
+    where.datum = {
+      gte: startOfDay(tomorrow),
+      lte: endOfDay(tomorrow),
+    };
+  } else if (dateFilter === "woche") {
+    // weekStartsOn: 1 -> Montag
+    where.datum = {
+      gte: startOfWeek(now, { weekStartsOn: 1 }),
+      lte: endOfWeek(now, { weekStartsOn: 1 }),
+    };
+  }
+
+  // Status-Filter auf Prisma anwenden
+  if (activeOnly) {
+    where.status = { in: ["AKTIV", "GEAENDERT"] };
   }
 
   const aktionen = await prisma.aktion.findMany({
