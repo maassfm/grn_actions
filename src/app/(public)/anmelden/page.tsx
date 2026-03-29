@@ -150,7 +150,6 @@ function AnmeldenPageContent() {
 
       {/* Registration form */}
       <AnmeldeFormular
-        variant="page"
         selectedIds={selectedIds}
         aktionTitles={aktionTitles}
         onSuccess={handleSuccess}
