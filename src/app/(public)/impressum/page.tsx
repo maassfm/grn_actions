@@ -11,13 +11,9 @@ export default function ImpressumPage() {
             Angaben gemäß § 5 TMG
           </h2>
           <p>
-            BÜNDNIS 90/DIE GRÜNEN<br />
-            Kreisverband Berlin-Mitte<br />
-            {/* TODO: DEPLOY-BLOCKER — Echte Postadresse des Kreisverbands eintragen.
-                Die App darf nicht live gehen solange dieser Platzhalter aktiv ist.
-                Kontakt: Kreisgeschaeftsstelle BUENDNIS 90/DIE GRUENEN Berlin-Mitte */}
-            Anschrift wird noch ergänzt<br />
-            10115 Berlin
+            BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte<br />
+            Tegeler Straße 31<br />
+            13353 Berlin <br />
           </p>
         </section>
 
@@ -37,11 +33,8 @@ export default function ImpressumPage() {
           </h2>
           <p>
             Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte<br />
-            {/* TODO: DEPLOY-BLOCKER — Echte Postadresse des Kreisverbands eintragen.
-                Die App darf nicht live gehen solange dieser Platzhalter aktiv ist.
-                Kontakt: Kreisgeschaeftsstelle BUENDNIS 90/DIE GRUENEN Berlin-Mitte */}
-            Anschrift wird noch ergänzt<br />
-            10115 Berlin
+            Tegeler Straße 31<br />
+            13353 Berlin
           </p>
         </section>
 

@@ -12,10 +12,8 @@ export default function DatenschutzPage() {
           </h2>
           <p>
             BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte<br />
-            {/* TODO: DEPLOY-BLOCKER — Echte Postadresse des Kreisverbands eintragen.
-                Die App darf nicht live gehen solange dieser Platzhalter aktiv ist.
-                Kontakt: Kreisgeschaeftsstelle BUENDNIS 90/DIE GRUENEN Berlin-Mitte */}
-            Anschrift wird noch ergänzt<br />
+            Tegeler Straße 31<br />
+            13353 Berlin <br />
             E-Mail: info@gruene-mitte.de
           </p>
         </section>
@@ -30,8 +28,8 @@ export default function DatenschutzPage() {
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li>Vorname und Nachname</li>
             <li>E-Mail-Adresse</li>
-            <li>Telefonnummer (optional)</li>
-            <li>Signal-Name (optional)</li>
+            <li>Telefonnummer (Alternativ Signal-Nutzername)</li>
+            <li>Signal-Name (optional als Alternative zur Telefonnummer)</li>
           </ul>
         </section>
 
@@ -113,7 +111,7 @@ export default function DatenschutzPage() {
             Kontakt
           </h2>
           <p>
-            Bei Fragen zum Datenschutz wende dich an: datenschutz@gruene-mitte.de
+            Bei Fragen zum Datenschutz wende dich an: info@gruene-mitte.de
           </p>
         </section>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import FilterBar, { type FilterState } from "@/components/FilterBar";
 import AktionCard from "@/components/AktionCard";
@@ -31,17 +32,29 @@ interface Aktion {
   _count: { anmeldungen: number };
 }
 
-export default function AktionenPage() {
+function AktionenPageInner() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [aktionen, setAktionen] = useState<Aktion[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"liste" | "karte">("liste");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [filters, setFilters] = useState<FilterState>({
-    datum: "",
-    datumBis: "",
-    tageszeit: [],
-    wahlkreise: [],
+    datum: searchParams.get("datum") ?? "",
+    datumBis: searchParams.get("datumBis") ?? "",
+    tageszeit: searchParams.get("tageszeit")?.split(",").filter(Boolean) ?? [],
+    wahlkreise: searchParams.get("wahlkreis")?.split(",").map(Number).filter(Boolean) ?? [],
   });
+
+  function handleFilterChange(newFilters: FilterState) {
+    setFilters(newFilters);
+    const params = new URLSearchParams();
+    if (newFilters.datum) params.set("datum", newFilters.datum);
+    if (newFilters.datumBis) params.set("datumBis", newFilters.datumBis);
+    if (newFilters.tageszeit.length > 0) params.set("tageszeit", newFilters.tageszeit.join(","));
+    if (newFilters.wahlkreise.length > 0) params.set("wahlkreis", newFilters.wahlkreise.join(","));
+    router.replace(`/?${params}`, { scroll: false });
+  }
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -81,7 +94,7 @@ export default function AktionenPage() {
 
   return (
     <div className={selectedIds.size > 0 ? "pb-24" : ""}>
-      <FilterBar filters={filters} onFilterChange={setFilters} />
+      <FilterBar filters={filters} onFilterChange={handleFilterChange} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* View toggle */}
@@ -152,5 +165,13 @@ export default function AktionenPage() {
         aktionTitles={aktionTitles}
       />
     </div>
+  );
+}
+
+export default function AktionenPage() {
+  return (
+    <Suspense>
+      <AktionenPageInner />
+    </Suspense>
   );
 }

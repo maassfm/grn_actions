@@ -59,7 +59,7 @@ export default function AnmeldungenPage({ params }: { params: Promise<{ id: stri
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
         <div>
           <h1 className="font-headline text-2xl font-bold text-tanne uppercase">
             Anmeldungen
@@ -68,7 +68,7 @@ export default function AnmeldungenPage({ params }: { params: Promise<{ id: stri
             <p className="text-gray-600 mt-1">{aktion.titel}</p>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 shrink-0">
           <Button variant="outline" size="sm" onClick={() => downloadExport("xlsx")}>
             Excel-Export
           </Button>
@@ -87,8 +87,26 @@ export default function AnmeldungenPage({ params }: { params: Promise<{ id: stri
           <CardHeader>
             <CardTitle>{anmeldungen.length} Anmeldung{anmeldungen.length !== 1 ? "en" : ""}</CardTitle>
           </CardHeader>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[600px]">
+          {/* Mobile: stacked cards */}
+          <div className="block md:hidden divide-y divide-gray-100">
+            {anmeldungen.map((a) => (
+              <div key={a.id} className="py-3">
+                <div className="font-medium">{a.vorname} {a.nachname}</div>
+                <div className="text-sm text-gray-600 break-all">{a.email}</div>
+                {a.telefon && <div className="text-sm text-gray-600">{a.telefon}</div>}
+                {a.signalName && <div className="text-sm text-gray-600">Signal: {a.signalName}</div>}
+                <button
+                  onClick={() => handleDelete(a.id)}
+                  className="text-sm text-red-500 hover:underline mt-1"
+                >
+                  Löschen
+                </button>
+              </div>
+            ))}
+          </div>
+          {/* Desktop: table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-2 text-sm font-bold text-gray-600">Name</th>

@@ -45,3 +45,4 @@ next-env.d.ts
 # prisma - migrations müssen im Repo sein für `prisma migrate deploy`!
 .planning/
 .claude
+/scripts

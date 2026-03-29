@@ -4,20 +4,19 @@ import { forwardRef, type InputHTMLAttributes } from "react";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  hint?: string;
   error?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, className = "", id, ...props }, ref) => {
+  ({ label, hint, error, className = "", id, ...props }, ref) => {
     const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
     return (
       <div className="w-full">
         {label && (
-          <label
-            htmlFor={inputId}
-            className="block text-sm font-bold uppercase tracking-wide text-black mb-1"
-          >
-            {label}
+          <label htmlFor={inputId} className="flex items-baseline gap-2 mb-1">
+            <span className="text-sm font-bold uppercase tracking-wide text-black whitespace-nowrap">{label}</span>
+            {hint && <span className="text-xs text-gray-500 font-normal normal-case tracking-normal whitespace-nowrap">{hint}</span>}
           </label>
         )}
         <input
