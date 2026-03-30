@@ -1,11 +1,15 @@
 export default function DatenschutzPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="font-headline text-3xl font-bold text-tanne uppercase mb-8">
+      <h1 className="font-headline text-3xl font-bold text-tanne uppercase mb-2">
         Datenschutzerklärung
       </h1>
+      <p className="text-sm text-gray-500 mb-8">
+        Wahlkampfaktionen – Koordinationsplattform · Stand: März 2026
+      </p>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-8 space-y-6 text-gray-700 leading-relaxed">
+      <div className="bg-white border-2 border-black p-6 md:p-8 space-y-6 shadow-[4px_4px_0_#000] leading-relaxed">
+
         <section>
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
             Verantwortliche Stelle
@@ -13,36 +17,48 @@ export default function DatenschutzPage() {
           <p>
             BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte<br />
             Tegeler Straße 31<br />
-            13353 Berlin <br />
+            13353 Berlin<br />
             E-Mail: info@gruene-mitte.de
           </p>
         </section>
 
         <section>
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
-            Erhebung und Verarbeitung personenbezogener Daten
+            Datenschutzbeauftragte*r
           </h2>
-          <p>
-            Bei der Anmeldung zu Wahlkampfaktionen werden folgende Daten erhoben:
+          <p className="mb-2">
+            Den Datenschutzbeauftragten für BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte erreichst Du unter:
           </p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>Vorname und Nachname</li>
-            <li>E-Mail-Adresse</li>
-            <li>Telefonnummer (Alternativ Signal-Nutzername)</li>
-            <li>Signal-Name (optional als Alternative zur Telefonnummer)</li>
-          </ul>
+          <p>
+            SCO-CON:SULT<br />
+            Hauptstraße 27<br />
+            53604 Bad Honnef<br />
+            E-Mail:{" "}
+            <a href="mailto:datenschutz@gruene-berlin.de" className="text-tanne underline">
+              datenschutz@gruene-berlin.de
+            </a>
+            <br />
+            Tel.: 02224/988290
+          </p>
         </section>
 
         <section>
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
-            Zweck der Datenverarbeitung
+            Erhobene Daten und Zweck der Verarbeitung
           </h2>
-          <p>
-            Die erhobenen Daten werden ausschließlich zur Koordination von
-            Wahlkampfaktionen verwendet. Dies umfasst:
+          <p className="mb-2">
+            Bei der Anmeldung zu Wahlkampfaktionen werden folgende personenbezogene Daten erhoben
+            und ausschließlich zur Koordination dieser Aktionen genutzt:
           </p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>Bestätigung der Anmeldung per E-Mail</li>
+          <ul className="list-disc list-inside space-y-1 mb-3">
+            <li>Vorname und Nachname</li>
+            <li>E-Mail-Adresse</li>
+            <li>Telefonnummer (alternativ: Signal-Nutzername)</li>
+            <li>Signal-Name (optional)</li>
+          </ul>
+          <p className="mb-2">Die Daten werden konkret verwendet für:</p>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Bestätigung und Erinnerung der Anmeldung per E-Mail</li>
             <li>Benachrichtigung bei Änderungen oder Absagen von Aktionen</li>
             <li>Koordination der Aktionen durch die zuständigen Ansprechpersonen</li>
           </ul>
@@ -52,47 +68,94 @@ export default function DatenschutzPage() {
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
             Rechtsgrundlage
           </h2>
+          <p className="mb-3">
+            Die Verarbeitung erfolgt auf Grundlage deiner Einwilligung gemäß Art. 6 Abs. 1 lit. a
+            DSGVO, die du durch das Setzen des Häkchens im Anmeldeformular erteilst.
+          </p>
           <p>
-            Die Verarbeitung erfolgt auf Grundlage deiner Einwilligung (Art. 6 Abs. 1 lit. a DSGVO),
-            die du durch das Setzen des Häkchens im Anmeldeformular erteilst.
+            Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen – formlos
+            per E-Mail an{" "}
+            <a href="mailto:info@gruene-mitte.de" className="text-tanne underline">
+              info@gruene-mitte.de
+            </a>{" "}
+            oder über den Abmeldelink in deiner Bestätigungs-E-Mail. Der Widerruf berührt nicht die
+            Rechtmäßigkeit der bis dahin erfolgten Verarbeitung (Art. 7 Abs. 3 DSGVO).
           </p>
         </section>
 
         <section>
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
-            Löschung der Daten
+            Empfänger und Auftragsverarbeiter
+          </h2>
+          <p className="mb-3">
+            Deine Daten werden nicht an Dritte verkauft oder zu anderen Zwecken weitergegeben. Zur
+            technischen Bereitstellung dieser Plattform setzen wir folgende Dienstleister als
+            Auftragsverarbeiter ein, mit denen Auftragsverarbeitungsverträge gemäß Art. 28 DSGVO
+            geschlossen wurden:
+          </p>
+          <p className="font-bold mb-1">Hosting</p>
+          <p className="mb-3">
+            Hetzner Online GmbH<br />
+            Industriestr. 25, 91710 Gunzenhausen<br />
+            Serverstandort: Deutschland<br />
+            <a
+              href="https://www.hetzner.com/de/legal/privacy-policy"
+              className="text-tanne underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://www.hetzner.com/de/legal/privacy-policy
+            </a>
+          </p>
+          <p className="font-bold mb-1">E-Mail-Versand</p>
+          <p>
+            Verdigado eG<br />
+            <a
+              href="https://www.verdigado.com/datenschutz"
+              className="text-tanne underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://www.verdigado.com/datenschutz
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
+            Übermittlung in Drittländer
           </h2>
           <p>
-            Deine Anmeldedaten (Vorname, Nachname, E-Mail-Adresse, Telefonnummer, Signal-Name) werden
-            72 Stunden nach Ende der jeweiligen Aktion automatisch gelöscht. Anschließend werden
-            ausschließlich anonymisierte Gesamtzahlen (Anzahl der Anmeldungen pro Aktion) zu
-            statistischen Zwecken gespeichert. Ein Rückschluss auf einzelne Personen ist danach
-            nicht mehr möglich.
+            Eine Übermittlung deiner Daten in Länder außerhalb der Europäischen Union oder des
+            Europäischen Wirtschaftsraums findet nicht statt.
           </p>
-          <p className="mt-3">
-            Alle anderen personenbezogenen Daten (Nutzer-Accounts der Expert*innen und
-            Administrator*innen, Team-Zuordnungen) werden spätestens am 31. Oktober 2026 gelöscht.
+        </section>
+
+        <section>
+          <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
+            Speicherdauer und Löschung
+          </h2>
+          <p className="mb-3">
+            Deine Anmeldedaten (Vorname, Nachname, E-Mail-Adresse, Telefonnummer, Signal-Name)
+            werden <strong>72 Stunden nach Ende der jeweiligen Aktion automatisch gelöscht</strong>.
+            Anschließend werden ausschließlich anonymisierte Gesamtzahlen (Anzahl der Anmeldungen
+            pro Aktion) zu statistischen Zwecken gespeichert. Ein Rückschluss auf einzelne Personen
+            ist danach nicht mehr möglich.
           </p>
-          <p className="mt-3">
-            Die anonymisierten statistischen Daten (Anzahl Anmeldungen pro Aktion) werden ebenfalls
+          <p>
+            Nutzer-Accounts der Expert*innen und Administrator*innen sowie Team-Zuordnungen werden
             spätestens am 31. Oktober 2026 gelöscht.
           </p>
         </section>
 
         <section>
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
-            Deine Rechte
+            Automatisierte Entscheidungsfindung
           </h2>
-          <p>Du hast das Recht auf:</p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
-            <li>Auskunft über die zu deiner Person gespeicherten Daten</li>
-            <li>Berichtigung unrichtiger Daten</li>
-            <li>Löschung deiner Daten</li>
-            <li>Einschränkung der Verarbeitung</li>
-            <li>Widerruf deiner Einwilligung</li>
-            <li>Selbstabmeldung von Aktionen über den Link in deiner Bestätigungs-E-Mail</li>
-            <li>Beschwerde bei einer Aufsichtsbehörde</li>
-          </ul>
+          <p>
+            Es findet keine automatisierte Entscheidungsfindung einschließlich Profiling im Sinne
+            von Art. 22 DSGVO statt.
+          </p>
         </section>
 
         <section>
@@ -100,20 +163,81 @@ export default function DatenschutzPage() {
             Cookies
           </h2>
           <p>
-            Diese Website verwendet keine Tracking-Cookies. Lediglich ein
-            technisch notwendiger Session-Cookie wird für eingeloggte
-            Expert*innen und Administrator*innen gesetzt.
+            Diese Website verwendet keine Tracking-Cookies. Für eingeloggte Expert*innen und
+            Administrator*innen wird ein technisch notwendiger Session-Cookie gesetzt. Dieser
+            enthält eine verschlüsselte Sitzungs-ID, wird nicht zur Verfolgung genutzt und erlischt
+            automatisch beim Schließen des Browsers bzw. nach Ablauf der Sitzung.
           </p>
         </section>
 
         <section>
           <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
-            Kontakt
+            Deine Rechte
           </h2>
+          <p className="mb-2">
+            Dir stehen gegenüber der verantwortlichen Stelle folgende Rechte zu:
+          </p>
+          <ul className="list-disc list-inside space-y-1 mb-3">
+            <li>Auskunft (Art. 15 DSGVO)</li>
+            <li>Berichtigung (Art. 16 DSGVO)</li>
+            <li>Löschung (Art. 17 DSGVO)</li>
+            <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+            <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+            <li>Widerruf der Einwilligung (Art. 7 Abs. 3 DSGVO)</li>
+            <li>Selbstabmeldung über den Link in der Bestätigungs-E-Mail</li>
+            <li>Beschwerde bei einer Aufsichtsbehörde (Art. 77 DSGVO)</li>
+          </ul>
           <p>
-            Bei Fragen zum Datenschutz wende dich an: info@gruene-mitte.de
+            Zur Ausübung deiner Rechte wende dich an:{" "}
+            <a href="mailto:info@gruene-mitte.de" className="text-tanne underline">
+              info@gruene-mitte.de
+            </a>
           </p>
         </section>
+
+        <section>
+          <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
+            Zuständige Aufsichtsbehörde
+          </h2>
+          <p className="mb-2">
+            Du hast das Recht, dich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren:
+          </p>
+          <p>
+            Berliner Beauftragte für Datenschutz und Informationsfreiheit<br />
+            Alt-Moabit 59–61<br />
+            10555 Berlin<br />
+            Telefon: 030 / 138 89-0<br />
+            E-Mail:{" "}
+            <a href="mailto:mailbox@datenschutz-berlin.de" className="text-tanne underline">
+              mailbox@datenschutz-berlin.de
+            </a>
+            <br />
+            <a
+              href="https://www.datenschutz-berlin.de"
+              className="text-tanne underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://www.datenschutz-berlin.de
+            </a>
+          </p>
+        </section>
+
+        <section>
+          <h2 className="font-headline text-xl font-bold text-tanne uppercase mb-3">
+            Kontakt bei Datenschutzfragen
+          </h2>
+          <p>
+            Bei Fragen zum Datenschutz wende dich an:{" "}
+            <a href="mailto:info@gruene-mitte.de" className="text-tanne underline">
+              info@gruene-mitte.de
+            </a>
+          </p>
+        </section>
+
+        <p className="text-sm text-gray-500 border-t-2 border-black pt-4">
+          BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte · Stand: März 2026
+        </p>
       </div>
     </div>
   );

@@ -133,10 +133,18 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  const randomDelay = () =>
+    new Promise<void>((resolve) =>
+      setTimeout(resolve, 25_000 + Math.random() * 20_000)
+    );
+
   // Send one email per Ansprechperson
   let emailsSent = 0;
+  let first = true;
 
   for (const [email, { name, aktionen, aktionenMorgen: morgenList, abmeldungen }] of byAnsprechperson) {
+    if (!first) await randomDelay();
+    first = false;
     const aktionenList = Array.from(aktionen.values()).map((a) => ({
       titel: a.titel,
       datum: a.datum,

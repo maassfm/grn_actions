@@ -84,10 +84,18 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  const randomDelay = () =>
+    new Promise<void>((resolve) =>
+      setTimeout(resolve, 25_000 + Math.random() * 20_000)
+    );
+
   // Send one reminder email per volunteer
   let emailsSent = 0;
+  let first = true;
 
   for (const [email, { vorname, aktionen }] of byEmail) {
+    if (!first) await randomDelay();
+    first = false;
     const emailData = erinnerungsEmail(vorname, aktionen);
     await sendEmail({
       to: email,
