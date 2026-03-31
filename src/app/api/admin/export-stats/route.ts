@@ -146,7 +146,7 @@ export async function GET() {
     byKalenderwoche,
   });
 
-  return new NextResponse(buffer, {
+  return new NextResponse(buffer as unknown as BodyInit, {
     headers: {
       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "Content-Disposition": 'attachment; filename="auswertung.xlsx"',
