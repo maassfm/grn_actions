@@ -150,21 +150,21 @@ export async function PUT(
 
     // Send change notification to all registrants
     if (changes.length > 0 && existing.anmeldungen.length > 0) {
-      const emailData = aenderungsEmail(
-        {
-          titel: aktion.titel,
-          datum: aktion.datum,
-          startzeit: aktion.startzeit,
-          endzeit: aktion.endzeit,
-          adresse: aktion.adresse,
-          ansprechpersonName: aktion.ansprechpersonName,
-          ansprechpersonEmail: aktion.ansprechpersonEmail,
-          ansprechpersonTelefon: aktion.ansprechpersonTelefon,
-        },
-        changes
-      );
-
       for (const anmeldung of existing.anmeldungen) {
+        const emailData = aenderungsEmail(
+          {
+            titel: aktion.titel,
+            datum: aktion.datum,
+            startzeit: aktion.startzeit,
+            endzeit: aktion.endzeit,
+            adresse: aktion.adresse,
+            ansprechpersonName: aktion.ansprechpersonName,
+            ansprechpersonEmail: aktion.ansprechpersonEmail,
+            ansprechpersonTelefon: aktion.ansprechpersonTelefon,
+          },
+          changes,
+          anmeldung.cancelToken ?? undefined
+        );
         await sendEmail({
           to: anmeldung.email,
           subject: emailData.subject,

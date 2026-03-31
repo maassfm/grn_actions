@@ -136,9 +136,13 @@ export function anmeldebestaetigungEmail(
 
 export function aenderungsEmail(
   aktion: AktionInfo,
-  changes: { field: string; oldValue: string; newValue: string }[]
+  changes: { field: string; oldValue: string; newValue: string }[],
+  cancelToken?: string
 ): { subject: string; html: string } {
   const subject = `Änderung an Wahlkampfaktion: ${aktion.titel}`;
+  const cancelLink = cancelToken
+    ? `${baseUrl}/api/anmeldungen/abmelden?token=${cancelToken}`
+    : undefined;
 
   const changesList = changes
     .map(
@@ -159,7 +163,7 @@ export function aenderungsEmail(
     ${changesList}
     <hr class="section-divider" />
     <h3>Aktualisierte Details</h3>
-    ${formatAktionCard(aktion)}
+    ${formatAktionCard(aktion, cancelLink)}
     <p>Bei Fragen wende Dich bitte an die Ansprechperson der Aktion.</p>
   `;
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { createAuswertungExcel } from "@/lib/excel";
 import { getISOWeek, getISOWeekYear } from "date-fns";
 
 export async function GET() {
@@ -14,11 +15,8 @@ export async function GET() {
 
   const [
     totalAktionen,
-    activeAktionen,
     abgesagteAktionen,
     totalAnmeldungen,
-    teamCount,
-    userCount,
     wahlkreise,
     historicalAggregate,
     archivedByWahlkreis,
@@ -30,11 +28,8 @@ export async function GET() {
     archivedForKW,
   ] = await Promise.all([
     prisma.aktion.count(),
-    prisma.aktion.count({ where: { status: { in: ["AKTIV", "GEAENDERT"] } } }),
     prisma.aktion.count({ where: { status: "ABGESAGT" } }),
     prisma.anmeldung.count(),
-    prisma.team.count(),
-    prisma.user.count(),
     prisma.wahlkreis.findMany({
       include: {
         aktionen: {
@@ -139,19 +134,22 @@ export async function GET() {
     a.year !== b.year ? a.year - b.year : a.kw - b.kw
   );
 
-  return NextResponse.json({
+  const buffer = await createAuswertungExcel({
     totalAktionen,
-    activeAktionen,
-    abgesagteAktionen,
-    totalAnmeldungen,
     totalAnmeldungenGesamt: totalAnmeldungen + historicalSum,
-    teamCount,
-    userCount,
-    anmeldungenByWahlkreis,
-    pastAktionen,
     upcomingAktionen,
+    pastAktionen,
+    abgesagteAktionen,
+    anmeldungenByWahlkreis,
     staendeByTeam,
     anmeldungenByTeam,
     byKalenderwoche,
+  });
+
+  return new NextResponse(buffer, {
+    headers: {
+      "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Disposition": 'attachment; filename="auswertung.xlsx"',
+    },
   });
 }

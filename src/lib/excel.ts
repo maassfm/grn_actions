@@ -239,6 +239,77 @@ export function createAktionenTxt(aktionen: AktionExport[]): string {
     .join("\n");
 }
 
+export interface AuswertungData {
+  totalAktionen: number;
+  totalAnmeldungenGesamt: number;
+  upcomingAktionen: number;
+  pastAktionen: number;
+  abgesagteAktionen: number;
+  anmeldungenByWahlkreis: { wahlkreis: string; nummer: number; count: number }[];
+  staendeByTeam: { team: string; count: number }[];
+  anmeldungenByTeam: { team: string; count: number }[];
+  byKalenderwoche: { kw: number; year: number; staende: number; anmeldungen: number }[];
+}
+
+export async function createAuswertungExcel(data: AuswertungData): Promise<Buffer> {
+  const workbook = new ExcelJS.Workbook();
+
+  // Sheet 1: Zusammenfassung
+  const summary = workbook.addWorksheet("Zusammenfassung");
+  summary.columns = [
+    { header: "Kennzahl", key: "kennzahl", width: 30 },
+    { header: "Wert", key: "wert", width: 12 },
+  ];
+  summary.addRows([
+    { kennzahl: "Aktionen gesamt", wert: data.totalAktionen },
+    { kennzahl: "Anmeldungen gesamt", wert: data.totalAnmeldungenGesamt },
+    { kennzahl: "Bevorstehende Veranstaltungen", wert: data.upcomingAktionen },
+    { kennzahl: "Vergangene Veranstaltungen", wert: data.pastAktionen },
+    { kennzahl: "Abgesagte Veranstaltungen", wert: data.abgesagteAktionen },
+  ]);
+
+  // Sheet 2: Anmeldungen nach Wahlkreis
+  const wkSheet = workbook.addWorksheet("Anmeldungen nach Wahlkreis");
+  wkSheet.columns = [
+    { header: "Nr.", key: "nummer", width: 6 },
+    { header: "Wahlkreis", key: "wahlkreis", width: 30 },
+    { header: "Anmeldungen", key: "anmeldungen", width: 14 },
+  ];
+  for (const wk of data.anmeldungenByWahlkreis) {
+    wkSheet.addRow({ nummer: wk.nummer, wahlkreis: wk.wahlkreis, anmeldungen: wk.count });
+  }
+
+  // Sheet 3: Nach Team
+  const teamSheet = workbook.addWorksheet("Nach Team");
+  teamSheet.columns = [
+    { header: "Team", key: "team", width: 30 },
+    { header: "Stände", key: "staende", width: 10 },
+    { header: "Anmeldungen", key: "anmeldungen", width: 14 },
+  ];
+  const anmeldungenTeamMap = new Map(data.anmeldungenByTeam.map((t) => [t.team, t.count]));
+  for (const t of data.staendeByTeam) {
+    teamSheet.addRow({
+      team: t.team,
+      staende: t.count,
+      anmeldungen: anmeldungenTeamMap.get(t.team) ?? 0,
+    });
+  }
+
+  // Sheet 4: Nach Kalenderwoche
+  const kwSheet = workbook.addWorksheet("Nach Kalenderwoche");
+  kwSheet.columns = [
+    { header: "KW", key: "kw", width: 6 },
+    { header: "Jahr", key: "year", width: 8 },
+    { header: "Stände", key: "staende", width: 10 },
+    { header: "Anmeldungen", key: "anmeldungen", width: 14 },
+  ];
+  for (const kw of data.byKalenderwoche) {
+    kwSheet.addRow({ kw: kw.kw, year: kw.year, staende: kw.staende, anmeldungen: kw.anmeldungen });
+  }
+
+  return Buffer.from(await workbook.xlsx.writeBuffer());
+}
+
 export async function createVorlageExcel(): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Aktionen");

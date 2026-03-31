@@ -8,11 +8,9 @@ interface Stats {
   totalAktionen: number;
   totalAnmeldungenGesamt?: number;
   totalAnmeldungen?: number;
-  activeAktionen: number;
-  teamCount: number;
-  userCount: number;
   pastAktionen: number;
   upcomingAktionen: number;
+  abgesagteAktionen?: number;
   anmeldungenByWahlkreis?: { wahlkreis: string; nummer: number; count: number }[];
   staendeByTeam?: { team: string; count: number }[];
   anmeldungenByTeam?: { team: string; count: number }[];
@@ -37,8 +35,8 @@ export default function AdminPage() {
     );
   }
 
-  function handleExport(fmt: "xlsx" | "txt") {
-    window.location.href = `/api/export?format=${fmt}`;
+  function handleExport() {
+    window.location.href = "/api/admin/export-stats";
   }
 
   const anmeldungenByWahlkreis = stats.anmeldungenByWahlkreis ?? [];
@@ -59,31 +57,31 @@ export default function AdminPage() {
           Gesamtübersicht
         </h1>
         <div className="flex flex-wrap gap-2">
-          <Button onClick={() => handleExport("xlsx")}>Excel exportieren</Button>
-          <Button variant="outline" onClick={() => handleExport("txt")}>
-            TXT exportieren
-          </Button>
+          <Button onClick={() => handleExport()}>Auswertung exportieren</Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <StatCard label="Aktionen gesamt" value={stats.totalAktionen} icon="📋" />
-        <StatCard label="Aktive Aktionen" value={stats.activeAktionen} icon="✅" />
         <StatCard
           label="Anmeldungen gesamt"
           value={stats.totalAnmeldungenGesamt ?? stats.totalAnmeldungen ?? 0}
           icon="👥"
         />
-        <StatCard label="Teams" value={stats.teamCount} icon="🏠" />
+        <StatCard
+          label="Bevorstehende Veranstaltungen"
+          value={stats.upcomingAktionen}
+          icon="🗓️"
+        />
         <StatCard
           label="Vergangene Veranstaltungen"
           value={stats.pastAktionen}
           icon="📅"
         />
         <StatCard
-          label="Bevorstehende Veranstaltungen"
-          value={stats.upcomingAktionen}
-          icon="🗓️"
+          label="Abgesagte Veranstaltungen"
+          value={stats.abgesagteAktionen ?? 0}
+          icon="🚫"
         />
       </div>
 

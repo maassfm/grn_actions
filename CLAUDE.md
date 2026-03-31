@@ -37,15 +37,30 @@ Test credentials (after seeding):
 
 ## Architecture
 
-**Stack:** Next.js 16 (App Router) · TypeScript · PostgreSQL + Prisma · NextAuth.js v5 · Tailwind CSS v4 · Resend (email) · ExcelJS
+**Stack:** Next.js 16 (App Router) · TypeScript · PostgreSQL + Prisma · NextAuth.js v5 · Tailwind CSS v4 · nodemailer/SMTP (email) · ExcelJS
 
 ### Route Structure
 
-- `src/app/(public)/` — public pages: action overview, registration, privacy policy
+- `src/app/(public)/` — public pages: action overview, registration, unsubscribe, privacy policy, impressum
 - `src/app/(auth)/` — login
 - `src/app/dashboard/` — Expert dashboard (requires EXPERT role), action CRUD
 - `src/app/admin/` — Admin area (requires ADMIN role), user/team/Wahlkreis management
 - `src/app/api/` — REST endpoints: auth, action CRUD, export (Excel/Signal), upload, cron jobs
+
+Public API routes:
+- `/api/aktionen` — list/read actions
+- `/api/aktionen/[id]/anmeldungen` — sign up for an action
+- `/api/anmeldungen/abmelden` — unsubscribe via cancelToken
+- `/api/anmeldungen/meine-aktionen` — list user's registrations
+- `/api/wahlkreise` — list electoral districts
+- `/api/vorlage` — download Excel import template
+- `/api/export` — export signups (Excel/Signal format, EXPERT+)
+- `/api/export-aktionen` — export all actions (EXPERT+)
+- `/api/upload` — import actions from Excel (EXPERT+)
+- `/api/admin/*` — user/team/stats management (ADMIN only)
+- `/api/cron/daily-summary` — daily email summary
+- `/api/cron/cleanup-anmeldungen` — delete stale signups
+- `/api/cron/send-erinnerungen` — send reminder emails before actions
 
 ### Data Model
 
@@ -54,26 +69,27 @@ Core entities in `prisma/schema.prisma`:
 - **Team** → belongs to Wahlkreis, owns Aktionen
 - **Wahlkreis** — electoral district
 - **Aktion** — campaign action with geocoordinates, contact person, status (AKTIV/ABGESAGT/GEAENDERT)
-- **Anmeldung** — volunteer registration, unique per (aktionId, email)
-- **EmailLog** — audit trail for sent emails
+- **Anmeldung** — volunteer registration, unique per (aktionId, email), has `cancelToken` for self-service unsubscribe
+- **EmailLog** — audit trail for sent emails (types: BESTAETIGUNG, AENDERUNG, ABSAGE, TAEGLICHE_UEBERSICHT, ABMELDUNG, ERINNERUNG)
 - **AktionStatistik** — snapshot preserved when an Aktion is deleted (for historical reporting)
 
 ### Key Lib Modules
 
 - `src/lib/auth.ts` — NextAuth config, JWT strategy, role-based session
 - `src/lib/db.ts` — Prisma client singleton
-- `src/lib/email/` — Resend email sending + HTML templates
-- `src/lib/excel/` — ExcelJS-based import parser with validation
-- `src/lib/export/` — Excel and Signal-text export generation
-- `src/lib/validations/` — Zod schemas for all models
+- `src/lib/email.ts` — nodemailer SMTP email sending, always logs to EmailLog
+- `src/lib/email-templates.ts` — HTML email template functions (`anmeldebestaetigungEmail`, `aenderungsEmail`, `absageEmail`, `tagesUebersichtEmail`, `erinnerungsEmail`)
+- `src/lib/excel.ts` — ExcelJS import parser and export generation (Excel + Signal-text)
+- `src/lib/geocoding.ts` — address-to-coordinates via Nominatim
+- `src/lib/validators.ts` — Zod schemas for all models
 
 ### Authorization Pattern
 
-Role checks happen at the API route level and in Server Actions. Experts can only access their own team's data (team isolation). The middleware at `src/middleware.ts` handles route protection — it proxies auth checks rather than directly importing NextAuth (due to Edge runtime constraints).
+Role checks happen at the API route level. Experts can only access their own team's data (team isolation). The middleware at `src/proxy.ts` (exported as `middleware`) handles route protection — it proxies auth checks rather than directly importing NextAuth (due to Edge runtime constraints).
 
 ### Cron Jobs
 
-`/api/cron/daily-summary` and `/api/cron/cleanup` are protected by `Authorization: Bearer <CRON_SECRET>`. Triggered externally via server cron or curl.
+`/api/cron/daily-summary`, `/api/cron/cleanup-anmeldungen`, and `/api/cron/send-erinnerungen` are protected by `Authorization: Bearer <CRON_SECRET>`. Triggered externally via server cron or curl.
 
 ## Tests
 
@@ -84,7 +100,8 @@ Tests live in `src/__tests__/security/` and focus on auth protection, role autho
 See `.env.example`. Key variables:
 - `DATABASE_URL` — PostgreSQL connection (DDEV: `postgresql://db:db@db:5432/db`)
 - `NEXTAUTH_SECRET` — JWT signing key (min 32 chars)
-- `RESEND_API_KEY` — can be empty for local dev (emails skipped)
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` — SMTP credentials (leave empty to skip email in local dev)
+- `EMAIL_FROM`, `EMAIL_FROM_NAME` — sender identity
 - `CRON_SECRET` — bearer token for cron endpoints
 
 <!-- GSD:project-start source:PROJECT.md -->
@@ -132,7 +149,7 @@ Eine Web-App zur Koordinierung und Anmeldung von Aktiven bei Wahlkampf-Aktionen 
 - `bcryptjs` 3.0.3 - Password hashing for credential authentication
 - `date-fns` 4.1.0 - Date formatting utilities
 - `exceljs` 4.4.0 - Excel import (parsing uploaded .xlsx files) and export (generating .xlsx reports)
-- `nodemailer` 7.0.13 - SMTP email delivery for registration confirmations, changes, and daily summaries
+- `nodemailer` 7.0.7 - SMTP email delivery for registration confirmations, changes, reminders, and daily summaries
 - `leaflet` 1.9.4 + `react-leaflet` 5.0.0 - Interactive map rendering for action locations
 - `node-cron` 4.2.1 - Cron scheduling (type definitions only; actual cron triggers are external curl commands)
 ## TypeScript Configuration
@@ -175,6 +192,8 @@ Eine Web-App zur Koordinierung und Anmeldung von Aktiven bei Wahlkampf-Aktionen 
 - `Vorname` / `Nachname` — first / last name
 - `Datenschutz` — privacy consent
 - `Absage` — cancellation
+- `Abmeldung` — unsubscribe/deregistration
+- `Erinnerung` — reminder
 - `Aenderung` — change/modification
 - `Tageszeit` — time of day (filter)
 - `Uebersicht` — overview/summary
@@ -278,7 +297,7 @@ Eine Web-App zur Koordinierung und Anmeldung von Aktiven bei Wahlkampf-Aktionen 
 - Used by: API layer exclusively
 - Purpose: Reusable UI components
 - Location: `src/components/`
-- Contains: Domain components (`AktionCard`, `AktionMap`, `AnmeldeFormular`, `ExcelUpload`, `FilterBar`) and primitives in `src/components/ui/`
+- Contains: Domain components (`AktionCard`, `AktionMap`, `AnmeldeFormular`, `ExcelUpload`, `FilterBar`, `SelectionBar`) and primitives in `src/components/ui/`
 - Depends on: Nothing from `src/lib/` directly — all data comes via props or internal fetch
 - Used by: Page components in all three UI layers
 ## Data Flow
@@ -297,7 +316,7 @@ Eine Web-App zur Koordinierung und Anmeldung von Aktiven bei Wahlkampf-Aktionen 
 - Pattern: Every API POST/PUT parses body with `schema.parse(body)` and catches `ZodError` → 400 response
 - Purpose: Notify volunteers of registration and changes; notify contact persons of daily summaries
 - Sending: `src/lib/email.ts` (`sendEmail()`) wraps nodemailer, always writes to `EmailLog` regardless of success/failure
-- Templates: `src/lib/email-templates.ts` — named export functions per type (`anmeldebestaetigungEmail`, `aenderungsEmail`, `absageEmail`, `tagesUebersichtEmail`)
+- Templates: `src/lib/email-templates.ts` — named export functions per type (`anmeldebestaetigungEmail`, `aenderungsEmail`, `absageEmail`, `tagesUebersichtEmail`, `erinnerungsEmail`)
 - Purpose: Retain historical participation counts when `Anmeldung` records are deleted or when an `Aktion` is hard-deleted would be blocked
 - Note: `onDelete: Restrict` on `AktionStatistik.aktionId` prevents hard-delete of an `Aktion` that already has a statistik record
 ## Entry Points
