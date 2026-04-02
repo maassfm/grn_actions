@@ -1,6 +1,6 @@
 # Aktionskoordination - Wahlkampf-Koordinationsplattform
 
-Ermöglicht die Verwaltung von Wahlkampfaktionen, Freiwilligen-Anmeldungen, Excel-Import/Export und automatische E-Mail-Benachrichtigungen.
+Ermöglicht die Verwaltung von Wahlkampfaktionen, Freiwilligen-Anmeldungen, Excel-Import/Export und automatische E-Mail-Benachrichtigungen. Die Plattform ist vollständig über Umgebungsvariablen konfigurierbar und kann von beliebigen Kreisverbänden eingesetzt werden — ohne Code-Änderungen.
 
 ## Tech-Stack
 
@@ -176,20 +176,99 @@ Die ausführliche Deployment-Anleitung (Hetzner Cloud, Nginx, SSL, Cron-Jobs, Ba
 
 ## Umgebungsvariablen
 
+### Infrastruktur
+
 | Variable          | Beschreibung                                  | Beispiel                                       |
 |-------------------|-----------------------------------------------|-------------------------------------------------|
 | `DATABASE_URL`    | PostgreSQL-Verbindungsstring                  | `postgresql://user:pass@localhost:5432/dbname`  |
 | `NEXTAUTH_SECRET` | Geheimer Schlüssel für JWT-Signierung         | `openssl rand -base64 32`                       |
 | `NEXTAUTH_URL`    | Öffentliche URL der App                       | `https://aktionen.gruene-mitte.de`              |
-| `AUTH_TRUST_HOST`  | Trust Proxy Headers (für Reverse-Proxy/DDEV)  | `true`                                          |
+| `AUTH_TRUST_HOST` | Trust Proxy Headers (für Reverse-Proxy/DDEV)  | `true`                                          |
 | `SMTP_HOST`       | SMTP-Server für E-Mail-Versand                | `smtp.example.com`                              |
 | `SMTP_PORT`       | SMTP-Port                                     | `587`                                           |
-| `SMTP_SECURE`     | TLS-Verbindung                                | `false`                                         |
+| `SMTP_SECURE`     | TLS direkt ab Verbindungsaufbau (Port 465)    | `false`                                         |
 | `SMTP_USER`       | SMTP-Benutzername                             | `user@example.com`                              |
 | `SMTP_PASSWORD`   | SMTP-Passwort                                 | *(geheim)*                                      |
 | `EMAIL_FROM`      | Absender-Adresse für E-Mails                  | `aktionen@gruene-mitte.de`                      |
 | `EMAIL_FROM_NAME` | Anzeigename des Absenders                     | `"Kreisvorstand B90/GRÜNE Berlin-Mitte"`        |
 | `CRON_SECRET`     | Bearer-Token für Cron-API-Endpunkte           | `openssl rand -hex 16`                          |
+
+### Kreisverbands-Konfiguration
+
+Alle folgenden Variablen sind **optional** — ohne Angabe werden die Berlin-Mitte-Defaults verwendet. Für den Einsatz in anderen Kreisverbänden die passenden Werte setzen.
+
+#### Organisation & Branding
+
+| Variable                      | Beschreibung                              | Beispiel                                          |
+|-------------------------------|-------------------------------------------|----------------------------------------------------|
+| `NEXT_PUBLIC_ORG_SHORT_NAME`  | Kurzname (öffentlich, erscheint in der UI) | `B90/GRÜNE Köln`                                  |
+| `ORG_FULL_NAME`               | Vollständiger Name                        | `BÜNDNIS 90/DIE GRÜNEN Köln`                      |
+| `ORG_LEGAL_NAME`              | Rechtlicher Name (für Datenschutz/Impressum) | `BÜNDNIS 90/DIE GRÜNEN Kreisverband Köln`      |
+| `ORG_RESPONSIBLE`             | Verantwortliche Person/Rolle              | `Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Köln`        |
+| `ORG_SUBTITLE`                | Untertitel (erscheint in E-Mail-Headern)  | `Kreisvorstand`                                   |
+
+#### Kontakt & Website
+
+| Variable         | Beschreibung               | Beispiel                          |
+|------------------|----------------------------|------------------------------------|
+| `CONTACT_EMAIL`  | Haupt-Kontaktadresse       | `info@gruene-koeln.de`            |
+| `WEBSITE_URL`    | Website des Kreisverbands  | `www.gruene-koeln.de`             |
+| `IMPRESSUM_URL`  | Link zur Impressumsseite   | `https://gruene-koeln.de/impressum` |
+
+#### Adresse
+
+| Variable              | Beschreibung      | Beispiel             |
+|-----------------------|-------------------|----------------------|
+| `ADDRESS_STREET`      | Straße + Hausnr.  | `Mauritiuswall 1`    |
+| `ADDRESS_POSTAL_CODE` | Postleitzahl      | `50676`              |
+| `ADDRESS_CITY`        | Stadt             | `Köln`               |
+
+#### Datenschutzbeauftragte*r
+
+| Variable          | Beschreibung                | Beispiel                          |
+|-------------------|-----------------------------|-----------------------------------|
+| `DSB_NAME`        | Name/Org des/der DSB        | `SCO-CON:SULT`                    |
+| `DSB_STREET`      | Straße + Hausnr.            | `Hauptstraße 27`                  |
+| `DSB_POSTAL_CODE` | Postleitzahl                | `53604`                           |
+| `DSB_CITY`        | Stadt                       | `Bad Honnef`                      |
+| `DSB_EMAIL`       | E-Mail-Adresse              | `datenschutz@example.de`          |
+| `DSB_PHONE`       | Telefonnummer               | `02224/988290`                    |
+
+#### Aufsichtsbehörde
+
+| Variable               | Beschreibung                  | Beispiel                                    |
+|------------------------|-------------------------------|---------------------------------------------|
+| `AUFSICHT_NAME`        | Name der Behörde              | `LfDI Baden-Württemberg`                    |
+| `AUFSICHT_STREET`      | Straße + Hausnr.              | `Lautenschlagerstr. 20`                     |
+| `AUFSICHT_POSTAL_CODE` | Postleitzahl                  | `70173`                                     |
+| `AUFSICHT_CITY`        | Stadt                         | `Stuttgart`                                 |
+| `AUFSICHT_PHONE`       | Telefonnummer                 | `0711 / 615541-0`                           |
+| `AUFSICHT_EMAIL`       | E-Mail-Adresse                | `poststelle@lfdi.bwl.de`                    |
+| `AUFSICHT_URL`         | Website der Behörde           | `https://www.baden-wuerttemberg.datenschutz.de` |
+
+#### Auftragsverarbeiter
+
+| Variable                    | Beschreibung                          | Beispiel                                       |
+|-----------------------------|---------------------------------------|------------------------------------------------|
+| `HOSTING_PROVIDER`          | Hosting-Anbieter                      | `Hetzner Online GmbH`                          |
+| `HOSTING_ADDRESS`           | Adresse des Hosting-Anbieters         | `Industriestr. 25, 91710 Gunzenhausen`         |
+| `HOSTING_LOCATION`          | Standort der Server                   | `Deutschland`                                  |
+| `HOSTING_PRIVACY_URL`       | Datenschutzerklärung des Hosters      | `https://www.hetzner.com/de/legal/privacy-policy` |
+| `EMAIL_PROVIDER`            | E-Mail-Dienstleister                  | `Verdigado eG`                                 |
+| `EMAIL_PROVIDER_PRIVACY_URL`| Datenschutzerklärung des E-Mail-Anbieters | `https://www.verdigado.com/datenschutz`    |
+
+#### Sonstiges
+
+| Variable                | Beschreibung                              | Beispiel              |
+|-------------------------|-------------------------------------------|-----------------------|
+| `DATENSCHUTZ_STAND`     | Datum der Datenschutzerklärung            | `März 2026`           |
+| `ACCOUNT_DELETION_DATE` | Frist für Datenlöschung nach Wahlkampf    | `31. Oktober 2026`    |
+
+#### Wahlkreise
+
+| Variable         | Beschreibung                                                                 | Beispiel |
+|------------------|------------------------------------------------------------------------------|----------|
+| `WAHLKREISE_JSON` | JSON-Array mit `{nummer, name}` pro Wahlkreis. Wenn nicht gesetzt, werden die 7 Wahlkreise von Berlin-Mitte als Standard verwendet. Die Nummern müssen mit den Werten im Excel-Import übereinstimmen. | `'[{"nummer":1,"name":"Wahlkreis 1"},{"nummer":2,"name":"Wahlkreis 2"}]'` |
 
 ---
 
@@ -236,6 +315,7 @@ Die ausführliche Deployment-Anleitung (Hetzner Cloud, Nginx, SSL, Cron-Jobs, Ba
 │   └── lib/
 │       ├── auth.ts              # NextAuth-Konfiguration
 │       ├── db.ts                # Prisma-Client-Singleton
+│       ├── district-config.ts   # Kreisverbands-Konfiguration (alle Org-Werte)
 │       ├── email.ts             # E-Mail-Versand (Nodemailer)
 │       ├── email-templates.ts   # HTML-E-Mail-Templates
 │       ├── excel.ts             # Excel-Import/-Export (ExcelJS)

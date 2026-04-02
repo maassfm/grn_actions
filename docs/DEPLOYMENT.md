@@ -192,7 +192,64 @@ CRON_SECRET=HIER_CRON_SECRET_EINSETZEN
 
 # Laufzeitumgebung
 NODE_ENV=production
+
+# ── Kreisverbands-Konfiguration ──────────────────────────────────────
+# Alle Werte sind optional (Defaults: BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte).
+# Für andere Kreisverbände die passenden Werte setzen.
+
+# Organisation & Branding
+NEXT_PUBLIC_ORG_SHORT_NAME="B90/GRÜNE Berlin-Mitte"
+ORG_FULL_NAME="BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte"
+ORG_LEGAL_NAME="BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte"
+ORG_RESPONSIBLE="Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte"
+ORG_SUBTITLE="Kreisvorstand"
+
+# Kontakt & Website
+CONTACT_EMAIL=info@gruene-mitte.de
+WEBSITE_URL=www.gruene-mitte.de
+IMPRESSUM_URL=https://gruene-mitte.de/impressum
+
+# Adresse
+ADDRESS_STREET="Tegeler Straße 31"
+ADDRESS_POSTAL_CODE=13353
+ADDRESS_CITY=Berlin
+
+# Datenschutzbeauftragte*r
+DSB_NAME="SCO-CON:SULT"
+DSB_STREET="Hauptstraße 27"
+DSB_POSTAL_CODE=53604
+DSB_CITY="Bad Honnef"
+DSB_EMAIL=datenschutz@gruene-berlin.de
+DSB_PHONE="02224/988290"
+
+# Aufsichtsbehörde (je nach Bundesland anpassen!)
+AUFSICHT_NAME="Berliner Beauftragte für Datenschutz und Informationsfreiheit"
+AUFSICHT_STREET="Alt-Moabit 59–61"
+AUFSICHT_POSTAL_CODE=10555
+AUFSICHT_CITY=Berlin
+AUFSICHT_PHONE="030 / 138 89-0"
+AUFSICHT_EMAIL=mailbox@datenschutz-berlin.de
+AUFSICHT_URL=https://www.datenschutz-berlin.de
+
+# Auftragsverarbeiter (Hosting)
+HOSTING_PROVIDER="Hetzner Online GmbH"
+HOSTING_ADDRESS="Industriestr. 25, 91710 Gunzenhausen"
+HOSTING_LOCATION=Deutschland
+HOSTING_PRIVACY_URL=https://www.hetzner.com/de/legal/privacy-policy
+
+# Auftragsverarbeiter (E-Mail)
+EMAIL_PROVIDER="Verdigado eG"
+EMAIL_PROVIDER_PRIVACY_URL=https://www.verdigado.com/datenschutz
+
+# Sonstiges
+DATENSCHUTZ_STAND="März 2026"
+ACCOUNT_DELETION_DATE="31. Oktober 2026"
+
+# Wahlkreise (JSON-Array; wenn nicht gesetzt, werden 7 Berlin-Mitte-Wahlkreise als Default verwendet)
+# WAHLKREISE_JSON='[{"nummer":1,"name":"Wahlkreis 1"},{"nummer":2,"name":"Wahlkreis 2"}]'
 ```
+
+> **Hinweis für andere Kreisverbände:** Die Werte im Abschnitt "Kreisverbands-Konfiguration" steuern das komplette Branding — UI-Texte, E-Mail-Header und -Footer, Datenschutzerklärung und Impressum. Die Aufsichtsbehörde (`AUFSICHT_*`) variiert je nach Bundesland und muss entsprechend angepasst werden.
 
 ### Secrets generieren
 
@@ -453,6 +510,8 @@ gunzip -c /home/gruene/backups/gruene_aktionen_YYYYMMDD_HHMMSS.sql.gz | psql -U 
 - [ ] Login funktioniert
 - [ ] **Admin-Passwort geändert** (Standard: `admin1234` — sofort ändern!)
 - [ ] **Expert-Passwort geändert** (Standard: `expert1234` — sofort ändern!)
+- [ ] **Kreisverbands-Konfiguration angepasst** (Org-Name, Adresse, DSB, Aufsichtsbehörde, Wahlkreise in `.env` gesetzt)
+- [ ] Datenschutzerklärung und Impressum im Browser geprüft (korrekte Org-Daten)
 - [ ] E-Mail-Versand getestet (Testregistrierung durchführen)
 - [ ] Backup-Script getestet
 - [ ] Cron-Job für tägliche E-Mails aktiv
@@ -661,6 +720,8 @@ journalctl -u gruene-aktionen | grep -i "email\|smtp\|mail"
 
 ## Referenz: Umgebungsvariablen
 
+### Infrastruktur
+
 | Variable | Beschreibung | Beispiel |
 |---|---|---|
 | `DATABASE_URL` | PostgreSQL-Verbindungsstring | `postgresql://gruene:pass@localhost:5432/gruene_aktionen` |
@@ -676,3 +737,41 @@ journalctl -u gruene-aktionen | grep -i "email\|smtp\|mail"
 | `EMAIL_FROM_NAME` | Absender-Anzeigename | `Kreisvorstand B90/GRÜNE Berlin-Mitte` |
 | `CRON_SECRET` | Bearer-Token für den Cron-API-Endpunkt | `openssl rand -hex 16` |
 | `NODE_ENV` | Laufzeitumgebung | `production` |
+
+### Kreisverbands-Konfiguration (alle optional, Defaults: Berlin-Mitte)
+
+| Variable | Beschreibung |
+|---|---|
+| `NEXT_PUBLIC_ORG_SHORT_NAME` | Kurzname der Organisation (erscheint in der UI) |
+| `ORG_FULL_NAME` | Vollständiger Name der Organisation |
+| `ORG_LEGAL_NAME` | Rechtlicher Name (für Datenschutz und Impressum) |
+| `ORG_RESPONSIBLE` | Verantwortliche Person oder Rolle |
+| `ORG_SUBTITLE` | Untertitel (E-Mail-Header) |
+| `CONTACT_EMAIL` | Haupt-Kontaktadresse |
+| `WEBSITE_URL` | Website des Kreisverbands |
+| `IMPRESSUM_URL` | Link zur Impressumsseite |
+| `ADDRESS_STREET` | Straße und Hausnummer |
+| `ADDRESS_POSTAL_CODE` | Postleitzahl |
+| `ADDRESS_CITY` | Stadt |
+| `DSB_NAME` | Name oder Organisation der/des Datenschutzbeauftragten |
+| `DSB_STREET` | Straße und Hausnummer der/des DSB |
+| `DSB_POSTAL_CODE` | Postleitzahl der/des DSB |
+| `DSB_CITY` | Stadt der/des DSB |
+| `DSB_EMAIL` | E-Mail-Adresse der/des DSB |
+| `DSB_PHONE` | Telefonnummer der/des DSB |
+| `AUFSICHT_NAME` | Name der zuständigen Datenschutz-Aufsichtsbehörde |
+| `AUFSICHT_STREET` | Straße und Hausnummer der Aufsichtsbehörde |
+| `AUFSICHT_POSTAL_CODE` | Postleitzahl der Aufsichtsbehörde |
+| `AUFSICHT_CITY` | Stadt der Aufsichtsbehörde |
+| `AUFSICHT_PHONE` | Telefonnummer der Aufsichtsbehörde |
+| `AUFSICHT_EMAIL` | E-Mail-Adresse der Aufsichtsbehörde |
+| `AUFSICHT_URL` | Website der Aufsichtsbehörde |
+| `HOSTING_PROVIDER` | Name des Hosting-Anbieters |
+| `HOSTING_ADDRESS` | Adresse des Hosting-Anbieters |
+| `HOSTING_LOCATION` | Serverstandort (Land) |
+| `HOSTING_PRIVACY_URL` | Datenschutzerklärung des Hosters |
+| `EMAIL_PROVIDER` | Name des E-Mail-Dienstleisters |
+| `EMAIL_PROVIDER_PRIVACY_URL` | Datenschutzerklärung des E-Mail-Anbieters |
+| `DATENSCHUTZ_STAND` | Datum der Datenschutzerklärung (z.B. `März 2026`) |
+| `ACCOUNT_DELETION_DATE` | Frist für Datenlöschung nach Wahlkampf |
+| `WAHLKREISE_JSON` | JSON-Array mit `{"nummer": N, "name": "..."}` pro Wahlkreis |
