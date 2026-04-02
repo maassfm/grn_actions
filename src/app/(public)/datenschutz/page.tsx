@@ -1,12 +1,11 @@
+import { districtConfig } from "@/lib/district-config";
+
 export default function DatenschutzPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="font-headline text-3xl font-bold text-tanne uppercase mb-2">
         Datenschutzerklärung
       </h1>
-      <p className="text-sm text-gray-500 mb-8">
-        Wahlkampfaktionen – Koordinationsplattform · Stand: März 2026
-      </p>
 
       <div className="bg-white border-2 border-black p-6 md:p-8 space-y-6 shadow-[4px_4px_0_#000] leading-relaxed">
 
@@ -15,10 +14,10 @@ export default function DatenschutzPage() {
             Verantwortliche Stelle
           </h2>
           <p>
-            BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte<br />
-            Tegeler Straße 31<br />
-            13353 Berlin<br />
-            E-Mail: info@gruene-mitte.de
+            {districtConfig.orgLegalName}<br />
+            {districtConfig.addressStreet}<br />
+            {districtConfig.addressPostalCode} {districtConfig.addressCity}<br />
+            E-Mail: {districtConfig.contactEmail}
           </p>
         </section>
 
@@ -27,18 +26,18 @@ export default function DatenschutzPage() {
             Datenschutzbeauftragte*r
           </h2>
           <p className="mb-2">
-            Den Datenschutzbeauftragten für BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte erreichst Du unter:
+            Den Datenschutzbeauftragten für {districtConfig.orgFullName} erreichst Du unter:
           </p>
           <p>
-            SCO-CON:SULT<br />
-            Hauptstraße 27<br />
-            53604 Bad Honnef<br />
+            {districtConfig.dsbName}<br />
+            {districtConfig.dsbStreet}<br />
+            {districtConfig.dsbPostalCode} {districtConfig.dsbCity}<br />
             E-Mail:{" "}
-            <a href="mailto:datenschutz@gruene-berlin.de" className="text-tanne underline">
-              datenschutz@gruene-berlin.de
+            <a href={`mailto:${districtConfig.dsbEmail}`} className="text-tanne underline">
+              {districtConfig.dsbEmail}
             </a>
             <br />
-            Tel.: 02224/988290
+            Tel.: {districtConfig.dsbPhone}
           </p>
         </section>
 
@@ -75,8 +74,8 @@ export default function DatenschutzPage() {
           <p>
             Du kannst deine Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen – formlos
             per E-Mail an{" "}
-            <a href="mailto:info@gruene-mitte.de" className="text-tanne underline">
-              info@gruene-mitte.de
+            <a href={`mailto:${districtConfig.contactEmail}`} className="text-tanne underline">
+              {districtConfig.contactEmail}
             </a>{" "}
             oder über den Abmeldelink in deiner Bestätigungs-E-Mail. Der Widerruf berührt nicht die
             Rechtmäßigkeit der bis dahin erfolgten Verarbeitung (Art. 7 Abs. 3 DSGVO).
@@ -95,28 +94,28 @@ export default function DatenschutzPage() {
           </p>
           <p className="font-bold mb-1">Hosting</p>
           <p className="mb-3">
-            Hetzner Online GmbH<br />
-            Industriestr. 25, 91710 Gunzenhausen<br />
-            Serverstandort: Deutschland<br />
+            {districtConfig.hostingProvider}<br />
+            {districtConfig.hostingAddress}<br />
+            Serverstandort: {districtConfig.hostingLocation}<br />
             <a
-              href="https://www.hetzner.com/de/legal/privacy-policy"
+              href={districtConfig.hostingPrivacyUrl}
               className="text-tanne underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://www.hetzner.com/de/legal/privacy-policy
+              {districtConfig.hostingPrivacyUrl}
             </a>
           </p>
           <p className="font-bold mb-1">E-Mail-Versand</p>
           <p>
-            Verdigado eG<br />
+            {districtConfig.emailProvider}<br />
             <a
-              href="https://www.verdigado.com/datenschutz"
+              href={districtConfig.emailProviderPrivacyUrl}
               className="text-tanne underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://www.verdigado.com/datenschutz
+              {districtConfig.emailProviderPrivacyUrl}
             </a>
           </p>
         </section>
@@ -144,7 +143,7 @@ export default function DatenschutzPage() {
           </p>
           <p>
             Nutzer-Accounts der Expert*innen und Administrator*innen sowie Team-Zuordnungen werden
-            spätestens am 31. Oktober 2026 gelöscht.
+            spätestens am {districtConfig.accountDeletionDate} gelöscht.
           </p>
         </section>
 
@@ -189,8 +188,8 @@ export default function DatenschutzPage() {
           </ul>
           <p>
             Zur Ausübung deiner Rechte wende dich an:{" "}
-            <a href="mailto:info@gruene-mitte.de" className="text-tanne underline">
-              info@gruene-mitte.de
+            <a href={`mailto:${districtConfig.contactEmail}`} className="text-tanne underline">
+              {districtConfig.contactEmail}
             </a>
           </p>
         </section>
@@ -203,22 +202,22 @@ export default function DatenschutzPage() {
             Du hast das Recht, dich bei der zuständigen Datenschutzaufsichtsbehörde zu beschweren:
           </p>
           <p>
-            Berliner Beauftragte für Datenschutz und Informationsfreiheit<br />
-            Alt-Moabit 59–61<br />
-            10555 Berlin<br />
-            Telefon: 030 / 138 89-0<br />
+            {districtConfig.aufsichtName}<br />
+            {districtConfig.aufsichtStreet}<br />
+            {districtConfig.aufsichtPostalCode} {districtConfig.aufsichtCity}<br />
+            Telefon: {districtConfig.aufsichtPhone}<br />
             E-Mail:{" "}
-            <a href="mailto:mailbox@datenschutz-berlin.de" className="text-tanne underline">
-              mailbox@datenschutz-berlin.de
+            <a href={`mailto:${districtConfig.aufsichtEmail}`} className="text-tanne underline">
+              {districtConfig.aufsichtEmail}
             </a>
             <br />
             <a
-              href="https://www.datenschutz-berlin.de"
+              href={districtConfig.aufsichtUrl}
               className="text-tanne underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              https://www.datenschutz-berlin.de
+              {districtConfig.aufsichtUrl}
             </a>
           </p>
         </section>
@@ -229,14 +228,14 @@ export default function DatenschutzPage() {
           </h2>
           <p>
             Bei Fragen zum Datenschutz wende dich an:{" "}
-            <a href="mailto:info@gruene-mitte.de" className="text-tanne underline">
-              info@gruene-mitte.de
+            <a href={`mailto:${districtConfig.contactEmail}`} className="text-tanne underline">
+              {districtConfig.contactEmail}
             </a>
           </p>
         </section>
 
         <p className="text-sm text-gray-500 border-t-2 border-black pt-4">
-          BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte · Stand: März 2026
+          {districtConfig.orgLegalName} · Stand: {districtConfig.datenschutzStand}
         </p>
       </div>
     </div>

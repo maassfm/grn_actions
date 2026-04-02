@@ -46,7 +46,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center"><Image src="/logo_green.png" alt="Sonnenblume" width={64} height={64} /></div>
           <h1 className="font-headline text-3xl font-bold text-tanne uppercase tracking-wide">
-            B90/GRÜNE Berlin-Mitte
+            {process.env.NEXT_PUBLIC_ORG_SHORT_NAME || "B90/GRÜNE Berlin-Mitte"}
           </h1>
           <p className="text-gray-600 mt-2">Wahlkampf-Aktionsportal</p>
         </div>

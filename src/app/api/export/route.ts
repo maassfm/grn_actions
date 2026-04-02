@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     aktionTitel: a.aktion.titel,
     aktionDatum: format(a.aktion.datum, "dd.MM.yyyy", { locale: de }),
     aktionOrt: a.aktion.adresse,
-    aktionDatumMitTag: format(a.aktion.datum, "dd.MM.yyyy (EEE)", { locale: de }),
+    aktionDatumMitTag: format(a.aktion.datum, "dd.MM.yy (EEE)", { locale: de }),
     aktionStartzeit: a.aktion.startzeit,
     aktionEndzeit: a.aktion.endzeit,
     aktionAnsprechpersonName: a.aktion.ansprechpersonName,

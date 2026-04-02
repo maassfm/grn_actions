@@ -36,6 +36,7 @@ function AktionenPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [aktionen, setAktionen] = useState<Aktion[]>([]);
+  const [wahlkreise, setWahlkreise] = useState<{ nummer: number; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"liste" | "karte">("liste");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -55,6 +56,13 @@ function AktionenPageInner() {
     if (newFilters.wahlkreise.length > 0) params.set("wahlkreis", newFilters.wahlkreise.join(","));
     router.replace(`/?${params}`, { scroll: false });
   }
+
+  useEffect(() => {
+    fetch("/api/wahlkreise")
+      .then((r) => r.json())
+      .then(setWahlkreise)
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -94,7 +102,7 @@ function AktionenPageInner() {
 
   return (
     <div className={selectedIds.size > 0 ? "pb-24" : ""}>
-      <FilterBar filters={filters} onFilterChange={handleFilterChange} />
+      <FilterBar filters={filters} onFilterChange={handleFilterChange} wahlkreise={wahlkreise} />
 
       <div className="max-w-7xl mx-auto px-4 py-4">
         {/* View toggle */}

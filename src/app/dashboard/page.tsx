@@ -60,10 +60,10 @@ export default function DashboardPage() {
     // Status Filter
     if (activeOnly && a.status === "ABGESAGT") return false;
 
-    // Vergangene ausblenden (älter als 2 Tage)
+    // Vergangene ausblenden (älter als 1 Tag)
     if (hidePast) {
       const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - 2);
+      cutoff.setDate(cutoff.getDate() - 1);
       cutoff.setHours(0, 0, 0, 0);
       if (new Date(a.datum) < cutoff) return false;
     }
@@ -152,7 +152,7 @@ export default function DashboardPage() {
               onChange={(e) => setActiveOnly(e.target.checked)}
               className="w-4 h-4 accent-tanne cursor-pointer"
             />
-            Nur Aktive (Aktiv/Geändert)
+            Nur Aktive (Aktiv & Geändert)
           </label>
           <label className="flex items-center gap-2 text-sm font-bold uppercase cursor-pointer">
             <input
@@ -161,7 +161,7 @@ export default function DashboardPage() {
               onChange={(e) => setHidePast(e.target.checked)}
               className="w-4 h-4 accent-tanne cursor-pointer"
             />
-            Vergangene ausblenden
+            Vergangene ausblenden (älter als 1 Tag)
           </label>
         </div>
       </div>

@@ -21,7 +21,7 @@ export async function geocodeAddress(
       `https://nominatim.openstreetmap.org/search?${params}`,
       {
         headers: {
-          "User-Agent": "GrueneMitte-Wahlkampf-App/1.0",
+          "User-Agent": `${process.env.ORG_SHORT_NAME?.replace(/[^a-zA-Z0-9]/g, "") || "GrueneAktionen"}-Wahlkampf-App/1.0`,
         },
       }
     );

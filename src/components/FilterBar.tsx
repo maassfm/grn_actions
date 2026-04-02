@@ -12,17 +12,8 @@ interface FilterState {
 interface FilterBarProps {
   filters: FilterState;
   onFilterChange: (filters: FilterState) => void;
+  wahlkreise: { nummer: number; name: string }[];
 }
-
-const WAHLKREISE = [
-  { nummer: 1, name: "Charité, Oranienburger Tor, Zionskirchplatz" },
-  { nummer: 2, name: "Alexanderplatz, Engelbecken, Leipziger Platz" },
-  { nummer: 3, name: "Südliches Moabit, Hansaviertel, Großer Tiergarten" },
-  { nummer: 4, name: "Nördliches Moabit, Westhafen" },
-  { nummer: 5, name: "Schillerpark, Rehberge" },
-  { nummer: 6, name: "Soldiner Straße, an der Panke entlang" },
-  { nummer: 7, name: "Humboldthain, Nettelbeckplatz" },
-];
 
 const TAGESZEITEN = [
   { value: "", label: "Alle" },
@@ -31,7 +22,7 @@ const TAGESZEITEN = [
   { value: "abends", label: "Abends" },
 ];
 
-export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
+export default function FilterBar({ filters, onFilterChange, wahlkreise }: FilterBarProps) {
   const [expanded, setExpanded] = useState(false);
 
   function toggleWahlkreis(nummer: number) {
@@ -142,7 +133,7 @@ export default function FilterBar({ filters, onFilterChange }: FilterBarProps) {
           <div className="flex items-center gap-2 mt-3">
             <label className="text-xs font-bold uppercase tracking-wide text-black shrink-0">WK:</label>
             <div className="flex gap-1 flex-wrap">
-              {WAHLKREISE.map((wk) => (
+              {wahlkreise.map((wk) => (
                 <button
                   key={wk.nummer}
                   onClick={() => toggleWahlkreis(wk.nummer)}

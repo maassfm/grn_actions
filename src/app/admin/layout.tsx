@@ -33,7 +33,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <Link href="/admin" className="flex items-center gap-2">
               <Image src="/logo_white.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
               <span className="md:hidden font-headline font-bold text-lg uppercase tracking-wide">
-                B90/GRÜNE Berlin-Mitte
+                {process.env.NEXT_PUBLIC_ORG_SHORT_NAME || "B90/GRÜNE Berlin-Mitte"}
               </span>
             </Link>
           </div>

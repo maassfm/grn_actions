@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { districtConfig } from "@/lib/district-config";
 import Providers from "./providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wahlkampfaktionen – GRÜNE Berlin-Mitte",
+  title: `Wahlkampfaktionen – ${districtConfig.orgShortName}`,
   description:
-    "Koordination von Wahlkampfaktionen für BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte",
+    `Koordination von Wahlkampfaktionen für ${districtConfig.orgFullName}`,
   icons: {
     icon: "/favicon.ico",
   },

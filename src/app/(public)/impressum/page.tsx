@@ -1,3 +1,5 @@
+import { districtConfig } from "@/lib/district-config";
+
 export default function ImpressumPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -11,9 +13,9 @@ export default function ImpressumPage() {
             Angaben gemäß § 5 TMG
           </h2>
           <p>
-            BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte<br />
-            Tegeler Straße 31<br />
-            13353 Berlin <br />
+            {districtConfig.orgLegalName}<br />
+            {districtConfig.addressStreet}<br />
+            {districtConfig.addressPostalCode} {districtConfig.addressCity} <br />
           </p>
         </section>
 
@@ -22,8 +24,8 @@ export default function ImpressumPage() {
             Kontakt
           </h2>
           <p>
-            E-Mail: info@gruene-mitte.de<br />
-            Website: www.gruene-mitte.de
+            E-Mail: {districtConfig.contactEmail}<br />
+            Website: {districtConfig.websiteUrl}
           </p>
         </section>
 
@@ -32,9 +34,9 @@ export default function ImpressumPage() {
             Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV
           </h2>
           <p>
-            Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte<br />
-            Tegeler Straße 31<br />
-            13353 Berlin
+            {districtConfig.orgResponsible}<br />
+            {districtConfig.addressStreet}<br />
+            {districtConfig.addressPostalCode} {districtConfig.addressCity}
           </p>
         </section>
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getWahlkreisCount } from "@/lib/district-config";
 
 export const loginSchema = z.object({
   email: z.string().email("Bitte gib eine gültige E-Mail-Adresse ein"),
@@ -92,7 +93,7 @@ export const excelRowSchema = z.object({
   startzeit: z.string().regex(/^\d{2}:\d{2}$/, "Startzeit im Format HH:MM"),
   endzeit: z.string().regex(/^\d{2}:\d{2}$/, "Endzeit im Format HH:MM"),
   adresse: z.string().min(1, "Adresse fehlt"),
-  wahlkreis: z.number().int().min(1).max(7, "Wahlkreis muss zwischen 1 und 7 liegen"),
+  wahlkreis: z.number().int().min(1).max(getWahlkreisCount(), `Wahlkreis muss zwischen 1 und ${getWahlkreisCount()} liegen`),
   ansprechpersonName: z.string().min(1, "Ansprechperson Name fehlt"),
   ansprechpersonEmail: z.string().email("Ungültige E-Mail der Ansprechperson"),
   ansprechpersonTelefon: z.string().min(1, "Telefon der Ansprechperson fehlt"),

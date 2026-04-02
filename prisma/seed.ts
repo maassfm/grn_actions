@@ -1,19 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { districtConfig } from "../src/lib/district-config";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Wahlkreise
-  const wahlkreise = [
-    { nummer: 1, name: "Charité, Oranienburger Tor, Zionskirchplatz" },
-    { nummer: 2, name: "Alexanderplatz, Engelbecken, Leipziger Platz" },
-    { nummer: 3, name: "Südliches Moabit, Hansaviertel, Großer Tiergarten" },
-    { nummer: 4, name: "Nördliches Moabit, Westhafen" },
-    { nummer: 5, name: "Schillerpark, Rehberge" },
-    { nummer: 6, name: "Soldiner Straße, an der Panke entlang" },
-    { nummer: 7, name: "Humboldthain, Nettelbeckplatz" },
-  ];
+  // Wahlkreise (aus district-config)
+  const wahlkreise = districtConfig.wahlkreise;
 
   const createdWahlkreise = [];
   for (const wk of wahlkreise) {

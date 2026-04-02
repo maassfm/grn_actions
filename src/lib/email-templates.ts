@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
+import { districtConfig } from "@/lib/district-config";
 
 interface AktionInfo {
   titel: string;
@@ -69,8 +70,8 @@ function baseLayout(content: string, accentBar?: string): string {
               <img src="${baseUrl}/logo_white.png" alt="Sonnenblume" width="48" height="48" style="display:block; border:0;" />
             </td>
             <td valign="middle">
-              <p class="subtitle" style="color: #FFF17A; font-size: 16px; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">Kreisvorstand</p>
-              <h1 style="color: #FFFFFF; font-size: 20px; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.2;">B90/GRÜNE<br>Berlin-Mitte</h1>
+              <p class="subtitle" style="color: #FFF17A; font-size: 16px; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 4px 0; font-weight: 700;">${districtConfig.orgSubtitle}</p>
+              <h1 style="color: #FFFFFF; font-size: 20px; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; line-height: 1.2;">${districtConfig.orgShortName}</h1>
             </td>
           </tr>
         </table>
@@ -79,10 +80,10 @@ function baseLayout(content: string, accentBar?: string): string {
         ${content}
       </div>
       <div class="footer">
-        <p>BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+        <p>${districtConfig.orgFullName}</p>
         <p>Diese E-Mail wurde automatisch versendet. Bitte antworte nicht auf diese E-Mail.</p>
         <div class="footer-links">
-          <a href="${baseUrl}/datenschutz">Datenschutzerklärung</a><span class="footer-separator">·</span><a href="https://gruene-mitte.de/impressum">Impressum</a>
+          <a href="${baseUrl}/datenschutz">Datenschutzerklärung</a><span class="footer-separator">·</span><a href="${districtConfig.impressumUrl}">Impressum</a>
         </div>
       </div>
     </div>
@@ -110,7 +111,7 @@ export function anmeldebestaetigungEmail(
   aktionen: AktionInfo[],
   cancelTokens?: string[]
 ): { subject: string; html: string } {
-  const subject = `Deine Anmeldung bei B90/GRÜNE Berlin-Mitte – ${aktionen.length} Aktion${aktionen.length > 1 ? "en" : ""}`;
+  const subject = `Deine Anmeldung bei ${districtConfig.orgShortName} – ${aktionen.length} Aktion${aktionen.length > 1 ? "en" : ""}`;
 
   const content = `
     <p class="greeting">Hallo ${vorname},</p>
@@ -118,17 +119,17 @@ export function anmeldebestaetigungEmail(
     <p>Wenn sich Deine Pläne ändern, kannst Du Dich jederzeit über den Link in der jeweiligen Aktion von der Teilnahme abmelden.</p>
     <p>Wir freuen uns auf Dich! 💚</p>
     <p>Viele Grüße<br>
-    <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
-    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+    <strong>${districtConfig.orgTeamNames}</strong><br>
+    ${districtConfig.orgResponsible}</p>
     <hr class="section-divider" />
     <p>Du kannst Dir jederzeit eine Übersicht aller Aktionen, für die Du angemeldet bist, per E-Mail zusenden lassen: <a href="${baseUrl}/meine-aktionen-bestaetigen?email=${encodeURIComponent(email)}">Meine Anmeldungen per E-Mail anfordern →</a></p>
     <p>Du hast Dich für ${aktionen.length > 1 ? "folgende Aktionen" : "folgende Aktion"} angemeldet:</p>
     ${aktionen.map((a, i) => {
-      const cancelLink = cancelTokens?.[i]
-        ? `${baseUrl}/api/anmeldungen/abmelden?token=${cancelTokens[i]}`
-        : undefined;
-      return formatAktionCard(a, cancelLink);
-    }).join("")}
+    const cancelLink = cancelTokens?.[i]
+      ? `${baseUrl}/api/anmeldungen/abmelden?token=${cancelTokens[i]}`
+      : undefined;
+    return formatAktionCard(a, cancelLink);
+  }).join("")}
   `;
 
   return { subject, html: baseLayout(content) };
@@ -193,17 +194,17 @@ interface AktionInfoWithToken extends AktionInfo {
 export function meineAktionenEmail(
   aktionen: AktionInfoWithToken[]
 ): { subject: string; html: string } {
-  const subject = "Deine Anmeldungen bei B90/GRÜNE Berlin-Mitte";
+  const subject = `Deine Anmeldungen bei ${districtConfig.orgShortName}`;
 
   const aktionenHtml = aktionen.length > 0
     ? `
       <p>Du bist aktuell für folgende ${aktionen.length > 1 ? "Aktionen" : "Aktion"} angemeldet:</p>
       ${aktionen.map((a) => {
-        const cancelLink = a.cancelToken
-          ? `${baseUrl}/api/anmeldungen/abmelden?token=${a.cancelToken}`
-          : undefined;
-        return formatAktionCard(a, cancelLink);
-      }).join("")}
+      const cancelLink = a.cancelToken
+        ? `${baseUrl}/api/anmeldungen/abmelden?token=${a.cancelToken}`
+        : undefined;
+      return formatAktionCard(a, cancelLink);
+    }).join("")}
     `
     : `<p>Du hast aktuell keine offenen Anmeldungen.</p>`;
 
@@ -222,22 +223,22 @@ export function erinnerungsEmail(
   vorname: string,
   aktionen: (AktionInfo & { cancelToken?: string | null })[],
 ): { subject: string; html: string } {
-  const subject = `Erinnerung: Deine Aktionen morgen – B90/GRÜNE Berlin-Mitte`;
+  const subject = `Erinnerung: Deine Aktionen morgen – ${districtConfig.orgShortName}`;
 
   const content = `
     <p class="greeting">Hallo ${vorname},</p>
-    <p>morgen ist es soweit! Wir freuen uns, Dich bei ${aktionen.length > 1 ? "folgenden Aktionen" : "folgender Aktion"} zu sehen:</p>
+    <p>morgen ist es soweit! Morgen ${aktionen.length > 1 ? "finden folgenden Aktionen" : "findet folgende Aktion"} statt:</p>
     ${aktionen.map((a) => {
-      const cancelLink = a.cancelToken
-        ? `${baseUrl}/api/anmeldungen/abmelden?token=${a.cancelToken}`
-        : undefined;
-      return formatAktionCard(a, cancelLink);
-    }).join("")}
+    const cancelLink = a.cancelToken
+      ? `${baseUrl}/api/anmeldungen/abmelden?token=${a.cancelToken}`
+      : undefined;
+    return formatAktionCard(a, cancelLink);
+  }).join("")}
     <hr class="section-divider" />
     <p>Falls Du doch nicht kommen kannst, melde Dich bitte rechtzeitig über den Abmelde-Link in der jeweiligen Aktion ab und schreibe der Ansprechpartner*in eine kurze Nachricht.</p>
     <p>Viele Grüße<br>
-    <strong>Annalena, Florian, Lara, Linus, Madlen und Timur</strong><br>
-    Kreisvorstand BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+    <strong>${districtConfig.orgTeamNames}</strong><br>
+    ${districtConfig.orgResponsible}</p>
   `;
 
   return { subject, html: baseLayout(content) };
@@ -288,16 +289,16 @@ export function tagesUebersichtEmail(
     ? `
       <h2>Morgen findet statt</h2>
       ${aktionenMorgen.map((a) => {
-        const aktionDatum = format(a.datum, "EEEE, d. MMMM", { locale: de });
-        const anmeldungenList = a.anmeldungen.length > 0
-          ? `<ul>${a.anmeldungen.map((an) => {
-              const kontakt = an.signalName
-                ? `Signal: ${an.signalName}`
-                : an.telefon || "";
-              return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
-            }).join("")}</ul>`
-          : `<p><em>Noch keine Anmeldungen.</em></p>`;
-        return `
+      const aktionDatum = format(a.datum, "EEEE, d. MMMM", { locale: de });
+      const anmeldungenList = a.anmeldungen.length > 0
+        ? `<ul>${a.anmeldungen.map((an) => {
+          const kontakt = an.signalName
+            ? `Signal: ${an.signalName}`
+            : an.telefon || "";
+          return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
+        }).join("")}</ul>`
+        : `<p><em>Noch keine Anmeldungen.</em></p>`;
+      return `
           <div class="aktion-card">
             <div class="aktion-card-title">${a.titel}</div>
             <p>📅 ${aktionDatum}, ${a.startzeit}–${a.endzeit} Uhr</p>
@@ -306,7 +307,7 @@ export function tagesUebersichtEmail(
             ${anmeldungenList}
           </div>
         `;
-      }).join("")}
+    }).join("")}
     `
     : "";
 
@@ -314,16 +315,16 @@ export function tagesUebersichtEmail(
     ? `
       <h2>Neue Anmeldungen heute</h2>
       ${aktionen.map((a) => {
-        const anmeldungenList = a.anmeldungen
-          .map((an) => {
-            const kontakt = an.signalName
-              ? `Signal: ${an.signalName}`
-              : an.telefon || "";
-            return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
-          })
-          .join("");
-        const aktionDatum = format(a.datum, "d. MMMM", { locale: de });
-        return `
+      const anmeldungenList = a.anmeldungen
+        .map((an) => {
+          const kontakt = an.signalName
+            ? `Signal: ${an.signalName}`
+            : an.telefon || "";
+          return `<li>${an.vorname} ${an.nachname} · ${an.email}${kontakt ? ` · ${kontakt}` : ""}</li>`;
+        })
+        .join("");
+      const aktionDatum = format(a.datum, "d. MMMM", { locale: de });
+      return `
           <div class="aktion-card">
             <div class="aktion-card-title">${a.titel}</div>
             <p>📅 ${aktionDatum}, ${a.startzeit} Uhr</p>
@@ -331,7 +332,7 @@ export function tagesUebersichtEmail(
             <ul>${anmeldungenList}</ul>
           </div>
         `;
-      }).join("")}
+    }).join("")}
     `
     : "";
 
@@ -340,9 +341,9 @@ export function tagesUebersichtEmail(
       <h2>Abmeldungen heute</h2>
       <ul>
         ${abmeldungen.map((a) => {
-          const aktionDatum = format(a.aktionDatum, "d. MMMM", { locale: de });
-          return `<li>${a.vorname} ${a.nachname} — ${a.aktionTitel} (${aktionDatum})</li>`;
-        }).join("")}
+      const aktionDatum = format(a.aktionDatum, "d. MMMM", { locale: de });
+      return `<li>${a.vorname} ${a.nachname} — ${a.aktionTitel} (${aktionDatum})</li>`;
+    }).join("")}
       </ul>
     `
     : "";

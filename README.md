@@ -251,4 +251,6 @@ Die ausführliche Deployment-Anleitung (Hetzner Cloud, Nginx, SSL, Cron-Jobs, Ba
 
 ## Lizenz
 
-Intern - BÜNDNIS 90/DIE GRÜNEN Kreisverband Berlin-Mitte
+Lizenziert unter der European Union Public Licence v. 1.2 (EUPL-1.2).
+Der vollständige Lizenztext befindet sich in der Datei LICENSE in diesem Repository
+sowie unter: https://eupl.eu/1.2/de/

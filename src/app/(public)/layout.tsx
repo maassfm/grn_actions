@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { auth } from "@/lib/auth";
+import { districtConfig } from "@/lib/district-config";
 import NavAuthSection from "./NavAuthSection";
 
 export default async function PublicLayout({ children }: { children: ReactNode }) {
@@ -15,7 +16,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
             <Image src="/logo_white.png" alt="Sonnenblume" width={36} height={36} className="shrink-0" />
             <div>
               <span className="font-headline font-bold text-lg uppercase tracking-wide">
-                B90/GRÜNE Berlin-Mitte
+                {districtConfig.orgShortName}
               </span>
               <span className="hidden sm:inline text-sm text-white/70 ml-2">
                 Wahlkampfaktionen
@@ -32,7 +33,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
 
       <footer className="bg-tanne text-white/70 text-sm border-t-[3px] border-black">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-bold uppercase tracking-wide">BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte</p>
+          <p className="font-bold uppercase tracking-wide">{districtConfig.orgFullName}</p>
           <div className="flex gap-4">
             {!session && (
               <Link href="/login" className="hover:text-white transition-colors uppercase tracking-wide font-bold">
@@ -42,7 +43,7 @@ export default async function PublicLayout({ children }: { children: ReactNode }
             <Link href="/datenschutz" className="hover:text-white transition-colors uppercase tracking-wide font-bold">
               Datenschutz
             </Link>
-            <Link href="https://gruene-mitte.de/impressum" className="hover:text-white transition-colors uppercase tracking-wide font-bold">
+            <Link href={districtConfig.impressumUrl} className="hover:text-white transition-colors uppercase tracking-wide font-bold">
               Impressum
             </Link>
           </div>
