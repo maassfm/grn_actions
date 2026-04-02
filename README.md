@@ -1,6 +1,6 @@
-# Aktionskoordination - BÜNDNIS 90/DIE GRÜNEN Berlin-Mitte
+# Aktionskoordination - Wahlkampf-Koordinationsplattform
 
-Wahlkampf-Koordinationsplattform für den Kreisverband Berlin-Mitte. Ermöglicht die Verwaltung von Wahlkampfaktionen, Freiwilligen-Anmeldungen, Excel-Import/Export und automatische E-Mail-Benachrichtigungen.
+Ermöglicht die Verwaltung von Wahlkampfaktionen, Freiwilligen-Anmeldungen, Excel-Import/Export und automatische E-Mail-Benachrichtigungen.
 
 ## Tech-Stack
 
