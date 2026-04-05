@@ -103,9 +103,16 @@ export const excelRowSchema = z.object({
   { message: "Endzeit muss nach der Startzeit liegen", path: ["endzeit"] }
 );
 
+export const wahlkreisUpdateSchema = z.object({
+  id: z.string().min(1, "ID fehlt"),
+  name: z.string().min(2, "Name muss mindestens 2 Zeichen lang sein"),
+  nummer: z.number().int().positive("Nummer muss eine positive ganze Zahl sein"),
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type UserInput = z.infer<typeof userSchema>;
 export type TeamInput = z.infer<typeof teamSchema>;
 export type AktionInput = z.infer<typeof aktionSchema>;
 export type AnmeldungInput = z.infer<typeof anmeldungSchema>;
 export type ExcelRowInput = z.infer<typeof excelRowSchema>;
+export type WahlkreisUpdateInput = z.infer<typeof wahlkreisUpdateSchema>;

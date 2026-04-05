@@ -10,6 +10,7 @@ const navItems = [
   { href: "/admin", label: "Übersicht", icon: "📊" },
   { href: "/admin/aktionen", label: "Alle Aktionen", icon: "📋" },
   { href: "/admin/teams", label: "Teams", icon: "👥" },
+  { href: "/admin/wahlkreise", label: "Wahlkreise", icon: "🗺️" },
   { href: "/admin/users", label: "Benutzer*innen", icon: "👤" },
 ];
 
